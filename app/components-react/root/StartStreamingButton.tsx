@@ -86,15 +86,13 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
             .showMessageBox(electron.remote.getCurrentWindow(), {
               title: '안내',
               type: 'info',
-              message:
-                '방송 송출을 위한 설정키를 발급 중입니다. 약 1분여 정도의 시간이 소요됩니다.',
+              message: '방송 송출을 위한 준비를 완료 하였습니다.',
             })
             .then(({ response: isOk }) => {
               if (isOk) {
                 electron.remote.shell.openExternal(FlexTvService.apiBase);
               }
             });
-          await Utils.sleep(30 * 1000);
         }
       }
 
@@ -123,15 +121,10 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
 
         if (!goLive) return;
       }
-
-      if (shouldShowGoLiveWindow()) {
-        if (!StreamingService.views.hasPendingChecks()) {
-          StreamingService.actions.resetInfo();
-        }
-        StreamingService.actions.showGoLiveWindow();
-      } else {
-        StreamingService.actions.goLive();
+      if (!StreamingService.views.hasPendingChecks()) {
+        StreamingService.actions.resetInfo();
       }
+      StreamingService.actions.showGoLiveWindow();
     }
   }
 
@@ -141,44 +134,6 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     p.disabled ||
     (streamingStatus === EStreamingState.Starting && delaySecondsRemaining === 0) ||
     (streamingStatus === EStreamingState.Ending && delaySecondsRemaining === 0);
-
-  function shouldShowGoLiveWindow() {
-    if (!UserService.isLoggedIn) return false;
-    const primaryPlatform = UserService.state.auth?.primaryPlatform;
-    const updateStreamInfoOnLive = CustomizationService.state.updateStreamInfoOnLive;
-
-    if (primaryPlatform === 'twitch') {
-      // For Twitch, we can show the Go Live window even with protected mode off
-      // This is mainly for legacy reasons.
-      return StreamingService.views.isMultiplatformMode || updateStreamInfoOnLive;
-    }
-
-    if (primaryPlatform === 'facebook') {
-      return (
-        StreamSettingsService.state.protectedModeEnabled &&
-        StreamSettingsService.isSafeToModifyStreamKey()
-      );
-    }
-
-    if (primaryPlatform === 'youtube') {
-      return (
-        StreamSettingsService.state.protectedModeEnabled &&
-        StreamSettingsService.isSafeToModifyStreamKey()
-      );
-    }
-
-    if (primaryPlatform === 'tiktok') {
-      return (
-        StreamSettingsService.state.protectedModeEnabled &&
-        StreamSettingsService.isSafeToModifyStreamKey()
-      );
-    }
-
-    if (primaryPlatform === 'flextv') {
-      return true;
-    }
-  }
-
   return (
     <button
       style={{ minWidth: '130px' }}
