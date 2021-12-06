@@ -35,6 +35,7 @@ const base = {
     url: 'https://slobs-cdn.streamlabs.com',
   },
   win: {
+    executableName: 'Streamlabs OBS',
     extraFiles: ['LICENSE', 'AGREEMENT', 'shared-resources/**/*', '!shared-resources/README'],
     extraResources: [
       'node_modules/ffmpeg-ffprobe-static/ffmpeg.exe',
