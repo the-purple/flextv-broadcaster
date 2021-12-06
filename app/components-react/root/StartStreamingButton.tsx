@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import { EStreamingState } from 'services/streaming';
 import { EGlobalSyncStatus } from 'services/media-backup';
+import Utils from 'services/utils';
 import electron from 'electron';
 import { $t } from 'services/i18n';
 import { useVuex } from '../hooks';
@@ -15,6 +16,7 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     CustomizationService,
     MediaBackupService,
     SourcesService,
+    FlexTvService,
   } = Services;
 
   const { streamingStatus, delayEnabled, delaySeconds } = useVuex(() => ({
@@ -61,6 +63,39 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
           .then(({ response }) => !!response);
 
         if (!goLive) return;
+      }
+
+      const streamStatus = await FlexTvService.checkReadyToStream();
+      if (!streamStatus.success) {
+        if (streamStatus.error?.code === 'NO_AUTH') {
+          await electron.remote.dialog
+            .showMessageBox(electron.remote.getCurrentWindow(), {
+              title: '안내',
+              type: 'warning',
+              message: '방송은 본인인증후 이용이 가능합니다.',
+              buttons: [$t('Cancel'), '본인 인증하러 가기'],
+            })
+            .then(({ response: isOk }) => {
+              if (isOk) {
+                electron.remote.shell.openExternal(FlexTvService.apiBase);
+              }
+            });
+          return;
+        } else if (streamStatus.error?.code === 'CREATING') {
+          await electron.remote.dialog
+            .showMessageBox(electron.remote.getCurrentWindow(), {
+              title: '안내',
+              type: 'info',
+              message:
+                '방송 송출을 위한 설정키를 발급 중입니다. 약 1분여 정도의 시간이 소요됩니다.',
+            })
+            .then(({ response: isOk }) => {
+              if (isOk) {
+                electron.remote.shell.openExternal(FlexTvService.apiBase);
+              }
+            });
+          await Utils.sleep(30 * 1000);
+        }
       }
 
       const needToShowNoSourcesWarning =
