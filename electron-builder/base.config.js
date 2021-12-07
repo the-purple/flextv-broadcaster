@@ -1,4 +1,4 @@
-const signtool = require('signtool');
+const { execSync } = require('child_process');
 
 const base = {
   appId: 'com.streamlabs.slobs',
@@ -31,11 +31,13 @@ const base = {
     include: 'installer.nsh',
   },
   publish: {
-    provider: 'generic',
-    url: 'https://slobs-cdn.streamlabs.com',
+    provider: 's3',
+    region: 'ap-northeast-2',
+    bucket: 'flextv-broadcaster',
+    acl: 'public-read',
   },
   win: {
-    executableName: 'Streamlabs OBS',
+    executableName: 'FlexTV Broadcaster',
     extraFiles: ['LICENSE', 'AGREEMENT', 'shared-resources/**/*', '!shared-resources/README'],
     extraResources: [
       'node_modules/ffmpeg-ffprobe-static/ffmpeg.exe',
@@ -44,24 +46,12 @@ const base = {
     rfc3161TimeStampServer: 'http://timestamp.digicert.com',
     timeStampServer: 'http://timestamp.digicert.com',
     async sign(config) {
-      if (!process.env.SLOBS_NO_SIGN) return;
-
-      if (
-        config.path.indexOf('node_modules\\obs-studio-node\\data\\obs-plugins\\win-capture') !== -1
-      ) {
-        console.log(`Skipping ${config.path}`);
-        return;
+      if (config.path.includes('Flex')) {
+        execSync(
+          'signtool sign /a /v /tr http://timestamp.globalsign.com/tsa/r6advanced1 /td SHA256 /fd sha256 ' +
+          `"${config.path}"`,
+        );
       }
-
-      console.log(`Signing ${config.hash} ${config.path}`);
-      await signtool.sign(config.path, {
-        subject: 'FlexTv (Flex ENM, Inc.)',
-        rfcTimestamp: 'http://timestamp.globalsign.com/tsa/r6advanced1',
-        algorithm: config.hash,
-        append: config.isNest,
-        description: config.name,
-        url: config.site,
-      });
     },
   },
   mac: {

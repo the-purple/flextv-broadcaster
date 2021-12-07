@@ -23,7 +23,6 @@ const { Updater } = require('./updater/mac/Updater.js');
 ////////////////////////////////////////////////////////////////////////////////
 const {
   app,
-  autoUpdater,
   BrowserWindow,
   ipcMain,
   session,
@@ -31,6 +30,7 @@ const {
   dialog,
   webContents,
 } = require('electron');
+const { autoUpdater } = require('electron-updater')
 const path = require('path');
 const rimraf = require('rimraf');
 
@@ -569,60 +569,7 @@ ipcMain.on('protocolLinkReady', () => {
 });
 
 app.on('ready', () => {
-  /*
-  if (
-    !process.argv.includes('--skip-update') &&
-    (process.env.NODE_ENV === 'production' || process.env.SLOBS_FORCE_AUTO_UPDATE)
-  ) {
-    // Windows uses our custom update, Mac uses electron-updater
-    if (process.platform === 'win32') {
-      const updateInfo = {
-        baseUrl: 'https://slobs-cdn.streamlabs.com',
-        version: pjson.version,
-        exec: process.argv,
-        cwd: process.cwd(),
-        waitPids: [process.pid],
-        appDir: path.dirname(app.getPath('exe')),
-        tempDir: path.join(app.getPath('temp'), 'slobs-updater'),
-        cacheDir: app.getPath('userData'),
-        versionFileName: `${releaseChannel}.json`,
-      };
-
-      bootstrap(updateInfo, startApp, app.exit);
-    } else {
-      new Updater(startApp).run();
-    }
-  } else {
-    startApp();
-  }*/
-
-  /*
-  const platform = os.platform() + '_' + os.arch();
-  const version = app.getVersion();
-
-  const url = 'http://caster.hotaetv.com/update/' + platform + '/' + version;
-  console.log(url, 'url')
-
-  autoUpdater.setFeedURL({ url })
-
-  setInterval(() => {
-    autoUpdater.checkForUpdates()
-  }, 60000);
-
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-    const dialogOpts = {
-      type: 'info',
-      buttons: ['Restart', 'Later'],
-      title: 'Application Update',
-      message: process.platform === 'win32' ? releaseNotes : releaseName,
-      detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-    }
-
-    dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall()
-    })
-  })
-   */
+  autoUpdater.checkForUpdates();
 
   startApp();
 });
@@ -816,3 +763,23 @@ function measure(msg, time) {
   if (delta > 2000) console.log('------------------');
   console.log(msg, delta + 'ms');
 }
+
+autoUpdater.on('update-downloaded', async (_event, releaseNotes, releaseName) => {
+  const options = {
+    type: 'info',
+    buttons: ['재시작', '종료'],
+    title: '업데이트 중입니다.',
+    message: process.platform === 'win32' ? releaseNotes : releaseName,
+    detail:
+      '새로운 버전이 다운로드 되었습니다. 애플리케이션을 재시작하여 업데이트를 적용해 주세요.',
+  };
+  const response = await dialog.showMessageBox(mainWindow, options);
+
+  // @ts-ignore
+  if (response === 0) {
+    autoUpdater.quitAndInstall();
+  } else {
+    app.quit();
+    app.exit();
+  }
+});
