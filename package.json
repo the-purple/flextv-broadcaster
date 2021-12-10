@@ -1,7 +1,7 @@
 {
   "name": "slobs-client",
   "productName": "FlexTV Broadcaster",
-  "description": "Streamlabs streaming software",
+  "description": "FlexTV streaming software",
   "author": "General Workings, Inc.",
   "license": "GPL-3.0",
   "version": "0.1.1",
