@@ -569,8 +569,9 @@ ipcMain.on('protocolLinkReady', () => {
 });
 
 app.on('ready', () => {
-  autoUpdater.checkForUpdates();
-
+  if (process.env.NODE_ENV === 'production') {
+    autoUpdater.checkForUpdates();
+  }
   startApp();
 });
 

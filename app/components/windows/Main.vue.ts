@@ -147,7 +147,7 @@ export default class Main extends Vue {
       return this.customizationService.currentTheme;
     }
 
-    return loadedTheme() || 'night-theme';
+    return loadedTheme() || 'flex-theme';
   }
 
   get applicationLoading() {

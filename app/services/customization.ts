@@ -22,6 +22,7 @@ const THEME_BACKGROUNDS = {
   'prime-dark': { r: 17, g: 17, b: 17 },
   'day-theme': { r: 245, g: 248, b: 250 },
   'prime-light': { r: 243, g: 243, b: 243 },
+  'flex-theme': { r: 0, g: 0, b: 0 },
 };
 
 // Maps to --section
@@ -30,6 +31,7 @@ const SECTION_BACKGROUNDS = {
   'prime-dark': { r: 0, g: 0, b: 0 },
   'day-theme': { r: 227, g: 232, b: 235 },
   'prime-light': { r: 255, g: 255, b: 255 },
+  'flex-theme': { r: 0, g: 0, b: 0 },
 };
 
 // Doesn't map 1:1
@@ -38,6 +40,7 @@ const DISPLAY_BACKGROUNDS = {
   'prime-dark': { r: 37, g: 37, b: 37 },
   'day-theme': { r: 227, g: 232, b: 235 },
   'prime-light': { r: 255, g: 255, b: 255 },
+  'flex-theme': { r: 0, g: 0, b: 0 },
 };
 
 export interface IPinnedStatistics {
@@ -117,7 +120,7 @@ export class CustomizationService extends PersistentStatefulService<ICustomizati
   }
 
   static defaultState: ICustomizationServiceState = {
-    theme: 'night-theme',
+    theme: 'flex-theme',
     updateStreamInfoOnLive: true,
     livePreviewEnabled: true,
     leftDock: false,
@@ -209,7 +212,7 @@ export class CustomizationService extends PersistentStatefulService<ICustomizati
   }
 
   get isDarkTheme() {
-    return ['night-theme', 'prime-dark'].includes(this.currentTheme);
+    return ['night-theme', 'prime-dark', 'flex-theme'].includes(this.currentTheme);
   }
 
   setUpdateStreamInfoOnLive(update: boolean) {
