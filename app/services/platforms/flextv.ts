@@ -40,8 +40,8 @@ export class FlexTvService
   readonly displayName = 'FlexTV';
   readonly capabilities = new Set<TPlatformCapability>(['resolutionPreset']);
 
-  readonly inputResolution = '720x1280';
-  readonly outputResolution = '720x1280';
+  readonly inputResolution = '1280x720';
+  readonly outputResolution = '1280x720';
 
   authWindowOptions: Electron.BrowserWindowConstructorOptions = {
     width: 600,

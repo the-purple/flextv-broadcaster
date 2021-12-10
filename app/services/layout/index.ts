@@ -107,7 +107,7 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
         currentLayout: ELayout.Preferred,
         slottedElements: {
           [ELayoutElement.Display]: { slot: '1' },
-          // [ELayoutElement.Minifeed]: { slot: '2' },
+          [ELayoutElement.FlexTvChat]: { slot: '2' },
           [ELayoutElement.Scenes]: { slot: '3' },
           [ELayoutElement.Sources]: { slot: '4' },
           [ELayoutElement.Mixer]: { slot: '5' },
@@ -137,7 +137,7 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
     ) {
       this.setSlots({
         [ELayoutElement.Display]: { slot: '1' },
-        // [ELayoutElement.LegacyEvents]: { slot: '2' },
+        [ELayoutElement.FlexTvChat]: { slot: '2' },
         [ELayoutElement.Scenes]: { slot: '3' },
         [ELayoutElement.Sources]: { slot: '4' },
         [ELayoutElement.Mixer]: { slot: '5' },
@@ -254,7 +254,7 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
 
       slottedElements: {
         [ELayoutElement.Display]: { slot: '1' },
-        // [ELayoutElement.Minifeed]: { slot: '2' },
+        [ELayoutElement.FlexTvChat]: { slot: '2' },
         [ELayoutElement.Scenes]: { slot: '3' },
         [ELayoutElement.Sources]: { slot: '4' },
         [ELayoutElement.Mixer]: { slot: '5' },

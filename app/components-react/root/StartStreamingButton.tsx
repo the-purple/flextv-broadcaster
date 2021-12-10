@@ -3,7 +3,7 @@ import cx from 'classnames';
 import { EStreamingState } from 'services/streaming';
 import { EGlobalSyncStatus } from 'services/media-backup';
 import Utils from 'services/utils';
-import electron from 'electron';
+import electron, { dialog } from 'electron';
 import { $t } from 'services/i18n';
 import { useVuex } from '../hooks';
 import { Services } from '../service-provider';
@@ -48,7 +48,19 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
 
   async function toggleStreaming() {
     if (StreamingService.isStreaming) {
-      StreamingService.toggleStreaming();
+      const options = {
+        type: 'warning',
+        buttons: ['종료', '취소'],
+        title: '방송을 종료하시겠습니까?',
+        message: '종료를 선택하시면 즉시 방송이 종료 됩니다.',
+      };
+      const response = await electron.remote.dialog.showMessageBox(
+        electron.remote.getCurrentWindow(),
+        options,
+      );
+      if (response.response === 0) {
+        StreamingService.toggleStreaming();
+      }
     } else {
       if (MediaBackupService.views.globalSyncStatus === EGlobalSyncStatus.Syncing) {
         const goLive = await electron.remote.dialog
@@ -179,5 +191,10 @@ function StreamButtonLabel(p: {
     return <>{$t('Reconnecting')}</>;
   }
 
-  return <>{$t('Go Live')}</>;
+  return (
+    <>
+      <i className="icon-button icon-broadcast" style={{ color: '#fff' }} />
+      {$t('Go Live')}
+    </>
+  );
 }

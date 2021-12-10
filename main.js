@@ -776,8 +776,7 @@ autoUpdater.on('update-downloaded', async (_event, releaseNotes, releaseName) =>
   };
   const response = await dialog.showMessageBox(mainWindow, options);
 
-  // @ts-ignore
-  if (response === 0) {
+  if (response.response === 0) {
     autoUpdater.quitAndInstall();
   } else {
     app.quit();

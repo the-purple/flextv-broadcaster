@@ -22,7 +22,7 @@ const THEME_BACKGROUNDS = {
   'prime-dark': { r: 17, g: 17, b: 17 },
   'day-theme': { r: 245, g: 248, b: 250 },
   'prime-light': { r: 243, g: 243, b: 243 },
-  'flex-theme': { r: 0, g: 0, b: 0 },
+  'flex-theme': { r: 17, g: 17, b: 17 },
 };
 
 // Maps to --section
@@ -40,7 +40,7 @@ const DISPLAY_BACKGROUNDS = {
   'prime-dark': { r: 37, g: 37, b: 37 },
   'day-theme': { r: 227, g: 232, b: 235 },
   'prime-light': { r: 255, g: 255, b: 255 },
-  'flex-theme': { r: 0, g: 0, b: 0 },
+  'flex-theme': { r: 37, g: 37, b: 37 },
 };
 
 export interface IPinnedStatistics {
