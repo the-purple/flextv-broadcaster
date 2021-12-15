@@ -175,7 +175,7 @@ export default class StudioFooterComponent extends Vue {
     this.flexTvService
       .fetchHelperToken()
       .then(token => {
-        const url = `https://api.stage.flexhp.kro.kr/member/getlogin?branch=flex&authdata=${encodeURIComponent(
+        const url = `${this.flexTvService.helperUrl}${encodeURIComponent(
           token,
         )}`;
         electron.remote.shell.openExternal(url);

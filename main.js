@@ -283,35 +283,10 @@ async function startApp() {
     crashHandler.unregisterProcess(arg.pid);
   });
 
-  const Raven = require('raven');
-
-  function handleFinishedReport() {
-    dialog.showErrorBox(
-      'Something Went Wrong',
-      'An unexpected error occured and Streamlabs Desktop must be shut down.\n' +
-        'Please restart the application.',
-    );
-
-    app.exit();
-  }
-
+  const Sentry = require('@sentry/electron');
   if (pjson.env === 'production') {
-    Raven.config('https://6971fa187bb64f58ab29ac514aa0eb3d@sentry.io/251674', {
-      release: process.env.SLOBS_VERSION,
-    }).install((err, initialErr, eventId) => {
-      handleFinishedReport();
-    });
-
-    crashReporter.start({
-      productName: 'streamlabs-obs',
-      companyName: 'streamlabs',
-      ignoreSystemCrashHandler: true,
-      submitURL:
-        'https://sentry.io/api/1283430/minidump/?sentry_key=01fc20f909124c8499b4972e9a5253f2',
-      extra: {
-        'sentry[release]': pjson.version,
-        processType: 'main',
-      },
+    Sentry.init({
+      dsn: 'https://a197821174e745d5844c9bff46c477da@o565406.ingest.sentry.io/6107933',
     });
   }
 

@@ -28,7 +28,10 @@ interface IFlexTvServiceState extends IPlatformState {
   settings: IFlextvStartStreamOptions;
 }
 
+// const BASE_URL = 'https://www.flextv.co.kr';
+// const HELPER_BASE_URL = 'https://api.flexhp.kr';
 const BASE_URL = 'https://www.hotaetv.com';
+const HELPER_BASE_URL = 'https://api.stage.flexhp.kro.kr';
 
 @InheritMutations()
 export class FlexTvService
@@ -205,6 +208,10 @@ export class FlexTvService
 
   get chatUrl(): string {
     return `${this.apiBase}/redirects/signin?token=${this.apiToken}&redirectTo=/popup/chat/${this.channelId}?darkTheme=true`;
+  }
+
+  get helperUrl(): string {
+    return `${HELPER_BASE_URL}/member/getlogin?branch=flex&authdata=`;
   }
 
   get liveDockEnabled(): boolean {

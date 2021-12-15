@@ -4,7 +4,7 @@
   "description": "FlexTV streaming software",
   "author": "General Workings, Inc.",
   "license": "GPL-3.0",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "main": "main.js",
   "scripts": {
     "compile": "yarn clear && yarn compile:updater && yarn webpack-cli --progress --config ./webpack.dev.config.js",
@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.1",
+    "@sentry/electron": "^2.5.4",
     "abort-controller": "^3.0.0",
     "archiver": "2.1.1",
     "aws-sdk": "^2.344.0",
