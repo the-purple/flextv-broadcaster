@@ -10,7 +10,10 @@ export interface IFlextvStartStreamOptions {
   title: string;
   theme?: string;
   resolution?: string;
-  useMinFanLevel?: boolean;
+  minRatingLevel?: number;
+  password?: string;
+  isForAdult?: boolean;
+  maxViewerCount?: number;
 }
 
 export interface IFlexTvCommonResponse {
@@ -25,6 +28,8 @@ interface IFlexTvServiceState extends IPlatformState {
   settings: IFlextvStartStreamOptions;
 }
 
+const BASE_URL = 'https://www.hotaetv.com';
+
 @InheritMutations()
 export class FlexTvService
   extends BasePlatformService<IFlexTvServiceState>
@@ -34,8 +39,8 @@ export class FlexTvService
     settings: { title: '' },
   };
 
-  readonly baseUrl = 'https://www.hotaetv.com';
-  readonly apiBase = 'https://www.hotaetv.com';
+  readonly baseUrl = BASE_URL;
+  readonly apiBase = BASE_URL;
   readonly platform = 'flextv';
   readonly displayName = 'FlexTV';
   readonly capabilities = new Set<TPlatformCapability>(['resolutionPreset']);
@@ -83,7 +88,7 @@ export class FlexTvService
     if (goLiveSettings) {
       const streamConfigs = goLiveSettings?.platforms.flextv;
       if (!streamConfigs) return;
-      const { title, theme, resolution } = streamConfigs;
+      const { title, theme, resolution, minRatingLevel, password, isForAdult } = streamConfigs;
 
       await platformAuthorizedRequest<{ url: string; streamKey: string }>('flextv', {
         url: `${this.apiBase}/api/m/channel/config`,
@@ -92,12 +97,18 @@ export class FlexTvService
           title,
           theme,
           resolution,
+          minRatingLevel,
+          password,
+          isForAdult,
         }),
       });
       this.state.settings = {
         title,
         theme,
         resolution,
+        minRatingLevel,
+        password,
+        isForAdult,
       };
     }
   }
@@ -111,7 +122,7 @@ export class FlexTvService
       });
       return;
     }
-    const { title, theme, resolution } = this.state.settings;
+    const { title, theme, resolution, minRatingLevel, password, isForAdult } = this.state.settings;
     await platformAuthorizedRequest<{ url: string; streamKey: string }>('flextv', {
       url: `${this.apiBase}/api/my/channel/start-stream`,
       method: 'POST',
@@ -119,6 +130,9 @@ export class FlexTvService
         title,
         theme,
         resolution,
+        minRatingLevel,
+        password,
+        isForAdult,
       }),
     });
   }
@@ -164,7 +178,7 @@ export class FlexTvService
         resolution: number;
         isForAdult: number;
         password: string;
-        minRatingLevel: 2;
+        minRatingLevel: number;
         maxViewerCount: number;
       };
     }>('flextv', `${this.apiBase}/api/m/channel/config`);

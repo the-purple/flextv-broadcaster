@@ -27,9 +27,10 @@ export default function FlexTvGoLiveWindow() {
   const [theme, setTheme] = useState('5');
   const [resolution, useResolution] = useState('720');
   const [useMinFanLevel, setUseMinFanLevel] = useState('false');
-  const [minFanLevel, setMinFanLevel] = useState('1');
+  const [minRatingLevel, setMinFanLevel] = useState('1');
   const [isForAdult, setIsForAdult] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
+  const [password, setPassword] = useState('');
   const [maxUserCount, setMaxUserCount] = useState(300);
 
   const shouldShowConfirm = ['prepopulate', 'waitForNewSettings'].includes(lifecycle);
@@ -65,6 +66,9 @@ export default function FlexTvGoLiveWindow() {
           title,
           theme,
           resolution,
+          minRatingLevel: (useMinFanLevel === 'true' && minRatingLevel) ? Number(minRatingLevel) : undefined,
+          password,
+          isForAdult,
         },
       },
     });
@@ -137,7 +141,7 @@ export default function FlexTvGoLiveWindow() {
           {useMinFanLevel === 'true' && (
             <ListInput
               label={'팬 최소 등급'}
-              value={minFanLevel}
+              value={minRatingLevel}
               onChange={setMinFanLevel}
               options={[
                 {
@@ -169,6 +173,11 @@ export default function FlexTvGoLiveWindow() {
           <CheckboxInput label={'연령제한'} value={isForAdult} onChange={setIsForAdult} />
           <CheckboxInput label={'비밀번호방'} value={isSecret} onChange={setIsSecret} />
         </div>
+        {isSecret ? (
+          <div style={{ paddingLeft: 30 }}>
+            <TextInput label={'비밀번호'} value={password} onChange={setPassword} />
+          </div>
+        ) : null}
         <div className="section thin">
           <RadioInput
             label={'방송화질'}
