@@ -1,6 +1,6 @@
 import { Component } from 'vue-property-decorator';
 import BaseElement from './BaseElement';
-import BrowserView from 'components/shared/BrowserView';
+import { BrowserView } from 'components/shared/ReactComponentList';
 import { Inject } from 'services/core';
 import Scrollable from 'components/shared/Scrollable';
 import styles from './BaseElement.m.less';
@@ -12,7 +12,7 @@ export default class Display extends BaseElement {
   @Inject() streamingService: StreamingService;
   @Inject() userService: UserService;
 
-  view: any = null;
+  view: Electron.BrowserView = null;
 
   get url() {
     return this.streamingService.views.chatUrl;
@@ -37,11 +37,13 @@ export default class Display extends BaseElement {
           {this.userService.isLoggedIn && this.streamingService.isStreaming ? (
             <div style="height: 100%;">
               <BrowserView
-                class={styles.container}
-                src={this.url}
-                options={{ webPreferences: { contextIsolation: true } }}
-                onReady={view => {
-                  this.view = view;
+                componentProps={{
+                  class: styles.container,
+                  src: this.url,
+                  options: { webPreferences: { contextIsolation: true } },
+                  onReady: (view: Electron.BrowserView) => {
+                    this.view = view;
+                  },
                 }}
               />
             </div>
