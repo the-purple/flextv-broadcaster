@@ -4,7 +4,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { mutation, StatefulService } from 'services/core/stateful-service';
 import electron from 'electron';
-import Vue, { Component } from 'vue';
+import Vue from 'vue';
 import Utils from 'services/utils';
 import { Subject } from 'rxjs';
 import { throttle } from 'lodash-decorators';
@@ -13,7 +13,6 @@ import Main from 'components/windows/Main.vue';
 import Settings from 'components/windows/settings/Settings.vue';
 import FFZSettings from 'components/windows/FFZSettings.vue';
 import FlexTvSettings from 'components/windows/flextv/settings/FlexTvSettings.vue';
-import SourcesShowcase from 'components/windows/SourcesShowcase.vue';
 import SceneTransitions from 'components/windows/SceneTransitions.vue';
 import AddSource from 'components/windows/AddSource.vue';
 import NameScene from 'components/windows/NameScene.vue';
@@ -25,6 +24,7 @@ import {
   IconLibraryProperties,
   ScreenCaptureProperties,
   SharedComponentsLibrary,
+  SourceProperties,
   PerformanceMetrics,
   RenameSource,
   AdvancedStatistics,
@@ -32,10 +32,11 @@ import {
   CustomCodeWindow,
   SafeMode,
   AdvancedAudio,
+  SourceShowcase,
   SourceFilters,
 } from 'components/shared/ReactComponentList';
 
-import SourceProperties from 'components/windows/SourceProperties.vue';
+import SourcePropertiesDeprecated from 'components/windows/SourceProperties.vue';
 import Notifications from 'components/windows/Notifications.vue';
 import Troubleshooter from 'components/windows/Troubleshooter.vue';
 import Blank from 'components/windows/Blank.vue';
@@ -94,13 +95,13 @@ export function getComponents() {
     FFZSettings,
     FlexTvSettings,
     SceneTransitions,
-    SourcesShowcase,
     RenameSource,
     AddSource,
     NameScene,
     NameFolder,
     SafeMode,
     SourceProperties,
+    SourcePropertiesDeprecated,
     SourceFilters,
     Blank,
     AdvancedAudio,
@@ -150,6 +151,7 @@ export function getComponents() {
     SharedComponentsLibrary,
     WidgetWindow,
     CustomCodeWindow,
+    SourceShowcase,
   };
 }
 
