@@ -17,15 +17,6 @@ export default class ChooseYourAdventure extends TsxComponent<OnboardingStepProp
   get optionsMetadata() {
     return [
       {
-        title: $t('Import from OBS Studio'),
-        color: '--blue',
-        description: $t(
-          'We import all of your settings, including scenes, output, configurations, and much more',
-        ),
-        image: <ObsSvg />,
-        onClick: this.importFromObs,
-      },
-      {
         title: $t('Start Fresh'),
         color: '--teal',
         description: $t(
@@ -49,7 +40,7 @@ export default class ChooseYourAdventure extends TsxComponent<OnboardingStepProp
           <SvgBackground />
           <img src={$i('images/onboarding/splash.png')} />
         </div>
-        <h1 class={styles.title}>{$t('Welcome to Streamlabs')}</h1>
+        <h1 class={styles.title}>Welcome to FlexTV</h1>
         <div class={styles.optionContainer}>
           {this.optionsMetadata.map(data => (
             <div
