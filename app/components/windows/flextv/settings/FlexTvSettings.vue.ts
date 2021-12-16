@@ -84,6 +84,13 @@ export default class FlexTvSettings extends Vue {
 
   created() {
     // Make sure we have the latest settings
+    // FlexTV default settings
+    this.settingsService.setSettingValue(
+      'Output',
+      'x264opts',
+      '8x8dct=1 aq-mode=2 b-adapt=2 bframes=3 direct=auto keyint=150 me=umh merange=24 min-keyint=auto mixed-refs=1 partitions=i4 x4,p8x8,b8x8 profile=main rc-lookahead=60 ref=3 scenecut=40 subme=7 threads=0 trellis=1 weightb=1 weightp=2 ratetol=0.1 debloc k=1:0 qcomp=0.1 qpmax=69 qpmin=3 qpstep=4 vbv-bufsize=2000 vbv-maxrate=1800',
+    );
+    this.settingsService.setSettingValue('Video', 'FPSCommon', '29.97');
     this.settingsService.actions.loadSettingsIntoStore();
   }
 
