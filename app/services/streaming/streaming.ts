@@ -624,20 +624,26 @@ export class StreamingService
       this.startReplayBuffer();
     }
 
-    startStreamingPromise
+    const isSuccess = await startStreamingPromise
       .then(() => {
-        // run afterGoLive hooks
-        try {
-          this.views.enabledPlatforms.forEach(platform => {
-            getPlatformService(platform).afterGoLive();
-          });
-        } catch (e: unknown) {
-          console.error('Error running afterGoLive for platform', e);
-        }
+        return getPlatformService('flextv').afterGoLive();
+      })
+      .then(() => {
+        return true;
       })
       .catch(() => {
         console.warn('startStreamingPromise was rejected');
+        return false;
       });
+    if (!isSuccess) {
+      await electron.remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: '라이브 실패',
+        type: 'warning',
+        message: '일시적인 오류로 라이브를 시작할 수 없습니다.',
+        buttons: [$t('Confirm')],
+      });
+      return Promise.reject();
+    }
 
     return startStreamingPromise;
   }
