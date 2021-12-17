@@ -4,7 +4,6 @@ import electron from 'electron';
 import Utils from '../../services/utils';
 import { $t } from '../../services/i18n';
 import styles from '../../components/SideNav.m.less';
-import throttle from 'lodash/throttle';
 import { Services } from '../service-provider';
 import { useVuex } from '../hooks';
 
@@ -53,23 +52,6 @@ export default function FlexTvNavTools() {
       TransitionsService.actions.enableStudioMode();
     }
   }
-
-  async function openDashboard(page?: string) {
-    UsageStatisticsService.actions.recordClick('FlexTvNavTools', page || 'dashboard');
-    if (s.dashboardOpening) return;
-    setState({ dashboardOpening: true });
-
-    try {
-      const link = await MagicLinkService.getDashboardMagicLink(page);
-      electron.remote.shell.openExternal(link);
-    } catch (e: unknown) {
-      console.error('Error generating dashboard magic link', e);
-    }
-
-    setState({ dashboardOpening: false });
-  }
-
-  const throttledOpenDashboard = throttle(openDashboard, 2000, { trailing: false });
 
   function openHelp() {
     UsageStatisticsService.actions.recordClick('FlexTvNavTools', 'help');

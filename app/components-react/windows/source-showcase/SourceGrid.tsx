@@ -81,20 +81,6 @@ export default function SourceGrid(p: { activeTab: string }) {
     return { essentialDefaults, essentialWidgets };
   }, []);
 
-  function showContent(key: string) {
-    const correctKey = ['all', key].includes(p.activeTab);
-    if (UserService.state.auth?.primaryPlatform === 'tiktok' && key === 'widgets') return false;
-    if (key === 'apps') {
-      return correctKey && availableAppSources.length > 0;
-    }
-    return correctKey;
-  }
-
-  function handleAuth() {
-    WindowsService.closeChildWindow();
-    UserService.showLogin();
-  }
-
   function filterEssential(source: IObsListOption<TSourceType> | string) {
     if (p.activeTab !== 'all') return true;
     if (typeof source === 'string') {
@@ -105,85 +91,22 @@ export default function SourceGrid(p: { activeTab: string }) {
 
   return (
     <Scrollable style={{ height: 'calc(100% - 64px)' }}>
-      <Row gutter={[8, 8]} style={{ marginLeft: '24px', marginRight: '24px' }}>
-        {showContent('all') && (
-          <>
-            <Col span={24}>
-              <PageHeader title={$t('Essential Sources')} />
-            </Col>
-            {essentialSources.essentialDefaults.map(source => (
-              <SourceTag
-                key={source.value}
-                type={source.value}
-                essential
-              />
-            ))}
-            {essentialSources.essentialWidgets.map(widgetType => (
-              <SourceTag
-                key={widgetType}
-                type={widgetType}
-                essential
-              />
-            ))}
-            <SourceTag key="streamlabel" name={$t('Stream Label')} type="streamlabel" essential />
-          </>
-        )}
-        {showContent('general') && (
-          <>
-            <Col span={24}>
-              <PageHeader title={$t('General Sources')} />
-            </Col>
-            {availableSources.filter(filterEssential).map(source => (
-              <SourceTag key={source.value} type={source.value} />
-            ))}
-            <SourceTag key="replay" name={$t('Instant Replay')} type="replay" />
-            {designerMode && (
-              <SourceTag key="icon_library" name={$t('Custom Icon')} type={'icon_library'} />
-            )}
-          </>
-        )}
-
-        {showContent('widgets') && (
-          <>
-            <Col span={24}>
-              <PageHeader title={$t('Widgets')} />
-            </Col>
-            {!isLoggedIn ? (
-              <Empty
-                description={$t('You must be logged in to use Widgets')}
-                image={$i(`images/sleeping-kevin-${demoMode}.png`)}
-              >
-                <Button onClick={handleAuth}>{$t('Click here to log in')}</Button>
-              </Empty>
-            ) : (
-              <>
-                {iterableWidgetTypes.filter(filterEssential).map(widgetType => (
-                  <SourceTag
-                    key={widgetType}
-                    type={widgetType}
-                  />
-                ))}
-                {p.activeTab !== 'all' && <SourceTag key="streamlabel" name={$t('Stream Label')} type="streamlabel" />}
-              </>
-            )}
-          </>
-        )}
-        {showContent('apps') && (
-          <>
-            <Col span={24}>
-              <PageHeader title={$t('Apps')} />
-            </Col>
-            {availableAppSources.map(app => (
-              <SourceTag
-                key={app.appId}
-                name={app.source.name}
-                type="app_source"
-                appId={app.appId}
-                appSourceId={app.source.id}
-              />
-            ))}
-          </>
-        )}
+      <Row
+        gutter={[8, 8]}
+        style={{
+          marginLeft: '24px',
+          marginRight: '24px',
+        }}
+      >
+        <>
+          {availableSources.filter(filterEssential).map(source => (
+            <SourceTag key={source.value} type={source.value} />
+          ))}
+          <SourceTag key="replay" name={$t('Instant Replay')} type="replay" />
+          {designerMode && (
+            <SourceTag key="icon_library" name={$t('Custom Icon')} type={'icon_library'} />
+          )}
+        </>
       </Row>
     </Scrollable>
   );

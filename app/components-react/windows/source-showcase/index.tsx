@@ -16,11 +16,7 @@ const { Content, Sider } = Layout;
 export default function SourcesShowcase() {
   const {
     selectInspectedSource,
-    availableAppSources,
-    inspectedSource,
   } = useSourceShowcaseSettings();
-
-  const [activeTab, setActiveTab] = useState('all');
 
   return (
     <ModalLayout
@@ -30,18 +26,7 @@ export default function SourcesShowcase() {
     >
       <Layout style={{ height: '100%' }}>
         <Content style={{ paddingRight: 0, paddingLeft: 0 }}>
-          <Menu
-            onClick={e => setActiveTab(e.key)}
-            selectedKeys={[activeTab]}
-            mode="horizontal"
-            style={{ marginBottom: '16px' }}
-          >
-            <Menu.Item key="all">{$t('All')}</Menu.Item>
-            <Menu.Item key="general">{$t('General')}</Menu.Item>
-            <Menu.Item key="widgets">{$t('Widgets')}</Menu.Item>
-            {availableAppSources.length > 0 && <Menu.Item key="apps">{$t('Apps')}</Menu.Item>}
-          </Menu>
-          <SourceGrid activeTab={activeTab} />
+          <SourceGrid activeTab={'general'} />
         </Content>
         <SideBar />
       </Layout>
