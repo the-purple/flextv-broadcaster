@@ -7,6 +7,7 @@ import {
   TStartStreamOptions,
   TPlatformCapabilityMap,
 } from './index';
+import { SettingsService } from 'services/settings';
 import { StreamingService } from 'services/streaming';
 import { UserService } from 'services/user';
 import { HostsService } from 'services/hosts';
@@ -29,6 +30,7 @@ export abstract class BasePlatformService<T extends IPlatformState> extends Stat
   };
 
   @Inject() protected streamingService: StreamingService;
+  @Inject() protected settingsService: SettingsService;
   @Inject() protected userService: UserService;
   @Inject() protected hostsService: HostsService;
   @Inject() protected streamSettingsService: StreamSettingsService;
