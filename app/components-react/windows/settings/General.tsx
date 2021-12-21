@@ -16,7 +16,6 @@ export function GeneralSettings() {
     <div>
       <FlexTVSettings />
       <CacheSettings />
-      <LanguageSettings />
       <ExtraSettings />
       <ObsGenericSettingsForm />
     </div>
@@ -95,25 +94,6 @@ function CacheSettings() {
           onChange={val => CustomizationService.actions.setSettings({ enableCrashDumps: val })}
         />
       )}
-    </ObsSettingsSection>
-  );
-}
-
-function LanguageSettings() {
-  const i18nService = I18nService.instance as I18nService;
-  const localeOptions = i18nService.state.localeList;
-  const currentLocale = i18nService.state.locale;
-
-  async function save(lang: string) {
-    if (!(await confirmAsync('This action will restart the application. Continue?'))) {
-      return;
-    }
-    i18nService.actions.setLocale(lang);
-  }
-
-  return (
-    <ObsSettingsSection>
-      <ListInput options={localeOptions} label={'Language'} onChange={save} value={currentLocale} />
     </ObsSettingsSection>
   );
 }
