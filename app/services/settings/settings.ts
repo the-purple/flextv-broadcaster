@@ -22,9 +22,8 @@ import { VideoEncodingOptimizationService } from 'services/video-encoding-optimi
 import { PlatformAppsService } from 'services/platform-apps';
 import { EDeviceType, HardwareService } from 'services/hardware';
 import { StreamingService } from 'services/streaming';
+import { CustomizationService } from 'services/customization';
 import { byOS, getOS, OS } from 'util/operating-systems';
-import path from 'path';
-import fs from 'fs';
 import { UsageStatisticsService } from 'services/usage-statistics';
 import { SceneCollectionsService } from 'services/scene-collections';
 import electron from 'electron';
@@ -159,6 +158,7 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
   @Inject() private usageStatisticsService: UsageStatisticsService;
   @Inject() private sceneCollectionsService: SceneCollectionsService;
   @Inject() private hardwareService: HardwareService;
+  @Inject() private customizationService: CustomizationService;
 
   @Inject()
   private videoEncodingOptimizationService: VideoEncodingOptimizationService;
@@ -170,6 +170,7 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
   init() {
     this.loadSettingsIntoStore();
     this.ensureValidEncoder();
+    this.initFlexTVDefaultSetting();
     this.sceneCollectionsService.collectionSwitched.subscribe(() => this.refreshAudioSettings());
   }
 
@@ -524,6 +525,13 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
         message:
           'Your stream encoder has been reset to Software (x264). This can be caused by out of date graphics drivers. Please update your graphics drivers to continue using hardware encoding.',
       });
+    }
+  }
+
+  private initFlexTVDefaultSetting() {
+    if (this.customizationService.state.enableFlexTVOptimization) {
+      this.setSettingValue('Advanced', 'DelayPreserve', false);
+      this.setSettingValue('Output', 'RecRB', false);
     }
   }
 

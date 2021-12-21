@@ -67,7 +67,7 @@ export default class AddSource extends Vue {
 
   selectedSourceId = this.sources[0] ? this.sources[0].sourceId : null;
 
-  overrideExistingSource = false;
+  overrideExistingSource = true;
 
   mounted() {
     if (this.sourceAddOptions.propertiesManager === 'replay') {

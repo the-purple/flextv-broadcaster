@@ -1,12 +1,7 @@
 import { Subject } from 'rxjs';
 import { PersistentStatefulService } from 'services/core/persistent-stateful-service';
 import { mutation, ViewHandler } from 'services/core/stateful-service';
-import {
-  IObsInput,
-  IObsListInput,
-  IObsNumberInputValue,
-  TObsFormData,
-} from 'components/obs/inputs/ObsInput';
+import { TObsFormData } from 'components/obs/inputs/ObsInput';
 import Utils from 'services/utils';
 import { $t } from 'services/i18n';
 import { Inject } from 'services/core';
@@ -72,6 +67,7 @@ export interface ICustomizationServiceState {
   experimental?: {
     volmetersFPSLimit?: number;
   };
+  enableFlexTVOptimization: boolean;
   designerMode: boolean;
   legacyEvents: boolean;
   pinnedStatistics: IPinnedStatistics;
@@ -141,6 +137,7 @@ export class CustomizationService extends PersistentStatefulService<ICustomizati
     folderSelection: false,
     navigateToLiveOnStreamStart: true,
     legacyEvents: false,
+    enableFlexTVOptimization: true,
     designerMode: false,
     pinnedStatistics: {
       cpu: false,

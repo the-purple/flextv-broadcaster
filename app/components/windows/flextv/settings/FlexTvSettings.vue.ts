@@ -161,9 +161,7 @@ export default class FlexTvSettings extends Vue {
   get categoryNames() {
     return this.settingsService
       .getCategories()
-      .filter(category =>
-        ['General', 'Stream', 'Output', 'Audio', 'Video', 'Advanced'].includes(category),
-      );
+      .filter(category => ['General', 'Output', 'Audio', 'Video', 'Advanced'].includes(category));
   }
 
   save(settingsData: ISettingsSubCategory[]) {

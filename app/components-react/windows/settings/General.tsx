@@ -14,6 +14,7 @@ import { getDefined } from '../../../util/properties-type-guards';
 export function GeneralSettings() {
   return (
     <div>
+      <FlexTVSettings />
       <CacheSettings />
       <LanguageSettings />
       <ExtraSettings />
@@ -23,6 +24,26 @@ export function GeneralSettings() {
 }
 
 GeneralSettings.page = 'General';
+
+function FlexTVSettings() {
+  const { CustomizationService } = Services;
+  const { enableFlexTVOptimization } = useVuex(() => {
+    return { enableFlexTVOptimization: CustomizationService.state.enableFlexTVOptimization };
+  });
+  return (
+    <ObsSettingsSection>
+      <p>플렉스티비에 최적화된 설정을 사용하시면 일부 설정이 강제로 변경됩니다.</p>
+      <CheckboxInput
+        name="최적화 설정 사용"
+        label="플렉스티비에 최적화 설정 사용"
+        value={enableFlexTVOptimization}
+        onChange={val =>
+          CustomizationService.actions.setSettings({ enableFlexTVOptimization: val })
+        }
+      />
+    </ObsSettingsSection>
+  );
+}
 
 function CacheSettings() {
   const { AppService, CacheUploaderService, CustomizationService } = Services;
@@ -48,22 +69,6 @@ function CacheSettings() {
     }
   }
 
-  function uploadCacheDir() {
-    if (cacheUploading) return;
-    setCacheUploading(true);
-    CacheUploaderService.uploadCache().then(file => {
-      electron.remote.clipboard.writeText(file);
-      alert(
-        $t(
-          'Your cache directory has been successfully uploaded.  ' +
-            'The file name %{file} has been copied to your clipboard.',
-          { file },
-        ),
-      );
-      setCacheUploading(false);
-    });
-  }
-
   return (
     <ObsSettingsSection>
       <p>
@@ -80,12 +85,6 @@ function CacheSettings() {
         <a className="link" onClick={deleteCacheDir}>
           <i className="icon-trash" />
           <span>{$t('Delete Cache and Restart')}</span>
-        </a>
-      </div>
-      <div className="input-container">
-        <a className="link" onClick={uploadCacheDir}>
-          <i className="fa fa-upload" /> <span>{$t('Upload Cache to Developers')}</span>
-          {cacheUploading && <i className="fa fa-spinner fa-spin" />}
         </a>
       </div>
       {process.platform === 'win32' && (
