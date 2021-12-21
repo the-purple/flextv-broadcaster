@@ -80,16 +80,6 @@ function SideBar() {
       collapsedWidth={0}
     >
       <div className={styles.preview}>
-        {displayData?.demoFilename && (
-          <div className={styles.imageContainer}>
-            {displayData?.demoVideo && (
-              <video autoPlay loop key={previewSrc}>
-                <source src={previewSrc} />
-              </video>
-            )}
-            {!displayData?.demoVideo && <img src={previewSrc} />}
-          </div>
-        )}
         <h2>{displayData?.name}</h2>
         <div>{displayData?.description}</div>
         {displayData?.supportList?.length > 0 && (

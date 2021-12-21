@@ -102,7 +102,6 @@ export default function SourceGrid(p: { activeTab: string }) {
           {availableSources.filter(filterEssential).map(source => (
             <SourceTag key={source.value} type={source.value} />
           ))}
-          <SourceTag key="replay" name={$t('Instant Replay')} type="replay" />
           {designerMode && (
             <SourceTag key="icon_library" name={$t('Custom Icon')} type={'icon_library'} />
           )}
