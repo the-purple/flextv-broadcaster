@@ -10,14 +10,13 @@ import { NumberInput, TextInput, RadioInput, CheckboxInput, ListInput } from '..
 import { useGoLiveSettingsRoot } from '../go-live/useGoLiveSettings';
 
 export default function FlexTvGoLiveWindow() {
-  const { StreamingService, WindowsService } = Services;
+  const { StreamingService, WindowsService, FlexTvService } = Services;
   const {
     error,
     lifecycle,
     checklist,
     goLive,
     isLoading,
-    getSettings,
     prepopulate,
     updateSettings,
     form,
@@ -47,7 +46,15 @@ export default function FlexTvGoLiveWindow() {
   });
 
   useEffect(() => {
-    console.log(getSettings(), 'gg');
+    FlexTvService.fetchStreamConfig().then(streamOptions => {
+      if (!streamOptions) return;
+
+      setTitle(streamOptions.title ?? '');
+      setTheme(streamOptions.theme ?? '5');
+      setIsSecret(!!streamOptions.password);
+      setPassword(streamOptions.password ?? '');
+      setIsForAdult(streamOptions.isForAdult ?? false);
+    });
   }, []);
 
   function close() {
@@ -66,7 +73,8 @@ export default function FlexTvGoLiveWindow() {
           title,
           theme,
           resolution,
-          minRatingLevel: (useMinFanLevel === 'true' && minRatingLevel) ? Number(minRatingLevel) : undefined,
+          minRatingLevel:
+            useMinFanLevel === 'true' && minRatingLevel ? Number(minRatingLevel) : undefined,
           password,
           isForAdult,
         },

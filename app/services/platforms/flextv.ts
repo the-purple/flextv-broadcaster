@@ -200,6 +200,13 @@ export class FlexTvService
     this.SET_STREAM_SETTINGS({ ...config.data });
   }
 
+  async fetchStreamConfig(): Promise<IFlextvStartStreamOptions> {
+    const config = await platformAuthorizedRequest<{
+      data: IFlextvStartStreamOptions,
+    }>('flextv', `${this.apiBase}/api/m/channel/config`);
+    return config.data;
+  }
+
   async fetchUserInfo(): Promise<any> {
     const userInfo = await platformAuthorizedRequest<{
       profile: {
