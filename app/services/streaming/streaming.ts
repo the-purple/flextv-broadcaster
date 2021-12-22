@@ -639,9 +639,10 @@ export class StreamingService
       await electron.remote.dialog.showMessageBox(Utils.getMainWindow(), {
         title: '라이브 실패',
         type: 'warning',
-        message: '일시적인 오류로 라이브를 시작할 수 없습니다.',
+        message: '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
         buttons: [$t('Confirm')],
       });
+      obs.NodeObs.OBS_service_stopStreaming(false);
       return Promise.reject();
     }
 

@@ -184,7 +184,8 @@ export default class StudioFooterComponent extends Vue {
         electron.remote.dialog.showMessageBox({
           title: '도우미 관리 열기 실패',
           type: 'warning',
-          message: '일시적인 문제가 발생하였습니다.',
+          message:
+            '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
         });
       });
   }
