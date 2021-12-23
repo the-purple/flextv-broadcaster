@@ -4,6 +4,7 @@ import { BasePlatformService } from './base-platform';
 import { IPlatformState, TPlatformCapability } from './index';
 import { IGoLiveSettings } from '../streaming';
 import { platformAuthorizedRequest } from './utils';
+import Utils from 'services/utils';
 import electron from 'electron';
 
 export interface IFlextvStartStreamOptions {
@@ -89,6 +90,8 @@ export class FlexTvService
       this.settingsService.setSettingValue('Video', 'FPSCommon', '29.97');
       this.settingsService.setSettingValue('Advanced', 'RetryDelay', 5);
       this.settingsService.setSettingValue('Advanced', 'MaxRetries', 1000);
+      this.settingsService.setSettingValue('Advanced', 'LowLatencyEnable', true);
+      this.settingsService.setSettingValue('Advanced', 'DynamicBitrate', true);
 
       const data = await this.fetchStreamPair();
       this.SET_STREAM_KEY(data.streamKey);
@@ -151,6 +154,7 @@ export class FlexTvService
         isForAdult,
       }),
     });
+    await Utils.sleep(1000);
   }
 
   async afterStopStream() {
