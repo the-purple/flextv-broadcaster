@@ -31,7 +31,7 @@ function FlexTVSettings() {
   });
   return (
     <ObsSettingsSection>
-      <p>플렉스티비에 최적화된 설정을 사용하시면 일부 설정이 강제로 변경됩니다.</p>
+      <p>플렉스티비에 최적화된 설정을 사용하시면 방송 시작 시 일부 설정이 강제로 변경됩니다.</p>
       <CheckboxInput
         name="최적화 설정 사용"
         label="플렉스티비에 최적화 설정 사용"

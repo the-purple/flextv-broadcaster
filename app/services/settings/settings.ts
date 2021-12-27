@@ -170,7 +170,6 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
   init() {
     this.loadSettingsIntoStore();
     this.ensureValidEncoder();
-    this.initFlexTVDefaultSetting();
     this.sceneCollectionsService.collectionSwitched.subscribe(() => this.refreshAudioSettings());
   }
 
@@ -525,13 +524,6 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
         message:
           'Your stream encoder has been reset to Software (x264). This can be caused by out of date graphics drivers. Please update your graphics drivers to continue using hardware encoding.',
       });
-    }
-  }
-
-  private initFlexTVDefaultSetting() {
-    if (this.customizationService.state.enableFlexTVOptimization) {
-      this.setSettingValue('Advanced', 'DelayPreserve', false);
-      this.setSettingValue('Output', 'RecRB', false);
     }
   }
 

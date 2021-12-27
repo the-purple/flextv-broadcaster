@@ -1,10 +1,11 @@
 import { EPlatformCallResult, IPlatformRequest, IPlatformService } from '.';
-import { InheritMutations } from '../core';
+import { InheritMutations, Inject } from '../core';
 import { BasePlatformService } from './base-platform';
 import { IPlatformState, TPlatformCapability } from './index';
 import { IGoLiveSettings } from '../streaming';
 import { platformAuthorizedRequest } from './utils';
 import Utils from 'services/utils';
+import { CustomizationService } from 'services/customization';
 import electron from 'electron';
 
 export interface IFlextvStartStreamOptions {
@@ -38,6 +39,9 @@ const HELPER_BASE_URL = 'https://api.stage.flexhp.kro.kr';
 export class FlexTvService
   extends BasePlatformService<IFlexTvServiceState>
   implements IPlatformService {
+
+  @Inject() private customizationService: CustomizationService;
+
   static initialState: IFlexTvServiceState = {
     ...BasePlatformService.initialState,
     settings: { title: '' },
@@ -73,11 +77,32 @@ export class FlexTvService
     return this.userService.views.state.auth?.platforms?.flextv?.channelId;
   }
 
-  async beforeGoLive(goLiveSettings?: IGoLiveSettings) {
-    if (
-      this.streamSettingsService.protectedModeEnabled &&
-      this.streamSettingsService.isSafeToModifyStreamKey()
-    ) {
+  private findOBSEncoderOptions(): string[] {
+    if (!this.settingsService.views.state?.Output?.formData) return [];
+
+    const forms = this.settingsService.views.state.Output.formData;
+    const streamSetting = forms.find(f => f.nameSubCategory === 'Streaming');
+    if (!streamSetting) return [];
+
+    const param = streamSetting.parameters.find(p => p.description === 'Encoder');
+    if (!param) return [];
+    // @ts-ignore
+    return param.options.map((o: any) => o.value);
+  }
+
+  private setOptimizedOBSSettings() {
+    if (!this.customizationService.state.enableFlexTVOptimization) return;
+
+    const encoderOptions = this.findOBSEncoderOptions();
+    if (['ffmpeg_nvenc', 'jim_nvenc'].some(option => encoderOptions.includes(option))) {
+      if (encoderOptions.includes('jim_nvenc')) {
+        this.settingsService.setSettingValue('Output', 'Encoder', 'jim_nvenc');
+      } else {
+        this.settingsService.setSettingValue('Output', 'Encoder', 'ffmpeg_nvenc');
+      }
+      this.settingsService.setSettingValue('Output', 'preset', 'llhp');
+      this.settingsService.setSettingValue('Output', 'keyint_sec', 1);
+    } else {
       /**
        * Optimization for NCP Live Station
        * https://guide.ncloud-docs.com/docs/media-livestation-livestation-encoderguide
@@ -87,11 +112,23 @@ export class FlexTvService
         'x264opts',
         '8x8dct=1 aq-mode=2 b-adapt=2 bframes=3 direct=auto keyint=150 me=umh merange=24 min-keyint=auto mixed-refs=1 partitions=i4 x4,p8x8,b8x8 profile=main rc-lookahead=60 ref=3 scenecut=40 subme=7 threads=0 trellis=1 weightb=1 weightp=2 ratetol=0.1 debloc k=1:0 qcomp=0.1 qpmax=69 qpmin=3 qpstep=4 vbv-bufsize=2000 vbv-maxrate=1800',
       );
-      this.settingsService.setSettingValue('Video', 'FPSCommon', '29.97');
-      this.settingsService.setSettingValue('Advanced', 'RetryDelay', 5);
-      this.settingsService.setSettingValue('Advanced', 'MaxRetries', 1000);
-      this.settingsService.setSettingValue('Advanced', 'LowLatencyEnable', true);
-      this.settingsService.setSettingValue('Advanced', 'DynamicBitrate', true);
+    }
+
+    this.settingsService.setSettingValue('Video', 'FPSCommon', '29.97');
+    this.settingsService.setSettingValue('Advanced', 'RetryDelay', 5);
+    this.settingsService.setSettingValue('Advanced', 'MaxRetries', 1000);
+    this.settingsService.setSettingValue('Advanced', 'LowLatencyEnable', true);
+    this.settingsService.setSettingValue('Advanced', 'DynamicBitrate', true);
+    this.settingsService.setSettingValue('Advanced', 'DelayPreserve', false);
+    this.settingsService.setSettingValue('Output', 'RecRB', false);
+  }
+
+  async beforeGoLive(goLiveSettings?: IGoLiveSettings) {
+    if (
+      this.streamSettingsService.protectedModeEnabled &&
+      this.streamSettingsService.isSafeToModifyStreamKey()
+    ) {
+      this.setOptimizedOBSSettings();
 
       const data = await this.fetchStreamPair();
       this.SET_STREAM_KEY(data.streamKey);
