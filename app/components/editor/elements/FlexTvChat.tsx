@@ -8,7 +8,7 @@ import { StreamingService } from '../../../services/streaming';
 import { UserService } from '../../../services/user';
 
 @Component({})
-export default class Display extends BaseElement {
+export default class FlexTvChat extends BaseElement {
   @Inject() streamingService: StreamingService;
   @Inject() userService: UserService;
 

@@ -94,12 +94,13 @@ export class FlexTvService
     if (!this.customizationService.state.enableFlexTVOptimization) return;
 
     const encoderOptions = this.findOBSEncoderOptions();
-    if (['ffmpeg_nvenc', 'jim_nvenc'].some(option => encoderOptions.includes(option))) {
-      if (encoderOptions.includes('jim_nvenc')) {
-        this.settingsService.setSettingValue('Output', 'Encoder', 'jim_nvenc');
-      } else {
-        this.settingsService.setSettingValue('Output', 'Encoder', 'ffmpeg_nvenc');
-      }
+    const hardwareEncoders = encoderOptions.filter(e => e !== 'obs_x264');
+    if (hardwareEncoders.length > 0) {
+      this.settingsService.setSettingValue(
+        'Output',
+        'Encoder',
+        hardwareEncoders[hardwareEncoders.length - 1],
+      );
       this.settingsService.setSettingValue('Output', 'preset', 'llhp');
       this.settingsService.setSettingValue('Output', 'keyint_sec', 1);
     } else {
