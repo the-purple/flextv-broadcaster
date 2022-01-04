@@ -35,7 +35,7 @@
       </div>
       <div class="nav-item" v-if="loggedIn">
         <button class="ui button" @click="openFlexTvHelperWindow">
-          도우미 관리
+          위젯 설정
         </button>
       </div>
       <div class="nav-item" v-if="loggedIn">

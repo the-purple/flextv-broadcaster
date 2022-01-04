@@ -35,8 +35,12 @@ class LayoutViews extends ViewHandler<ILayoutServiceState> {
     return this.state.tabs[this.state.currentTab];
   }
 
+  layoutData(layout: ELayout) {
+    return LAYOUT_DATA[layout] || LAYOUT_DATA.Classic;
+  }
+
   get component() {
-    return LAYOUT_DATA[this.currentTab.currentLayout].component;
+    return this.layoutData(this.currentTab.currentLayout).component;
   }
 
   get elementsToRender() {
@@ -56,7 +60,7 @@ class LayoutViews extends ViewHandler<ILayoutServiceState> {
   }
 
   className(layout: ELayout) {
-    return LAYOUT_DATA[layout].className;
+    return this.layoutData(layout).className;
   }
 
   calculateColumnTotal(slots: IVec2Array) {

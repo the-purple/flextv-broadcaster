@@ -4,7 +4,7 @@ import { ModalLayout } from 'components-react/shared/ModalLayout';
 import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
 import { SourceDisplayData } from 'services/sources';
-import { WidgetDisplayData, WidgetType } from 'services/widgets';
+import { WidgetDisplayData, WidgetType, FlexTVWidgetType, FlexTVWidgetDisplayData } from 'services/widgets';
 import { $i } from 'services/utils';
 import { $t } from 'services/i18n';
 import { useSourceShowcaseSettings } from './useSourceShowcase';
@@ -18,6 +18,8 @@ export default function SourcesShowcase() {
     selectInspectedSource,
   } = useSourceShowcaseSettings();
 
+  const [activeTab, setActiveTab] = useState('general');
+
   return (
     <ModalLayout
       onOk={selectInspectedSource}
@@ -26,7 +28,16 @@ export default function SourcesShowcase() {
     >
       <Layout style={{ height: '100%' }}>
         <Content style={{ paddingRight: 0, paddingLeft: 0 }}>
-          <SourceGrid activeTab={'general'} />
+          <Menu
+            onClick={e => setActiveTab(e.key)}
+            selectedKeys={[activeTab]}
+            mode="horizontal"
+            style={{ marginBottom: '16px' }}
+          >
+            <Menu.Item key="general">{$t('General')}</Menu.Item>
+            <Menu.Item key="widgets">{$t('Widgets')}</Menu.Item>
+          </Menu>
+          <SourceGrid activeTab={activeTab} />
         </Content>
         <SideBar />
       </Layout>
@@ -58,19 +69,15 @@ function SideBar() {
     }
   }, [inspectedAppId]);
 
-  function widgetData(type: string | WidgetType) {
+  function widgetData(type: string | WidgetType | FlexTVWidgetType) {
+    if (FlexTVWidgetType[type]) {
+      return FlexTVWidgetDisplayData()[FlexTVWidgetType[type]];
+    }
     return WidgetDisplayData(platform)[WidgetType[type]];
   }
 
   const displayData =
     appData || widgetData(inspectedSource) || SourceDisplayData()[inspectedSource];
-
-  const previewSrc = useMemo(() => {
-    if (appData) {
-      return PlatformAppsService.views.getAssetUrl(inspectedAppId, displayData?.demoFilename || '');
-    }
-    return $i(`source-demos/${demoMode}/${displayData?.demoFilename}`);
-  }, [demoMode, displayData?.demoFilename]);
 
   return (
     <Sider

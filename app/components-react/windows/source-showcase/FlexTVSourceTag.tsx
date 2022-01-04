@@ -1,0 +1,47 @@
+import React from 'react';
+import { Col } from 'antd';
+import cx from 'classnames';
+import { FlexTVWidgetDisplayData, FlexTVWidgetType } from 'services/widgets';
+import { SourceDisplayData } from 'services/sources';
+import { useSourceShowcaseSettings } from './useSourceShowcase';
+import styles from './SourceShowcase.m.less';
+
+export default function FlexTVSourceTag(p: {
+  name?: string;
+  type: string;
+  appId?: string;
+  appSourceId?: string;
+  essential?: boolean;
+}) {
+  const {
+    inspectSource,
+    selectInspectedSource,
+    inspectedSource,
+    inspectedAppId,
+    inspectedAppSourceId,
+  } = useSourceShowcaseSettings();
+  const displayData =
+    FlexTVWidgetDisplayData()[FlexTVWidgetType[p.type]] || SourceDisplayData()[p.type];
+
+  function active() {
+    if (!p.appId) return inspectedSource === p.type;
+    return p.appSourceId === inspectedAppSourceId && p.appId === inspectedAppId;
+  }
+
+  return (
+    <Col span={8}>
+      <div
+        className={cx(styles.sourceTag, {
+          [styles.active]: active(),
+          [styles.essential]: p.essential,
+        })}
+        onClick={() => inspectSource(p.type, p.appId, p.appSourceId)}
+        onDoubleClick={() => selectInspectedSource()}
+        data-name={displayData?.name || p.name}
+      >
+        <i className={displayData?.icon} />
+        {displayData?.name || p.name}
+      </div>
+    </Col>
+  );
+}
