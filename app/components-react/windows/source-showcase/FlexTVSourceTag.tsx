@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col } from 'antd';
 import cx from 'classnames';
-import { FlexTVWidgetDisplayData, FlexTVWidgetType } from 'services/widgets';
+import { WidgetDisplayData, WidgetType } from 'services/widgets';
 import { SourceDisplayData } from 'services/sources';
 import { useSourceShowcaseSettings } from './useSourceShowcase';
 import styles from './SourceShowcase.m.less';
@@ -20,8 +20,7 @@ export default function FlexTVSourceTag(p: {
     inspectedAppId,
     inspectedAppSourceId,
   } = useSourceShowcaseSettings();
-  const displayData =
-    FlexTVWidgetDisplayData()[FlexTVWidgetType[p.type]] || SourceDisplayData()[p.type];
+  const displayData = WidgetDisplayData()[WidgetType[p.type]] || SourceDisplayData()[p.type];
 
   function active() {
     if (!p.appId) return inspectedSource === p.type;

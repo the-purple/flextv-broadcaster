@@ -4,8 +4,10 @@ import { ModalLayout } from 'components-react/shared/ModalLayout';
 import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
 import { SourceDisplayData } from 'services/sources';
-import { WidgetDisplayData, WidgetType, FlexTVWidgetType, FlexTVWidgetDisplayData } from 'services/widgets';
-import { $i } from 'services/utils';
+import {
+  WidgetDisplayData,
+  WidgetType,
+} from 'services/widgets';
 import { $t } from 'services/i18n';
 import { useSourceShowcaseSettings } from './useSourceShowcase';
 import styles from './SourceShowcase.m.less';
@@ -69,10 +71,7 @@ function SideBar() {
     }
   }, [inspectedAppId]);
 
-  function widgetData(type: string | WidgetType | FlexTVWidgetType) {
-    if (FlexTVWidgetType[type]) {
-      return FlexTVWidgetDisplayData()[FlexTVWidgetType[type]];
-    }
+  function widgetData(type: string | WidgetType) {
     return WidgetDisplayData(platform)[WidgetType[type]];
   }
 

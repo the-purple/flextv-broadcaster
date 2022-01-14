@@ -4,13 +4,13 @@ import { useModule } from '../../hooks/useModule';
 import { mutation } from '../../store';
 import { Services } from '../../service-provider';
 import { TPropertiesManager, TSourceType } from 'services/sources';
-import { WidgetType, FlexTVWidgetType } from 'services/widgets';
+import { WidgetType } from 'services/widgets';
 import { byOS, OS } from 'util/operating-systems';
 import { IAppSource } from 'services/platform-apps';
 
 interface ISelectSourceOptions {
   propertiesManager?: TPropertiesManager;
-  widgetType?: WidgetType | FlexTVWidgetType;
+  widgetType?: WidgetType;
   appId?: string;
   appSourceId?: string;
 }
@@ -18,7 +18,6 @@ interface ISelectSourceOptions {
 type TInspectableSource =
   | TSourceType
   | WidgetType
-  | FlexTVWidgetType
   | 'streamlabel'
   | 'app_source'
   | string;
@@ -66,8 +65,6 @@ class SourceShowcaseModule {
     const inspectedSource = this.state.inspectedSource;
     if (WidgetType[inspectedSource] != null) {
       this.selectWidget(WidgetType[inspectedSource] as WidgetType);
-    } else if (FlexTVWidgetType[inspectedSource] != null) {
-      this.selectWidget(FlexTVWidgetType[inspectedSource] as FlexTVWidgetType);
     } else if (inspectedSource === 'streamlabel') {
       this.selectStreamlabel();
     } else if (inspectedSource === 'replay') {
@@ -99,7 +96,7 @@ class SourceShowcaseModule {
     });
   }
 
-  selectWidget(type: WidgetType | FlexTVWidgetType) {
+  selectWidget(type: WidgetType) {
     this.selectSource('browser_source', {
       propertiesManager: 'widget',
       widgetType: type,

@@ -36,6 +36,11 @@ export enum WidgetType {
   Poll = 19,
   EmoteWall = 20,
   ChatHighlight = 21,
+  FlexChatBox = 100,
+  FlexAlertBox = 101,
+  FlexGoal = 102,
+  FlexSponsorBanner = 103,
+  FlexClock = 104,
 }
 
 export const WidgetTesters: IWidgetTester[] = [
@@ -456,6 +461,73 @@ export const WidgetDefinitions: { [x: number]: IWidget } = {
 
     anchor: AnchorPoint.Center,
   },
+  [WidgetType.FlexChatBox]: {
+    name: 'Alert Box',
+    url(host, token) {
+      return `https://${host}/alert-box/v3/${token}`;
+    },
+
+    width: 480,
+    height: 600,
+
+    x: 1,
+    y: 0,
+
+    anchor: AnchorPoint.NorthEast,
+  },
+  [WidgetType.FlexAlertBox]: {
+    name: 'Alert Box',
+    url(host, token) {
+      return 'https://www.flextv.com';
+    },
+
+    width: 300,
+    height: 240,
+
+    x: 0.5,
+    y: 0.5,
+
+    anchor: AnchorPoint.Center,
+  },
+  [WidgetType.FlexGoal]: {
+    name: 'Alert Box',
+    url(host, token) {
+      return '';
+    },
+    width: 480,
+    height: 290,
+
+    x: 1,
+    y: 1,
+
+    anchor: AnchorPoint.SouthEast,
+  },
+  [WidgetType.FlexSponsorBanner]: {
+    name: 'Alert Box',
+    url(host, token) {
+      return '';
+    },
+    width: 480,
+    height: 290,
+
+    x: 1,
+    y: 0,
+
+    anchor: AnchorPoint.NorthEast,
+  },
+  [WidgetType.FlexClock]: {
+    name: 'Clock',
+    url(host, token) {
+      return '';
+    },
+    width: 532,
+    height: 75,
+
+    x: 0,
+    y: 1,
+
+    anchor: AnchorPoint.SouthWest,
+  },
 };
 
 export const WidgetDisplayData = (platform?: string): { [x: number]: IWidgetDisplayData } => ({
@@ -661,5 +733,47 @@ export const WidgetDisplayData = (platform?: string): { [x: number]: IWidgetDisp
     supportList: [],
     platforms: new Set(['twitch']),
     icon: 'icon-community',
+  },
+  [WidgetType.FlexChatBox]: {
+    name: '채팅',
+    description: '다양한 스타일로 나만의 개성있는 채팅창을 꾸미고 방송화면에 표시할 수 있습니다.',
+    demoVideo: false,
+    demoFilename: 'chat-highlight.png',
+    supportList: [],
+    icon: 'fas fa-bell',
+  },
+  [WidgetType.FlexAlertBox]: {
+    name: '알림',
+    description:
+      '후원 내용을 알림으로 방송화면에 표시해주며, 후원한 시청자의 채팅 내용을 음성으로 읽어줍니다.',
+    demoVideo: false,
+    demoFilename: 'chat-highlight.png',
+    supportList: [],
+    icon: 'fas fa-calendar',
+  },
+  [WidgetType.FlexGoal]: {
+    name: '목표치',
+    description:
+      '후원개수, 백두산 등 특별한 목표치를 설정하여 그래프와 퍼센트로 방송화면에 표시할 수 있습니다.',
+    demoVideo: false,
+    demoFilename: 'chat-highlight.png',
+    supportList: [],
+    icon: 'fas fa-calendar',
+  },
+  [WidgetType.FlexSponsorBanner]: {
+    name: '후원자막',
+    description: '후원순위를 다양한 색상과 배경으로 방송화면에 표시할 수 있습니다.',
+    demoVideo: false,
+    demoFilename: 'chat-highlight.png',
+    supportList: [],
+    icon: 'fas fa-calendar',
+  },
+  [WidgetType.FlexClock]: {
+    name: '시계',
+    description: '방송화면에 표시할 시계를 설정할 수 있습니다.',
+    demoVideo: false,
+    demoFilename: 'chat-highlight.png',
+    supportList: [],
+    icon: 'fas fa-calendar',
   },
 });

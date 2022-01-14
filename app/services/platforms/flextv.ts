@@ -30,6 +30,11 @@ interface IFlexTvServiceState extends IPlatformState {
   settings: IFlextvStartStreamOptions;
 }
 
+interface IFlexTvWidget {
+  url: string;
+  type: string;
+}
+
 // const BASE_URL = 'https://www.flextv.co.kr';
 // const HELPER_BASE_URL = 'https://api.flexhp.kr';
 const BASE_URL = 'https://www.hotaetv.com';
@@ -56,6 +61,7 @@ export class FlexTvService
   readonly inputResolution = '1280x720';
   readonly outputResolution = '1280x720';
 
+  widgets: IFlexTvWidget[] = []
   authWindowOptions: Electron.BrowserWindowConstructorOptions = {
     width: 600,
     height: 800,
@@ -222,6 +228,29 @@ export class FlexTvService
 
   async validatePlatform() {
     return EPlatformCallResult.Success;
+  }
+
+  async initWidgets() {
+    this.widgets = await platformAuthorizedRequest<IFlexTvWidget[]>(
+      'flextv',
+      `${this.apiBase}/api/my/channel/hp/widget-urls`,
+    );
+  }
+
+  async fetchWidgetUrl(type: string) {
+    const widgets = await platformAuthorizedRequest<IFlexTvWidget[]>(
+      'flextv',
+      `${this.apiBase}/api/my/channel/hp/widget-urls`,
+    );
+    const widget = widgets.find(w => w.type === type);
+    if (widget) return widget.url;
+    return '';
+  }
+
+  getWidgetUrl(type: string) {
+    const widget = this.widgets.find(w => w.type === type);
+    if (widget) return widget.url;
+    return '';
   }
 
   /**

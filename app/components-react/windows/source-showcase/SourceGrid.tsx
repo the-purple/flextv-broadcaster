@@ -3,7 +3,7 @@ import { Empty, Row, Button } from 'antd';
 import Scrollable from 'components-react/shared/Scrollable';
 import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
-import { FlexTVWidgetType } from 'services/widgets';
+import { WidgetType, FlexTvWidgetTypeNames } from 'services/widgets';
 import { byOS, OS } from 'util/operating-systems';
 import { $t } from 'services/i18n';
 import SourceTag from './SourceTag';
@@ -28,9 +28,9 @@ export default function SourceGrid(p: { activeTab: string }) {
 
   const { availableAppSources } = useSourceShowcaseSettings();
 
-  const iterableWidgetTypes = Object.keys(FlexTVWidgetType).filter(
-    (type: string) => !Number.isInteger(Number(type)),
-  );
+  const iterableWidgetTypes = Object.keys(WidgetType).filter((type: string) => {
+    return !Number.isInteger(Number(type)) && FlexTvWidgetTypeNames.includes(type);
+  });
 
   const availableSources = useMemo(
     () =>
@@ -57,8 +57,6 @@ export default function SourceGrid(p: { activeTab: string }) {
     WindowsService.closeChildWindow();
     UserService.showLogin();
   }
-
-  console.log('widget', iterableWidgetTypes);
 
   return (
     <Scrollable style={{ height: 'calc(100% - 64px)' }}>
