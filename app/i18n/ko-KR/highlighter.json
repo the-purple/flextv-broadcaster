@@ -25,7 +25,7 @@
   "Adjust replay duration": "리플레이 시간 조절",
   "Set the duration of captured replays. You can always trim them down later.": "캡처한 리플레이의 시간을 설정합니다. 나중에 언제든지 잘라낼 수 있습니다.",
   "Replay Duration": "리플레이 시간",
-  "Set a hotkey to capture replays": "리플레이 캡처 핫키 설정",
+  "Set a hotkey to capture replays": "리플레이 캡처 단축키 설정",
   "Capture a replay": "리플레이 캡처",
   "highlighterHotkeyInstructions": "스트리밍을 시작하고 <b>%{bindingStr}</b> 키로 리플레이를 캡처하세요. 스트리밍이 끝난 뒤 다시 여기로 돌아오세요.",
   "Start streaming and capture a replay. Check back here after your stream.": "스트리밍을 시작하고 리플레이를 캡처하세요. 스트리밍이 끝난 뒤 다시 여기로 돌아오세요.",
