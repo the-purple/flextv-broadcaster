@@ -24,6 +24,16 @@
       <div v-if="streamingService.isRecording" class="nav-item record-time">
         {{ recordingTime }}
       </div>
+      <div class="nav-item">
+        <button
+          :disabled="locked"
+          class="record-button"
+          @click="toggleRecording"
+          :class="{ active: streamingService.isRecording }"
+        >
+          <span>REC</span>
+        </button>
+      </div>
       <div class="nav-item" v-if="canSchedule">
         <button
           class="circle-button"
@@ -35,7 +45,7 @@
       </div>
       <div class="nav-item" v-if="loggedIn">
         <button class="ui button" @click="openFlexTvHelperWindow">
-          도우미 관리
+          위젯 설정
         </button>
       </div>
       <div class="nav-item" v-if="loggedIn">

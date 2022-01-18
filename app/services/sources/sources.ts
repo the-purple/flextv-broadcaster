@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import Vue from 'vue';
 import { Subject } from 'rxjs';
+import electron from 'electron';
 import cloneDeep from 'lodash/cloneDeep';
 import { IObsListOption, TObsValue } from 'components/obs/inputs/ObsInput';
 import { mutation, StatefulService, ViewHandler } from 'services/core/stateful-service';
@@ -29,6 +30,7 @@ import { $t } from 'services/i18n';
 import { SourceDisplayData } from './sources-data';
 import { NavigationService } from 'services/navigation';
 import { PlatformAppsService } from 'services/platform-apps';
+import { FlexTvService } from 'services/platforms/flextv'
 import { HardwareService, DefaultHardwareService } from 'services/hardware';
 import { AudioService, E_AUDIO_CHANNELS } from '../audio';
 import { ReplayManager } from './properties-managers/replay-manager';
@@ -172,6 +174,7 @@ export class SourcesService extends StatefulService<ISourcesState> {
   @Inject() private videoService: VideoService;
   @Inject() private customizationService: CustomizationService;
   @Inject() private incrementalRolloutService: IncrementalRolloutService;
+  @Inject() private flexTvService: FlexTvService;
 
   get views() {
     return new SourcesViews(this.state);
@@ -582,7 +585,7 @@ export class SourcesService extends StatefulService<ISourcesState> {
 
     const propertiesManagerType = source.getPropertiesManagerType();
 
-    if (propertiesManagerType === 'widget') return this.showWidgetProperties(source);
+    if (propertiesManagerType === 'widget') return this.openFlexTVWidgetSetting();
     if (propertiesManagerType === 'platformApp') return this.showPlatformAppPage(source);
     if (propertiesManagerType === 'iconLibrary') return this.showIconLibrarySettings(source);
 
@@ -636,6 +639,25 @@ export class SourcesService extends StatefulService<ISourcesState> {
         height: 800,
       },
     });
+  }
+
+  openFlexTVWidgetSetting() {
+    this.flexTvService
+      .fetchHelperToken()
+      .then(token => {
+        const url = `${this.flexTvService.helperUrl}${encodeURIComponent(
+          token,
+        )}`;
+        electron.remote.shell.openExternal(url);
+      })
+      .catch((e: unknown) => {
+        electron.remote.dialog.showMessageBox({
+          title: '위젯 설정 열기 실패',
+          type: 'warning',
+          message:
+            '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
+        });
+      });
   }
 
   showWidgetProperties(source: Source) {

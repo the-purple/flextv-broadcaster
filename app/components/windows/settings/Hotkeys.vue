@@ -15,7 +15,7 @@
         :hotkeys="scenesHotkeys"
         :isSearch="!!searchString || scanning"
       />
-      <h2 v-if="hasHotkeys(filteredHotkeySet.sources)">Sources</h2>
+      <!--h2 v-if="hasHotkeys(filteredHotkeySet.sources)">Sources</h2>
       <hotkey-group
         v-for="(sourceHotkeys, sourceId) in filteredHotkeySet.sources"
         v-if="sourceHotkeys.length > 0"
@@ -23,7 +23,7 @@
         :title="sourcesService.views.getSource(sourceId).name"
         :hotkeys="sourceHotkeys"
         :isSearch="!!searchString || scanning"
-      />
+      /-->
     </div>
   </div>
 </template>

@@ -15,7 +15,12 @@ interface ISelectSourceOptions {
   appSourceId?: string;
 }
 
-type TInspectableSource = TSourceType | WidgetType | 'streamlabel' | 'app_source' | string;
+type TInspectableSource =
+  | TSourceType
+  | WidgetType
+  | 'streamlabel'
+  | 'app_source'
+  | string;
 
 /**
  * A module for components in the SourceShowcase window
