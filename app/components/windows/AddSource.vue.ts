@@ -143,8 +143,9 @@ export default class AddSource extends Vue {
       let source: ISourceApi;
 
       if (this.sourceAddOptions.propertiesManager === 'widget') {
-        const widget = this.widgetsService.createWidget(this.widgetType, this.name);
-        source = widget.getSource();
+        this.widgetsService.createWidget(this.widgetType, this.name).then(() => {});
+        this.close();
+        return;
       } else {
         const settings: Dictionary<any> = {};
 

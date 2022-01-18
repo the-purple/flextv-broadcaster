@@ -128,6 +128,30 @@ export default class LayoutEditor extends TsxComponent {
   get topBar() {
     return (
       <div class={styles.topBar}>
+        <img class={styles.arrow} src={require('../../../media/images/chalk-arrow.png')} />
+        <button
+          class="button button--action"
+          style="margin: 0 16px;"
+          onClick={() => this.openModal()}
+        >
+          {$t('Add Tab')}
+        </button>
+        <ListInput
+          style="z-index: 1; margin: 8px 16px 0 0"
+          value={this.layoutService.state.currentTab}
+          onInput={(tab: string) => this.setTab(tab)}
+          metadata={{ options: this.tabOptions }}
+          v-tooltip={{ content: $t('Current Tab'), placement: 'bottom' }}
+        />
+        {this.layoutService.state.currentTab !== 'default' && (
+          <button
+            class={cx('button button--warn', styles.removeButton)}
+            v-tooltip={{ content: $t('Delete Current Tab'), placement: 'bottom' }}
+            onClick={() => this.removeCurrentTab()}
+          >
+            <i class="icon-trash" />
+          </button>
+        )}
         <button class="button button--action" onClick={() => this.save()}>
           {$t('Save Changes')}
         </button>

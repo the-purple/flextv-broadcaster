@@ -4,6 +4,7 @@ import { ScenesService, SceneItem, Scene } from '../scenes';
 import { SourcesService } from '../sources';
 import { VideoService } from '../video';
 import { HostsService } from '../hosts';
+import { FlexTvService } from '../platforms/flextv';
 import { ScalableRectangle } from 'util/ScalableRectangle';
 import namingHelpers from 'util/NamingHelpers';
 import fs from 'fs';
@@ -11,6 +12,7 @@ import { ServicesManager } from 'services-manager';
 import { authorizedHeaders, handleResponse } from 'util/requests';
 import { ISerializableWidget, IWidgetSource, IWidgetsServiceApi } from './widgets-api';
 import { WidgetType, WidgetDefinitions, WidgetTesters } from './widgets-data';
+import { FlexTvWidgetTypeKey } from './flextv-widgets-data'
 import { mutation, StatefulService } from '../core/stateful-service';
 import { WidgetSource } from './widget-source';
 import { InitAfter } from 'services/core/service-initialization-observer';
@@ -43,6 +45,7 @@ export class WidgetsService
   @Inject() hostsService: HostsService;
   @Inject() videoService: VideoService;
   @Inject() editorCommandsService: EditorCommandsService;
+  @Inject() flexTvService: FlexTvService;
 
   protected init() {
     // sync widgetSources with sources
@@ -70,9 +73,13 @@ export class WidgetsService
       if (!this.state.widgetSources[sourceModel.sourceId]) return;
       this.unregister(sourceModel.sourceId);
     });
+
+    this.userService.userLogin.subscribe(async _ => {
+      return this.flexTvService.initWidgets();
+    });
   }
 
-  createWidget(type: WidgetType, name?: string): SceneItem {
+  async createWidget(type: WidgetType, name?: string): Promise<SceneItem> {
     if (!this.userService.isLoggedIn) return;
 
     const scene = this.scenesService.views.activeScene;
@@ -92,13 +99,14 @@ export class WidgetsService
       rect.y = widget.y * this.videoService.baseHeight;
     });
 
+    const url = this.flexTvService.fetchWidgetUrl(FlexTvWidgetTypeKey[type]);
     const item = this.editorCommandsService.executeCommand(
       'CreateNewItemCommand',
       this.scenesService.views.activeSceneId,
       suggestedName,
       'browser_source',
       {
-        url: widget.url(this.hostsService.streamlabs, this.userService.widgetToken),
+        url,
         width: widget.width,
         height: widget.height,
       },
@@ -131,7 +139,7 @@ export class WidgetsService
 
   getWidgetUrl(type: WidgetType) {
     if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return;
-    return WidgetDefinitions[type].url(this.hostsService.streamlabs, this.userService.widgetToken);
+    return this.flexTvService.getWidgetUrl(FlexTvWidgetTypeKey[type]);
   }
 
   getWidgetComponent(type: WidgetType): TWindowComponentName {

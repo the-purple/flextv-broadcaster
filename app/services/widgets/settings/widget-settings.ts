@@ -17,6 +17,7 @@ import { Subject } from 'rxjs';
 import { IInputMetadata } from 'components/shared/inputs/index';
 import { mutation, StatefulService } from 'services/core/stateful-service';
 import { WebsocketService } from 'services/websocket';
+import { FlexTvService } from 'services/platforms/flextv';
 
 export const WIDGET_INITIAL_STATE: IWidgetSettingsGenericState = {
   loadingState: 'none',
@@ -43,6 +44,7 @@ export abstract class WidgetSettingsService<TWidgetData extends IWidgetData>
   @Inject() protected userService: UserService;
   @Inject() private widgetsService: WidgetsService;
   @Inject() protected websocketService: WebsocketService;
+  @Inject() private flexTvService: FlexTvService;
 
   dataUpdated = new Subject<TWidgetData>();
 
