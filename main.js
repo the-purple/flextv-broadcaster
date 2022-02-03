@@ -357,6 +357,14 @@ async function startApp() {
     if (!allowMainWindowClose) e.preventDefault();
   });
 
+  mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
+    const tempPath = app.getPath('temp');
+    const fileName = item.getFilename();
+    if (fileName && fileName.includes('png')) {
+      item.setSavePath(path.join(tempPath, item.getFilename()));
+    }
+  });
+
   // prevent worker window to be closed before other windows
   // we need it to properly handle App.stop() in tests
   // since it tries to close all windows

@@ -13,6 +13,8 @@ import { createStore } from './store';
 import { WindowsService } from './services/windows';
 import { ObsUserPluginsService } from 'services/obs-user-plugins';
 import { AppService } from './services/app';
+import { SourcesService } from './services/sources';
+import { ScenesService } from './services/scenes';
 import Utils from './services/utils';
 import electron from 'electron';
 import * as Sentry from '@sentry/browser';
@@ -326,6 +328,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     ipcRenderer.on('closeWindow', () => windowsService.closeMainWindow());
     I18nService.instance.load();
     AppService.instance.load();
+
+    const win = electron.remote.getCurrentWindow();
+    win.webContents.session.on('will-download', (event, item, webContents) => {
+      const tempPath = electron.remote.app.getPath('temp');
+      const newFilePath = path.join(tempPath, item.getFilename());
+      const fileName = item.getFilename();
+
+      item.once('done', (event, state) => {
+        if (!fileName || !fileName.includes('png')) return;
+        if (state === 'completed') {
+          const sceneService = getResource<ScenesService>('ScenesService');
+
+          const scene = sceneService.views.getScene(sceneService.views.activeSceneId);
+          scene.addFile(newFilePath);
+        } else {
+          electron.remote.dialog.showMessageBox({
+            title: '파일 다운로드 실패',
+            type: 'warning',
+            message:
+              '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
+          });
+        }
+      });
+    });
   }
 
   if (Utils.isChildWindow()) {
