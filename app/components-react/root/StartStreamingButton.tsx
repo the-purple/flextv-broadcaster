@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import { EStreamingState } from 'services/streaming';
 import { EGlobalSyncStatus } from 'services/media-backup';
-import Utils from 'services/utils';
-import electron, { dialog } from 'electron';
 import { $t } from 'services/i18n';
 import { useVuex } from '../hooks';
 import { Services } from '../service-provider';
+import * as remote from '@electron/remote';
 
 export default function StartStreamingButton(p: { disabled?: boolean }) {
   const {
@@ -54,8 +53,8 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
         title: '방송을 종료하시겠습니까?',
         message: '종료를 선택하시면 즉시 방송이 종료 됩니다.',
       };
-      const response = await electron.remote.dialog.showMessageBox(
-        electron.remote.getCurrentWindow(),
+      const response = await remote.dialog.showMessageBox(
+        remote.getCurrentWindow(),
         options,
       );
       if (response.response === 0) {
@@ -63,8 +62,8 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
       }
     } else {
       if (MediaBackupService.views.globalSyncStatus === EGlobalSyncStatus.Syncing) {
-        const goLive = await electron.remote.dialog
-          .showMessageBox(electron.remote.getCurrentWindow(), {
+        const goLive = await remote.dialog
+          .showMessageBox(remote.getCurrentWindow(), {
             title: $t('Cloud Backup'),
             type: 'warning',
             message:
@@ -80,8 +79,8 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
       const streamStatus = await FlexTvService.checkReadyToStream();
       if (!streamStatus.success) {
         if (streamStatus.error?.code === 'NO_AUTH') {
-          await electron.remote.dialog
-            .showMessageBox(electron.remote.getCurrentWindow(), {
+          await remote.dialog
+            .showMessageBox(remote.getCurrentWindow(), {
               title: '안내',
               type: 'warning',
               message: '방송은 본인인증후 이용이 가능합니다.',
@@ -89,20 +88,20 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
             })
             .then(({ response: isOk }) => {
               if (isOk) {
-                electron.remote.shell.openExternal(FlexTvService.apiBase);
+                remote.shell.openExternal(FlexTvService.apiBase);
               }
             });
           return;
         } else if (streamStatus.error?.code === 'CREATING') {
-          await electron.remote.dialog
-            .showMessageBox(electron.remote.getCurrentWindow(), {
+          await remote.dialog
+            .showMessageBox(remote.getCurrentWindow(), {
               title: '안내',
               type: 'info',
               message: '방송 송출을 위한 준비를 완료 하였습니다.',
             })
             .then(({ response: isOk }) => {
               if (isOk) {
-                electron.remote.shell.openExternal(FlexTvService.apiBase);
+                remote.shell.openExternal(FlexTvService.apiBase);
               }
             });
         }
@@ -114,8 +113,8 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
           .length === 0;
 
       if (needToShowNoSourcesWarning) {
-        const goLive = await electron.remote.dialog
-          .showMessageBox(electron.remote.getCurrentWindow(), {
+        const goLive = await remote.dialog
+          .showMessageBox(remote.getCurrentWindow(), {
             title: $t('No Sources'),
             type: 'warning',
             message:
@@ -146,6 +145,7 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     p.disabled ||
     (streamingStatus === EStreamingState.Starting && delaySecondsRemaining === 0) ||
     (streamingStatus === EStreamingState.Ending && delaySecondsRemaining === 0);
+
   return (
     <button
       style={{ minWidth: '130px' }}

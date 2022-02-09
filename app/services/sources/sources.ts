@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import Vue from 'vue';
 import { Subject } from 'rxjs';
-import electron from 'electron';
+import * as remote from '@electron/remote';
 import cloneDeep from 'lodash/cloneDeep';
 import { IObsListOption, TObsValue } from 'components/obs/inputs/ObsInput';
 import { mutation, StatefulService, ViewHandler } from 'services/core/stateful-service';
@@ -597,21 +597,22 @@ export class SourcesService extends StatefulService<ISourcesState> {
     const reactSourceProps: TSourceType[] = [
       // 'image_source',
       // 'color_source',
-      // 'browser_source',
+      'browser_source',
       // 'slideshow',
-      // 'ffmpeg_source',
+      'ffmpeg_source',
       // 'text_gdiplus',
       // 'text_ft2_source',
       // 'monitor_capture',
       // 'window_capture',
-      // 'game_capture',
+      'game_capture',
       // 'dshow_input',
+      'dshow_input',
       // 'wasapi_input_capture',
       // 'wasapi_output_capture',
       // 'decklink-input',
       // 'scene',
       // 'ndi_source',
-      // 'openvr_capture',
+      'openvr_capture',
       // 'screen_capture',
       // 'liv_capture',
       // 'ovrstream_dc_source',
@@ -648,10 +649,10 @@ export class SourcesService extends StatefulService<ISourcesState> {
         const url = `${this.flexTvService.helperUrl}${encodeURIComponent(
           token,
         )}`;
-        electron.remote.shell.openExternal(url);
+        return remote.shell.openExternal(url);
       })
       .catch((e: unknown) => {
-        electron.remote.dialog.showMessageBox({
+        return remote.dialog.showMessageBox({
           title: '위젯 설정 열기 실패',
           type: 'warning',
           message:

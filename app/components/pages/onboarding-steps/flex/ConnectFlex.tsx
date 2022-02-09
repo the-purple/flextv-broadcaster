@@ -1,5 +1,5 @@
 import { Component } from 'vue-property-decorator';
-import electron from 'electron';
+import * as remote from '@electron/remote';
 import { EAuthProcessState, UserService } from 'services/user';
 import { Inject } from 'services/core/injector';
 import { OnboardingService } from 'services/onboarding';
@@ -51,7 +51,7 @@ export default class ConnectFlex extends TsxComponent<ConnectProps> {
   }
 
   contactSupport() {
-    electron.remote.shell.openExternal(`${this.flexTvService.baseUrl}/cs/guide`);
+    remote.shell.openExternal(`${this.flexTvService.baseUrl}/cs/guide`);
   }
 
   onSkip() {

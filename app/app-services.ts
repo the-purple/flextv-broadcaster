@@ -54,6 +54,7 @@ export { MacPermissionsService } from 'services/mac-permissions';
 export { VirtualWebcamService } from 'services/virtual-webcam';
 export { MetricsService } from 'services/metrics';
 export { HighlighterService } from 'services/highlighter';
+export { DiagnosticsService } from 'services/diagnostics';
 
 // ONLINE SERVICES
 export { UserService } from './services/user';
@@ -62,6 +63,7 @@ export { TwitchService } from 'services/platforms/twitch';
 export { FacebookService } from 'services/platforms/facebook';
 export { TiktokService } from 'services/platforms/tiktok';
 export { FlexTvService } from 'services/platforms/flextv';
+export { TrovoService } from 'services/platforms/trovo';
 export { RestreamService } from 'services/restream';
 export { TwitterService } from 'services/integrations/twitter';
 export { UsageStatisticsService } from './services/usage-statistics';
@@ -111,6 +113,7 @@ export { SpinWheelService } from 'services/widgets/settings/spin-wheel';
 export { PollService } from 'services/widgets/settings/poll';
 export { EmoteWallService } from 'services/widgets/settings/emote-wall';
 export { ChatHighlightService } from 'services/widgets/settings/chat-highlight';
+export { SuperchatGoalService } from 'services/widgets/settings/superchat-goal';
 
 import { AppService } from './services/app';
 import { WindowsService } from './services/windows';
@@ -128,6 +131,7 @@ import { TwitterService } from './services/integrations/twitter';
 import { SettingsService } from './services/settings';
 import { UserService } from './services/user';
 import { TwitchService } from './services/platforms/twitch';
+import { TrovoService } from './services/platforms/trovo';
 import { YoutubeService } from './services/platforms/youtube';
 import { FlexTvService } from './services/platforms/flextv';
 import { FacebookService } from './services/platforms/facebook';
@@ -156,6 +160,10 @@ import { MediaGalleryService } from './services/media-gallery';
 import { RecentEventsService } from 'services/recent-events';
 import { AudioService } from './services/audio';
 import { SourceFiltersService } from './services/source-filters';
+import { DiagnosticsService } from './services/diagnostics';
+import { WebsocketService } from './services/websocket';
+import { SpinWheelService } from 'services/widgets/settings/spin-wheel';
+import { LayoutService } from './services/layout';
 
 export const AppServices = {
   AppService,
@@ -183,6 +191,7 @@ export const AppServices = {
   FacebookService,
   UserService,
   TwitchService,
+  TrovoService,
   DismissablesService,
   HighlighterService,
   GrowService,
@@ -202,4 +211,8 @@ export const AppServices = {
   PlatformAppsService,
   AudioService,
   SourceFiltersService,
+  DiagnosticsService,
+  WebsocketService,
+  SpinWheelService,
+  LayoutService,
 };

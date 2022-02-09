@@ -35,7 +35,13 @@ import AdvancedAudio from './windows/advanced-audio';
 import { CustomCodeWindow } from './widgets/common/CustomCode';
 import SourceShowcase from './windows/source-showcase';
 import SourceFilters from './windows/SourceFilters';
+import RecentEvents from './editor/elements/RecentEvents';
+import MiniFeed from './editor/elements/Minifeed';
 import BrowserView from './shared/BrowserView';
+import LegacyEvents from './editor/elements/LegacyEvents';
+import MediaGallery from './windows/MediaGallery';
+import LayoutEditor from './pages/layout-editor/LayoutEditor';
+import Projector from './windows/Projector';
 
 // list of React components to be used inside Vue components
 export const components = {
@@ -58,6 +64,7 @@ export const components = {
   NavTools,
   FlexTvNavTools,
   PlatformLogo,
+  Projector,
   StreamScheduler: createRoot(StreamScheduler),
   AdvancedStatistics,
   SourceProperties: createRoot(SourceProperties),
@@ -76,4 +83,9 @@ export const components = {
   AdvancedAudio,
   SourceShowcase: createRoot(SourceShowcase),
   SourceFilters,
+  RecentEvents,
+  MiniFeed: createRoot(MiniFeed),
+  LegacyEvents: createRoot(LegacyEvents),
+  MediaGallery,
+  LayoutEditor: createRoot(LayoutEditor),
 };

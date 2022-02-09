@@ -26,6 +26,7 @@ import Scrollable from 'components/shared/Scrollable';
 import { ObsSettings, PlatformLogo } from 'components/shared/ReactComponentList';
 import { $t } from 'services/i18n';
 import { debounce } from 'lodash-decorators';
+import * as remote from '@electron/remote';
 
 @Component({
   components: {
@@ -227,7 +228,7 @@ export default class FlexTvSettings extends Vue {
 
   handleAuth() {
     if (this.userService.isLoggedIn) {
-      electron.remote.dialog
+      return remote.dialog
         .showMessageBox({
           title: $t('Confirm'),
           message: $t('Are you sure you want to log out?'),
