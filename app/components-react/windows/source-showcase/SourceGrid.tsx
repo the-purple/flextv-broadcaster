@@ -19,11 +19,12 @@ export default function SourceGrid(p: { activeTab: string }) {
     CustomizationService,
   } = Services;
 
-  const { demoMode, designerMode, isLoggedIn, linkedPlatforms } = useVuex(() => ({
+  const { demoMode, designerMode, isLoggedIn, linkedPlatforms, primaryPlatform } = useVuex(() => ({
     demoMode: CustomizationService.views.isDarkTheme ? 'night' : 'day',
     designerMode: CustomizationService.views.designerMode,
     isLoggedIn: UserService.views.isLoggedIn,
     linkedPlatforms: UserService.views.linkedPlatforms,
+    primaryPlatform: UserService.views.platform?.type,
   }));
 
   const { availableAppSources } = useSourceShowcaseSettings();
@@ -77,6 +78,9 @@ export default function SourceGrid(p: { activeTab: string }) {
         )}
         {showContent('widgets') && (
           <>
+            <Col span={24}>
+              <PageHeader style={{ paddingLeft: 0 }} title={$t('Widgets')} />
+            </Col>
             {!isLoggedIn ? (
               <Empty description="위젯을 사용하려면 로그인이 필요 합니다.">
                 <Button onClick={handleAuth}>{$t('Click here to log in')}</Button>
