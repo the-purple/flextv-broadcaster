@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import * as remote from '@electron/remote';
+import { useVuex } from 'components-react/hooks';
 import { ObsGenericSettingsForm, ObsSettingsSection } from './ObsSettings';
 import { $t, I18nService } from '../../../services/i18n';
 import { alertAsync, confirmAsync } from '../../modals';
 import { CheckboxInput, ListInput } from '../../shared/inputs';
-import electron from 'electron';
 import { Services } from '../../service-provider';
 import fs from 'fs';
 import path from 'path';
-import { useVuex } from '../../hooks';
 import { useBinding } from '../../store';
 import { getDefined } from '../../../util/properties-type-guards';
 
@@ -52,7 +52,7 @@ function CacheSettings() {
   });
 
   async function showCacheDir() {
-    await electron.remote.shell.openPath(AppService.appDataDirectory);
+    await remote.shell.openPath(AppService.appDataDirectory);
   }
 
   async function deleteCacheDir() {
@@ -63,8 +63,8 @@ function CacheSettings() {
         ),
       )
     ) {
-      electron.remote.app.relaunch({ args: ['--clearCacheDir'] });
-      electron.remote.app.quit();
+      remote.app.relaunch({ args: ['--clearCacheDir'] });
+      remote.app.quit();
     }
   }
 

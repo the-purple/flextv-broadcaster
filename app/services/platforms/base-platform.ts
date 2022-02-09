@@ -11,9 +11,9 @@ import { SettingsService } from 'services/settings';
 import { StreamingService } from 'services/streaming';
 import { UserService } from 'services/user';
 import { HostsService } from 'services/hosts';
-import electron from 'electron';
 import { IFacebookStartStreamOptions } from './facebook';
 import { StreamSettingsService } from '../settings/streaming';
+import * as remote from '@electron/remote';
 
 const VIEWER_COUNT_UPDATE_INTERVAL = 60 * 1000;
 
@@ -88,7 +88,7 @@ export abstract class BasePlatformService<T extends IPlatformState> extends Stat
     //   .then(handleResponse)
     //   .then(_ => this.userService.updateLinkedPlatforms());
 
-    electron.remote.shell.openExternal(
+    remote.shell.openExternal(
       `https://${this.hostsService.streamlabs}/dashboard#/settings/account-settings`,
     );
   }

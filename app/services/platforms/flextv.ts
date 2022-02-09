@@ -6,7 +6,7 @@ import { IGoLiveSettings } from '../streaming';
 import { platformAuthorizedRequest } from './utils';
 import Utils from 'services/utils';
 import { CustomizationService } from 'services/customization';
-import electron from 'electron';
+import * as remote from '@electron/remote';
 
 export interface IFlextvStartStreamOptions {
   title: string;
@@ -178,7 +178,7 @@ export class FlexTvService
 
   async afterGoLive() {
     if (!this.state.settings) {
-      electron.remote.dialog.showMessageBox({
+      await remote.dialog.showMessageBox({
         type: 'error',
         message: '방송 설정이 없습니다.',
         title: '송출 오류',

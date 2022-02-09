@@ -1375,6 +1375,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electron/remote@npm:^2.0.1":
+  version: 2.0.4
+  resolution: "@electron/remote@npm:2.0.4"
+  peerDependencies:
+    electron: ">= 13.0.0"
+  checksum: 9a587f240f083fc6362aa7653d0af92e2c37e3ce5ca25d88334a9bb893b0402be229fd8acfe41f921c6870ba6cd819e070c9f79b2192017e6b7794ef88b0fdc6
+  languageName: node
+  linkType: hard
+
 "@electron/universal@npm:1.0.5":
   version: 1.0.5
   resolution: "@electron/universal@npm:1.0.5"
@@ -6050,6 +6059,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"electron-chromedriver@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "electron-chromedriver@npm:14.0.0"
+  dependencies:
+    "@electron/get": ^1.12.4
+    extract-zip: ^2.0.0
+  bin:
+    chromedriver: chromedriver.js
+  checksum: 3a29b6e3b359ffc12f1b580516631df584a5367c1231843a331009ce40f0a5ef98f897f8b74bdb9899494be89262b63b7a4205ccc2ea0d1424004ec975349046
+  languageName: node
+  linkType: hard
+
 "electron-devtools-installer@npm:3.1.1":
   version: 3.1.1
   resolution: "electron-devtools-installer@npm:3.1.1"
@@ -6142,16 +6163,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:13.4.0":
-  version: 13.4.0
-  resolution: "electron@npm:13.4.0"
+"electron@npm:14.2.2":
+  version: 14.2.2
+  resolution: "electron@npm:14.2.2"
   dependencies:
     "@electron/get": ^1.0.1
     "@types/node": ^14.6.2
     extract-zip: ^1.0.3
   bin:
     electron: cli.js
-  checksum: 49b3d6fa87cde088d84f1bb9089a7384aeb71e05ac6580adf827e43e642111db2087fa96814af42d7e03472a73b059caec0e51d37e90a4e3164e4db83f7558e4
+  checksum: c56e561f175c3016e31844d4e518ac548cc06588c52fa9e4c3dc5bccd8c6ec30cf392316c9749ef18d5d4d91daeb4513c4575a0828dfd8a7881ac465725f1e83
   languageName: node
   linkType: hard
 
@@ -7406,12 +7427,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"game-overlay@https://obs-studio-deployment.s3-us-west-2.amazonaws.com/game-overlay-v0.0.0.tar.gz":
+"game_overlay@https://obs-studio-deployment.s3-us-west-2.amazonaws.com/game-overlay-v0.0.0.tar.gz":
   version: 0.0.41
-  resolution: "game-overlay@https://obs-studio-deployment.s3-us-west-2.amazonaws.com/game-overlay-v0.0.0.tar.gz"
+  resolution: "game_overlay@https://obs-studio-deployment.s3-us-west-2.amazonaws.com/game-overlay-v0.0.0.tar.gz"
   dependencies:
     nan: ^2.14.0
-  checksum: e6080f5e9ee3086003752cd8e11b55aa18694a877042f225a4a11ba981818e6595a09fd3825a3bd7f0455b70ab1cb10a41ae970434060d6a9ce4c1c41e20d82a
+  checksum: 32d367d968d1a28ea32d30a4eaa1bd0c2af71ec1afa200595c8c11e0f2f9da89064ed30152e1b471a0c22807ae516c75cbacf8703255b08028341264b320bdcd
   languageName: node
   linkType: hard
 
@@ -7588,6 +7609,20 @@ __metadata:
     once: ^1.3.0
     path-is-absolute: ^1.0.0
   checksum: 351d549dd90553b87c2d3f90ce11aed9e1093c74130440e7ae0592e11bbcd2ce7f0ebb8ba6bfe63aaf9b62166a7f4c80cb84490ae5d78408bb2572bf7d4ee0a6
+  languageName: node
+  linkType: hard
+
+"glob@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "glob@npm:7.2.0"
+  dependencies:
+    fs.realpath: ^1.0.0
+    inflight: ^1.0.4
+    inherits: 2
+    minimatch: ^3.0.4
+    once: ^1.3.0
+    path-is-absolute: ^1.0.0
+  checksum: 78a8ea942331f08ed2e055cb5b9e40fe6f46f579d7fd3d694f3412fe5db23223d29b7fee1575440202e9a7ff9a72ab106a39fee39934c7bedafe5e5f8ae20134
   languageName: node
   linkType: hard
 
@@ -9267,6 +9302,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonc-parser@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jsonc-parser@npm:3.0.0"
+  checksum: 1df2326f1f9688de30c70ff19c5b2a83ba3b89a1036160da79821d1361090775e9db502dc57a67c11b56e1186fc1ed70b887f25c5febf9a3ec4f91435836c99d
+  languageName: node
+  linkType: hard
+
 "jsonfile@npm:^4.0.0":
   version: 4.0.0
   resolution: "jsonfile@npm:4.0.0"
@@ -9970,6 +10012,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lunr@npm:^2.3.9":
+  version: 2.3.9
+  resolution: "lunr@npm:2.3.9"
+  checksum: 176719e24fcce7d3cf1baccce9dd5633cd8bdc1f41ebe6a180112e5ee99d80373fe2454f5d4624d437e5a8319698ca6837b9950566e15d2cae5f2a543a3db4b8
+  languageName: node
+  linkType: hard
+
 "macos-release@npm:^2.2.0":
   version: 2.2.0
   resolution: "macos-release@npm:2.2.0"
@@ -10084,6 +10133,15 @@ __metadata:
   version: 1.1.2
   resolution: "markdown-table@npm:1.1.2"
   checksum: 193fee9353dd35d583b2cb21336e54b21e7e8bf4779d33decc85dc95a18c8a41a8927de9da3f403830f25e21d1d5608d7022b3eb3c6c88e75f5736892eb0a2d7
+  languageName: node
+  linkType: hard
+
+"marked@npm:^4.0.10":
+  version: 4.0.12
+  resolution: "marked@npm:4.0.12"
+  bin:
+    marked: bin/marked.js
+  checksum: 7575117f85a8986652f3ac8b8a7b95056c4c5fce01a1fc76dc4c7960412cb4c9bd9da8133487159b6b3ff84f52b543dfe9a36f826a5f358892b5ec4b6824f192
   languageName: node
   linkType: hard
 
@@ -11799,6 +11857,13 @@ __metadata:
   bin:
     prettier: ./bin-prettier.js
   checksum: bc78219e0f8173a808f4c6c8e0a137dd8ebd4fbe013e63fe1a37a82b48612f17b8ae8e18a992adf802ee2cf7428f14f084e7c2846ca5759cf4013c6e54810e1f
+  languageName: node
+  linkType: hard
+
+"pretty-bytes@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "pretty-bytes@npm:5.6.0"
+  checksum: 9c082500d1e93434b5b291bd651662936b8bd6204ec9fa17d563116a192d6d86b98f6d328526b4e8d783c07d5499e2614a807520249692da9ec81564b2f439cd
   languageName: node
   linkType: hard
 
@@ -13723,6 +13788,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"shiki@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "shiki@npm:0.10.0"
+  dependencies:
+    jsonc-parser: ^3.0.0
+    vscode-oniguruma: ^1.6.1
+    vscode-textmate: 5.2.0
+  checksum: b72630a56c5e4384128a57443fc188ca8f6cf239c16defb6624b2aa500c0c953d41fb53e49f9d583cf093ddc522ff07e1b19fab8f0ae40a03304805c4fd5894b
+  languageName: node
+  linkType: hard
+
 "signal-exit@npm:^3.0.0, signal-exit@npm:^3.0.2, signal-exit@npm:^3.0.3":
   version: 3.0.3
   resolution: "signal-exit@npm:3.0.3"
@@ -13809,6 +13885,7 @@ __metadata:
     "@babel/core": 7.12.17
     "@babel/plugin-proposal-decorators": 7.12.13
     "@babel/preset-env": 7.12.17
+    "@electron/remote": ^2.0.1
     "@octokit/app": 3.0.2
     "@octokit/request": 4.1.1
     "@octokit/rest": 16.43.2
@@ -13861,8 +13938,9 @@ __metadata:
     css-element-queries: 1.2.3
     css-loader: 2.1.1
     dotenv: 8.2.0
-    electron: 13.4.0
+    electron: 14.2.2
     electron-builder: 22.14.5
+    electron-chromedriver: ^14.0.0
     electron-devtools-installer: 3.1.1
     electron-notarize: 1.0.0
     electron-react-devtools: ^0.5.3
@@ -13882,7 +13960,7 @@ __metadata:
     font-manager: "https://slobs-font-manager.s3-us-west-2.amazonaws.com/font-manager-0.0.0.tar.gz"
     fs-extra: ^9.0.0
     fuse.js: 3.4.6
-    game-overlay: "https://obs-studio-deployment.s3-us-west-2.amazonaws.com/game-overlay-v0.0.0.tar.gz"
+    game_overlay: "https://obs-studio-deployment.s3-us-west-2.amazonaws.com/game-overlay-v0.0.0.tar.gz"
     gl-transitions: 1.43.0
     humps: 2.0.1
     js-yaml: 3.13.1
@@ -13906,6 +13984,7 @@ __metadata:
     pngjs: 3.3.3
     prettier: 2.2.1
     prettier-eslint: 12.0.0
+    pretty-bytes: ^5.6.0
     progress: 2.0.0
     raven: ^2.6.4
     raw-loader: 2.0.0
@@ -13943,6 +14022,7 @@ __metadata:
     tree-kill: 1.2.2
     ts-loader: 8.0.11
     ts-node: 7.0.1
+    typedoc: ^0.22.10
     typescript: 4.0.7
     urijs: 1.19.7
     uuid: ^3.0.1
@@ -15311,6 +15391,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typedoc@npm:^0.22.10":
+  version: 0.22.11
+  resolution: "typedoc@npm:0.22.11"
+  dependencies:
+    glob: ^7.2.0
+    lunr: ^2.3.9
+    marked: ^4.0.10
+    minimatch: ^3.0.4
+    shiki: ^0.10.0
+  peerDependencies:
+    typescript: 4.0.x || 4.1.x || 4.2.x || 4.3.x || 4.4.x || 4.5.x
+  bin:
+    typedoc: bin/typedoc
+  checksum: 7d29f4b771d3eadc612d0b35509ee88c153d7310b7adb57faf0740132765613d6ceceb94877148d674cfc8242ca3c2e22e3ae2060768b2d96842bf14659d1b1c
+  languageName: node
+  linkType: hard
+
 "typescript@npm:4.0.7":
   version: 4.0.7
   resolution: "typescript@npm:4.0.7"
@@ -15852,6 +15949,20 @@ __metadata:
     unist-util-stringify-position: ^1.0.0
     vfile-message: ^1.0.0
   checksum: d0a0caf7eca8478b2caa93e72bc3b37a2bf77916a195d8937b173d7fe0ded9a0146503de269afabf2a0465fa6b4c009d1486a4e5dd070f6d5fd225eb4ed25343
+  languageName: node
+  linkType: hard
+
+"vscode-oniguruma@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "vscode-oniguruma@npm:1.6.1"
+  checksum: b019563a0d48b08c26b66c9f8729ed4ca2620b3b09c6957d5e622f0f104574bec48c7ba575bd157da40fb9a03c03495704894e3ed2d799d80a7180e3051b1f10
+  languageName: node
+  linkType: hard
+
+"vscode-textmate@npm:5.2.0":
+  version: 5.2.0
+  resolution: "vscode-textmate@npm:5.2.0"
+  checksum: 5449b42d451080f6f3649b66948f4b5ee4643c4e88cfe3558a3b31c84c78060cfdd288c4958c1690eaa5cd65d09992fa6b7c3bef9d4aa72b3651054a04624d20
   languageName: node
   linkType: hard
 

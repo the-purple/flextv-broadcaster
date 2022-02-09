@@ -19,7 +19,7 @@ import { $t } from 'services/i18n';
 import { SettingsService } from 'services/settings';
 import { UsageStatisticsService } from 'services/usage-statistics';
 import { NavigationService } from '../services/navigation';
-import electron from 'electron';
+import * as remote from '@electron/remote';
 
 @Component({
   components: {
@@ -171,17 +171,17 @@ export default class StudioFooterComponent extends Vue {
     }
   }
 
-  openFlexTvHelperWindow() {
-    this.flexTvService
+  async openFlexTvHelperWindow() {
+    return this.flexTvService
       .fetchHelperToken()
       .then(token => {
         const url = `${this.flexTvService.helperUrl}${encodeURIComponent(
           token,
         )}`;
-        electron.remote.shell.openExternal(url);
+        return remote.shell.openExternal(url);
       })
       .catch((e: unknown) => {
-        electron.remote.dialog.showMessageBox({
+        return remote.dialog.showMessageBox({
           title: '위젯 설정 열기 실패',
           type: 'warning',
           message:

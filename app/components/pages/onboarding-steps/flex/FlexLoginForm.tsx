@@ -11,7 +11,7 @@ import { jfetch } from 'util/requests';
 import VFormGroup from 'components/shared/inputs/VFormGroup.vue';
 import { metadata } from 'components/shared/inputs';
 import { StreamSettingsService } from 'services/settings/streaming';
-import electron from 'electron';
+import * as remote from '@electron/remote';
 import PlatformLogo from 'components/shared/PlatformLogo';
 import { FlexTvService } from 'services/platforms/flextv';
 
@@ -60,7 +60,7 @@ export default class FlexLoginForm extends TsxComponent<ConnectProps> {
 
       return this.userService.startFlexAuth(auth);
     } catch (e: unknown) {
-      return electron.remote.dialog.showMessageBox({
+      return remote.dialog.showMessageBox({
         title: '계정정보 불일치',
         type: 'warning',
         message: '계정정보가 일치하지 않습니다.',
@@ -92,15 +92,15 @@ export default class FlexLoginForm extends TsxComponent<ConnectProps> {
   }
 
   openHelp() {
-    electron.remote.shell.openExternal(`${this.flexTvService.baseUrl}/cs/guide`);
+    return remote.shell.openExternal(`${this.flexTvService.baseUrl}/cs/guide`);
   }
 
   openSignup() {
-    electron.remote.shell.openExternal(`${this.flexTvService.baseUrl}/signup`);
+    return remote.shell.openExternal(`${this.flexTvService.baseUrl}/signup`);
   }
 
   openFindMember() {
-    electron.remote.shell.openExternal(`${this.flexTvService.baseUrl}/member/find/findId`);
+    return remote.shell.openExternal(`${this.flexTvService.baseUrl}/member/find/findId`);
   }
 
   render() {

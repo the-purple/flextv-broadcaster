@@ -203,6 +203,7 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
     const id = uuid();
     this.ADD_TAB(name, icon, id);
     this.checkUsage();
+    return id;
   }
 
   removeCurrentTab() {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import cx from 'classnames';
+import * as remote from '@electron/remote';
 import electron from 'electron';
 import Utils from '../../services/utils';
 import { $t } from '../../services/i18n';
@@ -55,7 +56,7 @@ export default function FlexTvNavTools() {
 
   function openHelp() {
     UsageStatisticsService.actions.recordClick('FlexTvNavTools', 'help');
-    electron.remote.shell.openExternal('https://www.flextv.co.kr/cs/guide');
+    remote.shell.openExternal('https://www.flextv.co.kr/cs/guide');
   }
 
   return (

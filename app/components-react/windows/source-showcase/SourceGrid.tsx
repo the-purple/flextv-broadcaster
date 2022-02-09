@@ -60,7 +60,10 @@ export default function SourceGrid(p: { activeTab: string }) {
 
   return (
     <Scrollable style={{ height: 'calc(100% - 64px)' }}>
-      <Row gutter={[8, 8]} style={{ marginLeft: '24px', marginRight: '24px' }}>
+      <Row
+        gutter={[8, 8]}
+        style={{ marginLeft: '24px', marginRight: '24px', paddingBottom: '24px' }}
+      >
         {showContent('general') && (
           <>
             {availableSources.map(source => (
@@ -72,7 +75,6 @@ export default function SourceGrid(p: { activeTab: string }) {
             )}
           </>
         )}
-
         {showContent('widgets') && (
           <>
             {!isLoggedIn ? (

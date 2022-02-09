@@ -24,7 +24,7 @@ export enum ELayoutElement {
   Sources = 'Sources',
   // StreamPreview = 'StreamPreview',
   // RecordingPreview = 'RecordingPreview',
-  // Browser = 'Browser',
+  Browser = 'Browser',
   FlexTvChat = 'FlexTvChat',
 }
 
