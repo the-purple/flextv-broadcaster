@@ -6,7 +6,7 @@ import { mutation } from 'components-react/store';
 
 class LayoutEditorModule {
   state = {
-    currentLayout: this.layoutService.views.currentTab.currentLayout || ELayout.Default,
+    currentLayout: this.layoutService.views.currentTab.currentLayout || ELayout.Preferred,
     slottedElements: cloneDeep(this.layoutService.views.currentTab.slottedElements) || {},
     browserUrl:
       this.layoutService.views.currentTab.slottedElements[ELayoutElement.Browser]?.src || '',

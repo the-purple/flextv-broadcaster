@@ -78,10 +78,10 @@ export const ELEMENT_DATA = (): IElementData => ({
   //   title: $t('Recording Preview'),
   //   component: Elements.RecordingPreview,
   // },
-  // [ELayoutElement.Browser]: {
-  //   title: $t('Website'),
-  //   component: Elements.Browser,
-  // },
+  [ELayoutElement.Browser]: {
+    title: $t('Website'),
+    component: Elements.Browser,
+  },
   [ELayoutElement.FlexTvChat]: {
     title: '채팅',
     component: Elements.FlexTvChat,

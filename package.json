@@ -239,13 +239,5 @@
   "optionalDependencies": {
     "node-win32-np": "1.0.6"
   },
-  "build": {
-    "publish": {
-      "provider": "s3",
-      "region": "ap-northeast-2",
-      "bucket": "flextv-broadcaster",
-      "acl": "public-read"
-    }
-  },
   "packageManager": "yarn@3.1.0"
 }

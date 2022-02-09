@@ -1,4 +1,3 @@
-import electron from 'electron';
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 import { Inject } from 'services/core/injector';
@@ -18,7 +17,6 @@ import RemoteControlSettings from 'components/windows/settings/RemoteControlSett
 import GameOverlaySettings from 'components/windows/settings/GameOverlaySettings';
 import SearchablePages from 'components/shared/SearchablePages';
 import FormInput from 'components/shared/inputs/FormInput.vue';
-import StreamSettings from 'components/windows/settings/StreamSettings';
 import VirtualWebcamSettings from 'components/windows/settings/VirtualWebcamSettings';
 import { MagicLinkService } from 'services/magic-link';
 import { UserService } from 'services/user';
@@ -44,7 +42,6 @@ import * as remote from '@electron/remote';
     InstalledApps,
     GameOverlaySettings,
     FormInput,
-    StreamSettings,
     VirtualWebcamSettings,
     Scrollable,
     PlatformLogo,
