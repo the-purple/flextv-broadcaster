@@ -16,6 +16,17 @@
         @click="openMetricsWindow"
         v-tooltip.left="$t('Open Performance Window')"
       />
+      <span class="footer-divider" />
+      <i
+        v-bind:class="[
+          'icon-leaderboard-4',
+          'icon-sound',
+          'footer-button',
+          performanceIconClassName,
+        ]"
+        @click="openMixerWindow"
+        v-tooltip.left="$t('Open advanced audio settings')"
+      />
       <performance-metrics :componentProps="{ mode: 'limited' }" class="performance-metrics" />
       <notifications-area class="notifications-area flex--grow" />
     </div>
@@ -93,6 +104,20 @@
 
 .nav-item {
   .margin-left(2);
+}
+
+.footer-button {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.footer-divider {
+  &::before {
+    content: '|';
+    padding-right: 12px;
+    opacity: 0.5;
+    color: var(--icon);
+  }
 }
 
 .error-wrapper {

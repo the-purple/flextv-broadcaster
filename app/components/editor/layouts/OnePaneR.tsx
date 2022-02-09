@@ -11,15 +11,15 @@ export default class OnePaneR extends BaseLayout {
 
   async mounted() {
     this.mountResize();
-    this.$emit('totalWidth', await this.mapVectors([['1', ['3', '4', '5']], '2']), this.isColumns);
-    this.setMins(['1', ['3', '4', '5']], ['2']);
+    this.$emit('totalWidth', await this.mapVectors([['1', ['3', '4']], '2']), this.isColumns);
+    this.setMins(['1', ['3', '4']], ['2']);
   }
   destroyed() {
     this.destroyResize();
   }
 
   get vectors() {
-    return [['1', ['3', '4', '5']], '2'] as ILayoutSlotArray;
+    return [['1', ['3', '4']], '2'] as ILayoutSlotArray;
   }
 
   render() {
@@ -35,7 +35,6 @@ export default class OnePaneR extends BaseLayout {
           <div class={styles.segmented}>
             <div class={styles.cell}>{this.$slots['3']}</div>
             <div class={styles.cell}>{this.$slots['4']}</div>
-            <div class={styles.cell}>{this.$slots['5']}</div>
           </div>
         </div>
         <ResizeBar

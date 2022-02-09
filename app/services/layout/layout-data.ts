@@ -48,7 +48,7 @@ export const LAYOUT_DATA: ILayoutData = {
     component: Layouts.OnePane,
   },
   [ELayout.Preferred]: {
-    resizeDefaults: { bar1: 0.4 },
+    resizeDefaults: { bar1: 0.4, bar2: 0.3 },
     className: 'onePaneR',
     component: Layouts.Preferred,
   },

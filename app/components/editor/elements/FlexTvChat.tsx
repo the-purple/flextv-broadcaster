@@ -24,13 +24,15 @@ export default class FlexTvChat extends BaseElement {
         <div class="studio-controls-top">
           <h2 class="studio-controls__label">채팅</h2>
           <div>
-            <i
-              class="icon-repeat icon-button"
-              onClick={() => {
-                if (!this.view) return;
-                this.view.webContents.reload();
-              }}
-            />
+            {this.streamingService.isStreaming ? (
+              <i
+                className="icon-repeat icon-button"
+                onClick={() => {
+                  if (!this.view) return;
+                  this.view.webContents.reload();
+                }}
+              />
+            ) : null}
           </div>
         </div>
         <Scrollable className="studio-controls-selector">

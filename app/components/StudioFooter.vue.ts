@@ -147,6 +147,18 @@ export default class StudioFooterComponent extends Vue {
     this.usageStatisticsService.recordFeatureUsage('PerformanceStatistics');
   }
 
+  openMixerWindow() {
+    this.windowsService.showWindow({
+      componentName: 'AdvancedAudio',
+      title: $t('Advanced Audio Settings'),
+      size: {
+        width: 915,
+        height: 600,
+      },
+    });
+    this.usageStatisticsService.recordFeatureUsage('PerformanceStatistics');
+  }
+
   get replayBufferEnabled() {
     return this.settingsService.views.values.Output.RecRB;
   }

@@ -11,21 +11,21 @@ export default class Preferred extends BaseLayout {
 
   async mounted() {
     this.mountResize();
-    this.$emit('totalWidth', await this.mapVectors([['1', ['3', '4', '5']], '2']), this.isColumns);
-    this.setMins(['1', ['3', '4', '5']], ['2']);
+    this.$emit('totalWidth', await this.mapVectors([['1', ['3', '4']], '2']), this.isColumns);
+    this.setMins(['1', ['3', '4']], ['2']);
   }
   destroyed() {
     this.destroyResize();
   }
 
   get vectors() {
-    return [['1', ['3', '4', '5']], '2'] as ILayoutSlotArray;
+    return [['1', ['3', '4']], '2'] as ILayoutSlotArray;
   }
 
   render() {
     return (
       <div class={cx(styles.columns, styles.sidePadded)}>
-        <div class={styles.rows} style={{ width: '70%' }}>
+        <div class={styles.rows} style={{ width: `${100 - this.resizes.bar2 * 100}%` }}>
           <div class={styles.cell} style={{ height: `${100 - this.resizes.bar1 * 100}%` }}>
             {this.$slots['1']}
           </div>
@@ -39,27 +39,25 @@ export default class Preferred extends BaseLayout {
             min={this.mins.bar1}
             reverse={true}
           />
-          <div class={styles.segmented} style={{ height: `${this.resizes.bar1 * 100}%`, padding: '0 8px' }}>
+          <div
+            class={styles.segmented}
+            style={{ height: `${this.resizes.bar1 * 100}%`, padding: '0 8px' }}
+          >
             <div class={styles.cell}>{this.$slots['3']}</div>
             <div class={styles.cell}>{this.$slots['4']}</div>
-            <div class={styles.cell}>{this.$slots['5']}</div>
           </div>
         </div>
-        {
-          /*
-          <ResizeBar
+        <ResizeBar
           position="right"
-          value={this.bar1}
-          onInput={(value: number) => this.setBar('bar1', value)}
+          value={this.bar2}
+          onInput={(value: number) => this.setBar('bar2', value)}
           onResizestart={() => this.resizeStartHandler()}
           onResizestop={() => this.resizeStopHandler()}
           max={this.calculateMax(this.mins.rest)}
-          min={this.mins.bar1}
+          min={0.2}
           reverse={true}
         />
-           */
-        }
-        <div style={{ width: '30%' }} class={styles.cell}>
+        <div style={{ width: `${this.resizes.bar2 * 100}%` }} class={styles.cell}>
           {this.$slots['2']}
         </div>
       </div>
