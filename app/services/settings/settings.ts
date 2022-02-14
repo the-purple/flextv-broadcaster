@@ -72,6 +72,10 @@ export interface ISettingsValues {
     DelaySec: number;
     fileCaching: boolean;
     MonitoringDeviceName: string;
+    BindIP: string;
+    DynamicBitrate: boolean;
+    NewSocketLoopEnable: boolean;
+    LowLatencyEnable: boolean;
   };
 }
 
