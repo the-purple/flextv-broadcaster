@@ -6,6 +6,7 @@ import Scrollable from 'components/shared/Scrollable';
 import styles from './BaseElement.m.less';
 import { StreamingService } from '../../../services/streaming';
 import { UserService } from '../../../services/user';
+import * as remote from '@electron/remote';
 
 @Component({})
 export default class FlexTvChat extends BaseElement {
@@ -13,6 +14,23 @@ export default class FlexTvChat extends BaseElement {
   @Inject() userService: UserService;
 
   view: Electron.BrowserView = null;
+  windowOpened: boolean = false;
+
+  openChatWindow() {
+    const chatWindow = new remote.BrowserWindow({
+      width: 600,
+      height: 800,
+      webPreferences: {
+        nodeIntegration: false,
+      },
+    });
+    chatWindow.once('close', () => {
+      this.windowOpened = false;
+    });
+    chatWindow.setMenu(null);
+    chatWindow.loadURL(this.url);
+    this.windowOpened = true;
+  }
 
   get url() {
     return this.streamingService.views.chatUrl;
@@ -23,17 +41,24 @@ export default class FlexTvChat extends BaseElement {
       <div>
         <div class="studio-controls-top">
           <h2 class="studio-controls__label">채팅</h2>
-          <div>
-            {this.streamingService.isStreaming ? (
+          {this.streamingService.isStreaming ? (
+            <div>
+              {!this.windowOpened ? (
+                <i
+                  class="icon-link icon-button"
+                  style="margin-right: 10px;"
+                  onClick={this.openChatWindow}
+                />
+              ) : null}
               <i
-                className="icon-repeat icon-button"
+                class="icon-repeat icon-button"
                 onClick={() => {
                   if (!this.view) return;
                   this.view.webContents.reload();
                 }}
               />
-            ) : null}
-          </div>
+            </div>
+          ) : null}
         </div>
         <Scrollable className="studio-controls-selector">
           {this.userService.isLoggedIn && this.streamingService.isStreaming ? (
