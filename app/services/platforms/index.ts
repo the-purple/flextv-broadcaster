@@ -252,6 +252,9 @@ export interface IPlatformAuth {
 
 export interface IUserInfo {
   username?: string;
+  id?: string;
+  channelId?: string;
+  token?: string;
 }
 
 export type TPlatform = 'twitch' | 'youtube' | 'facebook' | 'tiktok' | 'flextv' | 'trovo';

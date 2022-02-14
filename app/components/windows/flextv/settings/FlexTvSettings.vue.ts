@@ -13,7 +13,6 @@ import Hotkeys from 'components/windows/settings/Hotkeys.vue';
 import OverlaySettings from 'components/windows/settings/OverlaySettings';
 import NotificationsSettings from 'components/windows/settings/NotificationsSettings.vue';
 import ExperimentalSettings from 'components/windows/settings/ExperimentalSettings.vue';
-import RemoteControlSettings from 'components/windows/settings/RemoteControlSettings.vue';
 import GameOverlaySettings from 'components/windows/settings/GameOverlaySettings';
 import SearchablePages from 'components/shared/SearchablePages';
 import FormInput from 'components/shared/inputs/FormInput.vue';
@@ -37,7 +36,6 @@ import * as remote from '@electron/remote';
     DeveloperSettings,
     OverlaySettings,
     NotificationsSettings,
-    RemoteControlSettings,
     ExperimentalSettings,
     InstalledApps,
     GameOverlaySettings,

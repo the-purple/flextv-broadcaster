@@ -1,4 +1,4 @@
-import { EPlatformCallResult, IPlatformRequest, IPlatformService } from '.';
+import { EPlatformCallResult, IPlatformRequest, IPlatformService, IUserInfo } from '.';
 import { InheritMutations, Inject } from '../core';
 import { BasePlatformService } from './base-platform';
 import { IPlatformState, TPlatformCapability } from './index';
@@ -280,16 +280,26 @@ export class FlexTvService
     return config.data;
   }
 
-  async fetchUserInfo(): Promise<any> {
+  async fetchUserInfo(): Promise<IUserInfo> {
     const userInfo = await platformAuthorizedRequest<{
       profile: {
         nickname: string;
+        id: number;
+        channelId: number;
       };
     }>('flextv', `${this.apiBase}/api/my/profile`).catch(() => null);
     if (!userInfo) return null;
 
+    const token = await platformAuthorizedRequest<{
+      token: string;
+    }>('flextv', `${this.apiBase}/api/my/token`).catch(() => null);
+    if (!token) return null;
+
     return {
+      id: String(userInfo.profile.id),
       username: userInfo.profile.nickname,
+      channelId: String(userInfo.profile.channelId),
+      token: token.token,
     };
   }
 

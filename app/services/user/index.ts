@@ -929,6 +929,14 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
         return EPlatformCallResult.Error;
       }
+      const newAuth = this.parseAuthFromToken(
+        userInfo.id,
+        userInfo.username,
+        userInfo.channelId,
+        userInfo.token,
+      );
+      this.LOGIN(newAuth);
+      
       await this.refreshUserInfo();
 
       return EPlatformCallResult.Success;
@@ -943,5 +951,28 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
   async startFlexAuth(auth: IUserAuth): Promise<EPlatformCallResult> {
     const service = getPlatformService('flextv');
     return this.loginFlexTV(service, auth);
+  }
+
+  private parseAuthFromToken(
+    id: string,
+    nickname: string,
+    channelId: string,
+    token: string,
+  ): IUserAuth {
+    return {
+      widgetToken: token,
+      apiToken: token,
+      primaryPlatform: 'flextv' as TPlatform,
+      platforms: {
+        flextv: {
+          type: 'flextv',
+          username: nickname,
+          token,
+          channelId,
+          id,
+        },
+      },
+      hasRelogged: true,
+    };
   }
 }
