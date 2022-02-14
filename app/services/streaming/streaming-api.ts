@@ -17,6 +17,11 @@ export enum EStreamingState {
   Reconnecting = 'reconnecting',
 }
 
+export enum EPlatformState {
+  Offline = 'offline',
+  Live = 'live',
+}
+
 export enum ERecordingState {
   Offline = 'offline',
   Starting = 'starting',
@@ -86,6 +91,7 @@ export interface IPlatformFlags {
 
 export interface IStreamingServiceState {
   streamingStatus: EStreamingState;
+  platformStatus: EPlatformState;
   streamingStatusTime: string;
   recordingStatus: ERecordingState;
   recordingStatusTime: string;

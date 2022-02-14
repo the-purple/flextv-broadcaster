@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
-import { EStreamingState } from 'services/streaming';
-import { EGlobalSyncStatus } from 'services/media-backup';
+import { EPlatformState, EStreamingState } from 'services/streaming';
 import { $t } from 'services/i18n';
 import { useVuex } from '../hooks';
 import { Services } from '../service-provider';
@@ -18,8 +17,9 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     FlexTvService,
   } = Services;
 
-  const { streamingStatus, delayEnabled, delaySeconds } = useVuex(() => ({
+  const { streamingStatus, platformStatus, delayEnabled, delaySeconds } = useVuex(() => ({
     streamingStatus: StreamingService.state.streamingStatus,
+    platformStatus: StreamingService.state.platformStatus,
     delayEnabled: StreamingService.views.delayEnabled,
     delaySeconds: StreamingService.views.delaySeconds,
   }));
@@ -49,33 +49,30 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     if (StreamingService.isStreaming) {
       const options = {
         type: 'warning',
-        buttons: ['종료', '취소'],
+        buttons: ['종료', '대기', '취소'],
         title: '방송을 종료하시겠습니까?',
         message: '종료를 선택하시면 즉시 방송이 종료 됩니다.',
       };
-      const response = await remote.dialog.showMessageBox(
-        remote.getCurrentWindow(),
-        options,
-      );
+      const response = await remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
       if (response.response === 0) {
-        StreamingService.toggleStreaming();
+        return StreamingService.toggleStreaming();
+      } else if (response.response === 1) {
+        return StreamingService.pauseStreaming();
+      }
+    } else if (StreamingService.isPaused) {
+      const options = {
+        type: 'warning',
+        buttons: ['시작', '종료', '취소'],
+        title: '방송을 시작/종료하시겠습니까?',
+        message: '시작/종료를 선택하시면 즉시 반영됩니다.',
+      };
+      const response = await remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
+      if (response.response === 0) {
+        return StreamingService.toggleStreaming();
+      } else if (response.response === 1) {
+        return StreamingService.finishPlatformStream();
       }
     } else {
-      if (MediaBackupService.views.globalSyncStatus === EGlobalSyncStatus.Syncing) {
-        const goLive = await remote.dialog
-          .showMessageBox(remote.getCurrentWindow(), {
-            title: $t('Cloud Backup'),
-            type: 'warning',
-            message:
-              $t('Your media files are currently being synced with the cloud. ') +
-              $t('It is recommended that you wait until this finishes before going live.'),
-            buttons: [$t('Wait'), $t('Go Live Anyway')],
-          })
-          .then(({ response }) => !!response);
-
-        if (!goLive) return;
-      }
-
       const streamStatus = await FlexTvService.checkReadyToStream();
       if (!streamStatus.success) {
         if (streamStatus.error?.code === 'NO_AUTH') {
@@ -155,6 +152,7 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     >
       <StreamButtonLabel
         streamingStatus={streamingStatus}
+        platformStatus={platformStatus}
         delayEnabled={delayEnabled}
         delaySecondsRemaining={delaySecondsRemaining}
       />
@@ -164,6 +162,7 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
 
 function StreamButtonLabel(p: {
   streamingStatus: EStreamingState;
+  platformStatus: EPlatformState;
   delaySecondsRemaining: number;
   delayEnabled: boolean;
 }) {
@@ -191,10 +190,9 @@ function StreamButtonLabel(p: {
     return <>{$t('Reconnecting')}</>;
   }
 
-  return (
-    <>
-      <i className="icon-button icon-broadcast" style={{ color: '#fff' }} />
-      {$t('Go Live')}
-    </>
-  );
+  if (p.platformStatus === EPlatformState.Live) {
+    return <>대기중..</>;
+  }
+
+  return <>{$t('Go Live')}</>;
 }

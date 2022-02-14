@@ -8,6 +8,7 @@ import { IOutputSettings, OutputSettingsService } from 'services/settings';
 import { WindowsService } from 'services/windows';
 import { Subject } from 'rxjs';
 import {
+  EPlatformState,
   ERecordingState,
   EReplayBufferState,
   EStreamingState,
@@ -101,6 +102,7 @@ export class StreamingService
   static initialState: IStreamingServiceState = {
     streamingStatus: EStreamingState.Offline,
     streamingStatusTime: new Date().toISOString(),
+    platformStatus: EPlatformState.Offline,
     recordingStatus: ERecordingState.Offline,
     recordingStatusTime: new Date().toISOString(),
     replayBufferStatus: EReplayBufferState.Offline,
@@ -551,6 +553,13 @@ export class StreamingService
     return this.state.streamingStatus !== EStreamingState.Offline;
   }
 
+  get isPaused() {
+    return (
+      this.state.streamingStatus === EStreamingState.Offline &&
+      this.state.platformStatus === EPlatformState.Live
+    );
+  }
+
   get isRecording() {
     return this.state.recordingStatus !== ERecordingState.Offline;
   }
@@ -670,19 +679,6 @@ export class StreamingService
       this.state.streamingStatus === EStreamingState.Live ||
       this.state.streamingStatus === EStreamingState.Reconnecting
     ) {
-      const shouldConfirm = this.streamSettingsService.settings.warnBeforeStoppingStream;
-
-      if (shouldConfirm) {
-        const endStream = await remote.dialog.showMessageBox(Utils.getMainWindow(), {
-          title: $t('End Stream'),
-          type: 'warning',
-          message: $t('Are you sure you want to stop streaming?'),
-          buttons: [$t('Cancel'), $t('End Stream')],
-        });
-
-        if (!endStream.response) return;
-      }
-
       if (this.powerSaveId) {
         remote.powerSaveBlocker.stop(this.powerSaveId);
       }
@@ -704,6 +700,8 @@ export class StreamingService
         const service = getPlatformService(platform);
         if (service.afterStopStream) service.afterStopStream();
       });
+      this.SET_PLATFORM_STATUS(EPlatformState.Offline);
+
       this.UPDATE_STREAM_INFO({ lifecycle: 'empty' });
       return Promise.resolve();
     }
@@ -712,6 +710,28 @@ export class StreamingService
       obs.NodeObs.OBS_service_stopStreaming(true);
       return Promise.resolve();
     }
+  }
+
+  async pauseStreaming() {
+    obs.NodeObs.OBS_service_stopStreaming(false);
+
+    const keepRecording = this.streamSettingsService.settings.keepRecordingWhenStreamStops;
+    if (!keepRecording && this.state.recordingStatus === ERecordingState.Recording) {
+      this.toggleRecording();
+    }
+
+    this.windowsService.closeChildWindow();
+
+    this.UPDATE_STREAM_INFO({ lifecycle: 'empty' });
+    return Promise.resolve();
+  }
+
+  async finishPlatformStream() {
+    this.views.enabledPlatforms.forEach(platform => {
+      const service = getPlatformService(platform);
+      if (service.afterStopStream) service.afterStopStream();
+    });
+    this.SET_PLATFORM_STATUS(EPlatformState.Offline);
   }
 
   /**
@@ -930,6 +950,7 @@ export class StreamingService
         this.usageStatisticsService.recordFeatureUsage('Streaming');
       } else if (info.signal === EOBSOutputSignal.Starting) {
         this.SET_STREAMING_STATUS(EStreamingState.Starting, time);
+        this.SET_PLATFORM_STATUS(EPlatformState.Live);
         this.streamingStatusChange.next(EStreamingState.Starting);
       } else if (info.signal === EOBSOutputSignal.Stop) {
         this.SET_STREAMING_STATUS(EStreamingState.Offline, time);
@@ -950,6 +971,7 @@ export class StreamingService
         this.sendReconnectingNotification();
       } else if (info.signal === EOBSOutputSignal.ReconnectSuccess) {
         this.SET_STREAMING_STATUS(EStreamingState.Live);
+        this.SET_PLATFORM_STATUS(EPlatformState.Live);
         this.streamingStatusChange.next(EStreamingState.Live);
         this.clearReconnectingNotification();
       }
@@ -1165,6 +1187,11 @@ export class StreamingService
   private SET_STREAMING_STATUS(status: EStreamingState, time?: string) {
     this.state.streamingStatus = status;
     if (time) this.state.streamingStatusTime = time;
+  }
+
+  @mutation()
+  private SET_PLATFORM_STATUS(status: EPlatformState) {
+    this.state.platformStatus = status;
   }
 
   @mutation()

@@ -337,7 +337,7 @@ async function startApp() {
     frame: false,
     titleBarStyle: 'hidden',
     title: 'FlexTV Broadcaster',
-    backgroundColor: '#17242D',
+    backgroundColor: '#000',
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true,

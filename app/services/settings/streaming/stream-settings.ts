@@ -72,7 +72,6 @@ interface IStreamSettings extends IStreamSettingsState {
   warnBeforeStartingStream: boolean;
   recordWhenStreaming: boolean;
   replayBufferWhileStreaming: boolean;
-  warnBeforeStoppingStream: boolean;
   keepRecordingWhenStreamStops: boolean;
   keepReplayBufferStreamStops: boolean;
   delayEnable: boolean;
@@ -219,7 +218,6 @@ export class StreamSettingsService extends PersistentStatefulService<IStreamSett
       warnBeforeStartingStream: obsGeneralSettings.WarnBeforeStartingStream,
       recordWhenStreaming: obsGeneralSettings.RecordWhenStreaming,
       replayBufferWhileStreaming: obsGeneralSettings.ReplayBufferWhileStreaming,
-      warnBeforeStoppingStream: obsGeneralSettings.WarnBeforeStoppingStream,
       keepRecordingWhenStreamStops: obsGeneralSettings.KeepRecordingWhenStreamStops,
       keepReplayBufferStreamStops: obsGeneralSettings.KeepReplayBufferStreamStops,
       delayEnable: obsAdvancedSettings.DelayEnable,
@@ -360,7 +358,6 @@ class StreamSettingsView extends ViewHandler<IStreamSettingsState> {
       warnBeforeStartingStream: obsGeneralSettings.WarnBeforeStartingStream,
       recordWhenStreaming: obsGeneralSettings.RecordWhenStreaming,
       replayBufferWhileStreaming: obsGeneralSettings.ReplayBufferWhileStreaming,
-      warnBeforeStoppingStream: obsGeneralSettings.WarnBeforeStoppingStream,
       keepRecordingWhenStreamStops: obsGeneralSettings.KeepRecordingWhenStreamStops,
       keepReplayBufferStreamStops: obsGeneralSettings.KeepReplayBufferStreamStops,
       delayEnable: obsAdvancedSettings.DelayEnable,
