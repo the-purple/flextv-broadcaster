@@ -33,8 +33,8 @@ export default class FlexLoginForm extends TsxComponent<ConnectProps> {
   @Inject() private streamSettingsService: StreamSettingsService;
   @Inject() private flexTvService: FlexTvService;
 
-  idMetadata = metadata.text({ title: '아이디', name: 'id', fullWidth: true });
-  pwdMetadata = metadata.text({ title: '비밀번호', name: 'password', masked: true, fullWidth: true });
+  idMetadata = metadata.text({ placeholder: '아이디', name: 'id', fullWidth: true });
+  pwdMetadata = metadata.text({ placeholder: '비밀번호', name: 'password', masked: true, fullWidth: true });
   key = '';
   id = '';
   password = '';
@@ -110,29 +110,25 @@ export default class FlexLoginForm extends TsxComponent<ConnectProps> {
           <p>
             <PlatformLogo platform={'flextv'} />
           </p>
-          <h1>FlexTV에 연결하기</h1>
-
           <div class="section">
             <VFormGroup vModel={this.id} metadata={this.idMetadata} />
             <VFormGroup vModel={this.password} metadata={this.pwdMetadata} />
-            <a className={styles['link-button']} onClick={() => this.openFindMember()}>
-              아이디 찾기 & 비밀번호 찾기
-            </a>
           </div>
-
-          <p>
+          <div class="section">
             <button
               class={cx('button button--action', styles.flexLoginButton)}
               onClick={() => this.next()}
             >
               {$t('Log In')}
             </button>
-            <button
-              class={cx('button button--prime', styles.flexSignUpButton)}
-              onClick={() => this.openSignup()}
-            >
-              회원 가입 하기!
-            </button>
+          </div>
+          <p>
+            <a class={styles['link-button']} onClick={() => this.openFindMember()}>
+              아이디 찾기 & 비밀번호 찾기
+            </a>
+            <a class={styles['link-button']} onClick={() => this.openSignup()}>
+              회원가입
+            </a>
             <a class={styles['link-button']} onClick={() => this.props.continue()}>
               {$t('Back')}
             </a>

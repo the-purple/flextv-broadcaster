@@ -64,7 +64,6 @@
       </div>
       <div class="nav-item" v-if="!loggedIn">
         <button class="button button--action" @click="openLoginWindow">
-          <i class="fas fa-sign-in-alt" />
           <strong>로그인</strong>
         </button>
       </div>

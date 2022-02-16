@@ -39,9 +39,6 @@ export default function TopBar() {
       await LayoutService.actions.return.changeLayout(currentLayout);
     }
     await LayoutService.actions.return.setSlots(slottedElements);
-    if (browserUrl && slottedElements[ELayoutElement.Browser]) {
-      await LayoutService.actions.return.setUrl(browserUrl);
-    }
     NavigationService.actions.navigate('Studio');
   }
 

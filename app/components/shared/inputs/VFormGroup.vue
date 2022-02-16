@@ -6,9 +6,6 @@
       <label v-if="options.title">
         {{ options.title }}
       </label>
-      <label v-else>
-        &nbsp;
-      </label>
       <div v-if="options.tooltip" class="tooltip">
         <i class="icon-question icon-btn" v-tooltip="metadata.tooltip" />
       </div>
@@ -34,7 +31,6 @@
           {{ inputErrors[0].msg }}
         </div>
       </div>
-
     </div>
   </div>
 
