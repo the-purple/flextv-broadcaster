@@ -132,7 +132,7 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
 
     // Hack since defaultState can't take a translated string
     if (!this.state.tabs.default.name) {
-      this.SET_TAB_NAME('default', $t('Editor'));
+      this.SET_TAB_NAME('default', '기본');
     }
     if (
       this.customizationService.state.legacyEvents &&

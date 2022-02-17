@@ -64,7 +64,7 @@ export default function TopBar() {
       {currentTab !== 'default' && (
         <Tooltip title={$t('Delete Current Tab')} placement="bottom">
           <button
-            className={cx('button button--warn', styles.removeButton)}
+            className={cx('button button--default', styles.removeButton)}
             onClick={removeCurrentTab}
           >
             <i className="icon-trash" />
