@@ -76,7 +76,6 @@ export default class TextInput extends BaseInput<string, ITextMetadata> {
           onFocus={() => this.$emit('focus')}
           onBlur={() => this.$emit('blur')}
         />
-        {this.toggleVisibleButton}
         {this.$slots.default}
       </span>
     );

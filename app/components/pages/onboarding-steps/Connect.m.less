@@ -19,7 +19,11 @@
     background: none;
   }
   :global(input) {
-    background: #fff;
+    background: #fff !important;
+    color: #000 !important;
+  }
+  :global(.input-footer) {
+    display: none;
   }
 }
 
@@ -46,18 +50,11 @@
 .link-button {
   text-decoration: none;
   color: #fff;
+  font-size: 12px;
 
   &:hover {
     cursor: pointer;
   }
-}
-
-.link-button:after {
-  content: '';
-  position: absolute;
-  border-left: 1px solid white;
-  right: -10px;
-  height: 80%;
 }
 
 .loginButton {
@@ -91,4 +88,13 @@
   margin: 0 16px !important;
   flex-shrink: 0;
   line-height: 0px !important;
+}
+
+.divider {
+  &::before {
+    content: '|';
+    opacity: 0.6;
+    color: #fff;
+    margin: 0 7px;
+  }
 }

@@ -106,7 +106,7 @@ export default class FlexLoginForm extends TsxComponent<ConnectProps> {
   render() {
     return (
       <div>
-        <div class={styles.container} style={{ height: '50%' }}>
+        <div class={styles.container} style={{ height: '300px' }}>
           <p>
             <PlatformLogo platform={'flextv'} />
           </p>
@@ -126,9 +126,11 @@ export default class FlexLoginForm extends TsxComponent<ConnectProps> {
             <a class={styles['link-button']} onClick={() => this.openFindMember()}>
               아이디 찾기 & 비밀번호 찾기
             </a>
+            <span class={styles.divider} />
             <a class={styles['link-button']} onClick={() => this.openSignup()}>
               회원가입
             </a>
+            <span class={styles.divider} />
             <a class={styles['link-button']} onClick={() => this.props.continue()}>
               {$t('Back')}
             </a>
