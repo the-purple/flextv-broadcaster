@@ -8,8 +8,7 @@ class LayoutEditorModule {
   state = {
     currentLayout: this.layoutService.views.currentTab.currentLayout || ELayout.Preferred,
     slottedElements: cloneDeep(this.layoutService.views.currentTab.slottedElements) || {},
-    browserUrl:
-      this.layoutService.views.currentTab.slottedElements[ELayoutElement.Browser]?.src || '',
+    browserUrl: '',
     showModal: false,
   };
 
@@ -42,8 +41,6 @@ class LayoutEditorModule {
     elements: { [Element in ELayoutElement]?: { slot: LayoutSlot; src?: string } },
   ) {
     this.state.slottedElements = elements;
-    if (!elements[ELayoutElement.Browser]) return;
-    this.setBrowserUrl(elements[ELayoutElement.Browser]?.src || '');
   }
 
   @mutation()

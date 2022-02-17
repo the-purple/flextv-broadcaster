@@ -73,9 +73,10 @@ export default class FlexTvSideNav extends Vue {
   get studioTabs() {
     return Object.keys(this.layoutService.state.tabs).map((tab, i) => ({
       target: tab,
+      selected: this.layoutService.state.currentTab === tab,
       title:
         i === 0 || !this.layoutService.state.tabs[tab].name
-          ? $t('Editor')
+          ? '기본'
           : this.layoutService.state.tabs[tab].name,
       icon: this.layoutService.state.tabs[tab].icon,
       trackingTarget: tab === 'default' ? 'editor' : 'custom',
@@ -114,6 +115,9 @@ export default class FlexTvSideNav extends Vue {
   }
 
   get primaryStudioTab() {
+    const tabs = this.studioTabs;
+    const selectedIndex = tabs.findIndex(t => t.selected);
+
     return (
       <div
         onMouseenter={() => (this.showTabDropdown = true)}
@@ -125,7 +129,7 @@ export default class FlexTvSideNav extends Vue {
               this.page === 'Studio' && this.layoutService.state.currentTab === 'default',
           })}
         >
-          {this.studioTab(this.studioTabs[0])}
+          {this.studioTab(this.studioTabs[Math.max(selectedIndex, 0)])}
           {this.studioTabs.length > 1 && (
             <i
               class={cx('icon-down', styles.studioDropdown, {
@@ -144,7 +148,7 @@ export default class FlexTvSideNav extends Vue {
       <transition name="sidenav-slide">
         {this.showTabDropdown && (
           <div class={styles.studioTabs}>
-            {this.studioTabs.slice(1).map(page => this.studioTab(page))}
+            {this.studioTabs.filter(t => !t.selected).map(page => this.studioTab(page))}
           </div>
         )}
       </transition>
@@ -162,7 +166,7 @@ export default class FlexTvSideNav extends Vue {
         vTrackClick={{ component: 'FlexTvSideNav', target: page.trackingTarget }}
         title={page.title}
       >
-        <i class={page.icon} />
+        {(page.title ?? '').slice(0, 2)}
       </div>
     );
   }
@@ -181,8 +185,7 @@ export default class FlexTvSideNav extends Vue {
             vTrackClick={{ component: 'FlexTvSideNav', target: page.trackingTarget }}
             title={page.title}
           >
-            {!!page.icon && <i class={page.icon} />}
-            {!!page.svgIcon && page.svgIcon}
+            ${(page.title ?? '').slice(0, 2)}
             {page.newBadge && <div class={cx(styles.badge, styles.newBadge)}>{$t('New')}</div>}
           </div>
         ))}

@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { Component } from 'vue-property-decorator';
 import BaseElement from './BaseElement';
 import { BrowserView } from 'components/shared/ReactComponentList';
@@ -37,18 +38,15 @@ export default class FlexTvChat extends BaseElement {
   }
 
   get element() {
+    const isInLive = this.streamingService.isStreaming || this.streamingService.isPaused;
     return (
       <div>
         <div class="studio-controls-top">
           <h2 class="studio-controls__label">채팅</h2>
-          {this.streamingService.isStreaming ? (
+          {isInLive ? (
             <div>
               {!this.windowOpened ? (
-                <i
-                  class="icon-link icon-button"
-                  style="margin-right: 10px;"
-                  onClick={this.openChatWindow}
-                />
+                <i class={cx('icon-button', styles.iconOpenLink)} onClick={this.openChatWindow} />
               ) : null}
               <i
                 class="icon-repeat icon-button"
@@ -61,7 +59,7 @@ export default class FlexTvChat extends BaseElement {
           ) : null}
         </div>
         <Scrollable className="studio-controls-selector">
-          {this.userService.isLoggedIn && this.streamingService.isStreaming ? (
+          {this.userService.isLoggedIn && isInLive ? (
             <div style="height: 100%;">
               <BrowserView
                 componentProps={{

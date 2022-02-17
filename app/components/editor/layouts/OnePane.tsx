@@ -11,14 +11,14 @@ export default class OnePane extends BaseLayout {
 
   async mounted() {
     this.mountResize();
-    this.setMins(['2'], ['1', ['3', '4', '5']]);
+    this.setMins(['2'], ['1', ['3', '4']]);
   }
   destroyed() {
     this.destroyResize();
   }
 
   get vectors() {
-    return ['2', ['1', ['3', '4', '5']]] as ILayoutSlotArray;
+    return ['2', ['1', ['3', '4']]] as ILayoutSlotArray;
   }
 
   render() {

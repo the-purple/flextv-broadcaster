@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const win = remote.getCurrentWindow();
     win.webContents.session.on('will-download', (event, item, webContents) => {
       const tempPath = remote.app.getPath('temp');
-      const newFilePath = path.join(tempPath, item.getFilename());
+      const newFilePath = path.join(tempPath, 'flextv', item.getFilename());
       const fileName = item.getFilename();
 
       item.once('done', (event, state) => {

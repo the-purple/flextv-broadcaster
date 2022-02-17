@@ -114,7 +114,6 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
           [ELayoutElement.FlexTvChat]: { slot: '2' },
           [ELayoutElement.Scenes]: { slot: '3' },
           [ELayoutElement.Sources]: { slot: '4' },
-          [ELayoutElement.Mixer]: { slot: '5' },
         },
         resizes: {
           bar1: 156,
@@ -133,7 +132,7 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
 
     // Hack since defaultState can't take a translated string
     if (!this.state.tabs.default.name) {
-      this.SET_TAB_NAME('default', $t('Editor'));
+      this.SET_TAB_NAME('default', '기본');
     }
     if (
       this.customizationService.state.legacyEvents &&
@@ -144,7 +143,6 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
         [ELayoutElement.FlexTvChat]: { slot: '2' },
         [ELayoutElement.Scenes]: { slot: '3' },
         [ELayoutElement.Sources]: { slot: '4' },
-        [ELayoutElement.Mixer]: { slot: '5' },
       });
       this.customizationService.setSettings({ legacyEvents: false });
     }
@@ -262,7 +260,6 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
         [ELayoutElement.FlexTvChat]: { slot: '2' },
         [ELayoutElement.Scenes]: { slot: '3' },
         [ELayoutElement.Sources]: { slot: '4' },
-        [ELayoutElement.Mixer]: { slot: '5' },
       },
       resizes: {
         bar1: 156,

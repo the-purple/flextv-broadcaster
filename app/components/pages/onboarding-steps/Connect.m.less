@@ -12,7 +12,19 @@
   }
 
   :global(.list-input),
-  :global(.section) { width: 400px; }
+  :global(.section) {
+    width: 300px;
+    padding: 0;
+    margin: 0;
+    background: none;
+  }
+  :global(input) {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  :global(.input-footer) {
+    display: none;
+  }
 }
 
 .select-another {
@@ -36,8 +48,9 @@
 }
 
 .link-button {
-  text-decoration: underline;
-  color: var(--button);
+  text-decoration: none;
+  color: #fff;
+  font-size: 12px;
 
   &:hover {
     cursor: pointer;
@@ -51,7 +64,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 16px !important;
+  margin: 0 !important;
   flex-shrink: 0;
   line-height: 0px !important;
 
@@ -62,9 +75,9 @@
 }
 
 .flexLoginButton {
-  width: 80px;
+  width: 100%;
   align-items: center;
-  margin: 0 16px !important;
+  margin: 0 !important;
   flex-shrink: 0;
   line-height: 0px !important;
 }
@@ -75,4 +88,13 @@
   margin: 0 16px !important;
   flex-shrink: 0;
   line-height: 0px !important;
+}
+
+.divider {
+  &::before {
+    content: '|';
+    opacity: 0.6;
+    color: #fff;
+    margin: 0 7px;
+  }
 }

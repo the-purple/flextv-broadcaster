@@ -376,7 +376,7 @@ async function startApp() {
     const tempPath = app.getPath('temp');
     const fileName = item.getFilename();
     if (fileName && fileName.includes('png')) {
-      item.setSavePath(path.join(tempPath, item.getFilename()));
+      item.setSavePath(path.join(tempPath, 'flextv', item.getFilename()));
     }
   });
 

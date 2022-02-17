@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { ModalLayout } from 'components-react/shared/ModalLayout';
 import { Services } from 'components-react/service-provider';
 import { $t } from 'services/i18n';
-import { TextInput, CardInput } from 'components-react/shared/inputs';
 import { useLayoutEditor } from './hooks';
 import Form from 'components-react/shared/inputs/Form';
 
@@ -26,7 +25,11 @@ export default function AddTabModal() {
   const { setShowModal, setCurrentTab } = useLayoutEditor();
 
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('');
+  const [icon, setIcon] = useState('icon-studio');
+
+  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
+    setName(e?.currentTarget?.value ?? '');
+  }
 
   async function createTab() {
     const newTabId = await LayoutService.actions.return.addTab(name, icon);
@@ -53,25 +56,12 @@ export default function AddTabModal() {
   }
 
   return (
-    <ModalLayout footer={<Footer />} wrapperStyle={{ width: '410px', height: '350px' }}>
+    <ModalLayout footer={<Footer />} wrapperStyle={{ width: '410px', height: '130px' }}>
       <Form>
-        <CardInput
-          value={icon}
-          onInput={setIcon}
-          options={ICONS}
-          isIcons={true}
-          style={{ borderRadius: 4, margin: 4 }}
-          itemWidth={48}
-          itemHeight={48}
-          nowrap
-        />
-        <TextInput
-          label={$t('Name')}
-          value={name}
-          onChange={setName}
-          style={{ marginTop: '8px' }}
-          uncontrolled={false}
-        />
+        <span>탭 이름</span>
+        <div style={{ marginTop: 5 }}>
+          <input value={name} onChange={handleNameChange} style={{ marginTop: '8px' }} />
+        </div>
       </Form>
     </ModalLayout>
   );

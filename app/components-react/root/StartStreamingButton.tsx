@@ -46,31 +46,20 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
   }, [delaySecondsRemaining, streamingStatus, delayEnabled]);
 
   async function toggleStreaming() {
-    if (StreamingService.isStreaming) {
+    if (StreamingService.isStreaming || StreamingService.isPaused) {
       const options = {
         type: 'warning',
-        buttons: ['종료', '대기', '취소'],
+        buttons: ['종료', '취소'],
         title: '방송을 종료하시겠습니까?',
         message: '종료를 선택하시면 즉시 방송이 종료 됩니다.',
       };
       const response = await remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
       if (response.response === 0) {
-        return StreamingService.toggleStreaming();
-      } else if (response.response === 1) {
-        return StreamingService.pauseStreaming();
-      }
-    } else if (StreamingService.isPaused) {
-      const options = {
-        type: 'warning',
-        buttons: ['시작', '종료', '취소'],
-        title: '방송을 시작/종료하시겠습니까?',
-        message: '시작/종료를 선택하시면 즉시 반영됩니다.',
-      };
-      const response = await remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
-      if (response.response === 0) {
-        return StreamingService.toggleStreaming();
-      } else if (response.response === 1) {
-        return StreamingService.finishPlatformStream();
+        if (StreamingService.isPaused) {
+          return StreamingService.finishPlatformStream();
+        } else {
+          return StreamingService.toggleStreaming();
+        }
       }
     } else {
       const streamStatus = await FlexTvService.checkReadyToStream();
@@ -136,7 +125,16 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     }
   }
 
-  const getIsRedButton = streamingStatus !== EStreamingState.Offline;
+  function handleTogglePause() {
+    if (streamingStatus === EStreamingState.Live) {
+      return StreamingService.pauseStreaming();
+    } else {
+      return StreamingService.replayStreaming();
+    }
+  }
+
+  const getIsRedButton =
+    streamingStatus !== EStreamingState.Offline || platformStatus === EPlatformState.Live;
 
   const isDisabled =
     p.disabled ||
@@ -144,18 +142,35 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
     (streamingStatus === EStreamingState.Ending && delaySecondsRemaining === 0);
 
   return (
-    <button
-      style={{ minWidth: '130px' }}
-      className={cx('button button--action', { 'button--soft-warning': getIsRedButton })}
-      disabled={isDisabled}
-      onClick={toggleStreaming}
-    >
-      <StreamButtonLabel
-        streamingStatus={streamingStatus}
-        platformStatus={platformStatus}
-        delayEnabled={delayEnabled}
-        delaySecondsRemaining={delaySecondsRemaining}
-      />
+    <>
+      {streamingStatus === EStreamingState.Live || platformStatus === EPlatformState.Live ? (
+        <PauseButton streamingStatus={streamingStatus} onClick={handleTogglePause} />
+      ) : null}
+      <button
+        style={{ minWidth: '130px' }}
+        className={cx('button button--action', { 'button--soft-warning': getIsRedButton })}
+        disabled={isDisabled}
+        onClick={toggleStreaming}
+      >
+        <StreamButtonLabel
+          streamingStatus={streamingStatus}
+          platformStatus={platformStatus}
+          delayEnabled={delayEnabled}
+          delaySecondsRemaining={delaySecondsRemaining}
+        />
+      </button>
+    </>
+  );
+}
+
+function PauseButton(p: { streamingStatus: EStreamingState; onClick: () => {} }) {
+  return p.streamingStatus === EStreamingState.Live ? (
+    <button className="button button--default" style={{ marginRight: 15 }} onClick={p.onClick}>
+      <strong>방송송출 일시정지</strong>
+    </button>
+  ) : (
+    <button className="button button--prime" style={{ marginRight: 15 }} onClick={p.onClick}>
+      <strong>방송송출 정지해제</strong>
     </button>
   );
 }
@@ -166,7 +181,7 @@ function StreamButtonLabel(p: {
   delaySecondsRemaining: number;
   delayEnabled: boolean;
 }) {
-  if (p.streamingStatus === EStreamingState.Live) {
+  if (p.streamingStatus === EStreamingState.Live || p.platformStatus === EPlatformState.Live) {
     return <>{$t('End Stream')}</>;
   }
 
@@ -188,10 +203,6 @@ function StreamButtonLabel(p: {
 
   if (p.streamingStatus === EStreamingState.Reconnecting) {
     return <>{$t('Reconnecting')}</>;
-  }
-
-  if (p.platformStatus === EPlatformState.Live) {
-    return <>대기중..</>;
   }
 
   return <>{$t('Go Live')}</>;

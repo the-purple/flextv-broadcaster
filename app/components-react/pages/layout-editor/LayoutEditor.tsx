@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import styles from './LayoutEditor.m.less';
 import { ELayoutElement, LayoutSlot } from 'services/layout';
-import { $t } from 'services/i18n';
 import { Services } from 'components-react/service-provider';
-import { TextInput } from 'components-react/shared/inputs';
 import { useLayoutEditor } from './hooks';
 import TopBar from './TopBar';
 import SideBar from './SideBar';
@@ -40,13 +38,7 @@ export default function LayoutEditor() {
 
 function DisplayedLayout() {
   const { LayoutService } = Services;
-  const {
-    slottedElements,
-    currentLayout,
-    browserUrl,
-    setBrowserUrl,
-    handleElementDrag,
-  } = useLayoutEditor();
+  const { slottedElements, currentLayout, handleElementDrag } = useLayoutEditor();
 
   const [canDragSlot, setCanDragSlot] = useState(true);
   const [highlightedSlot, setHighlightedSlot] = useState<LayoutSlot | null>(null);
@@ -67,7 +59,7 @@ function DisplayedLayout() {
 
   return (
     <>
-      {['1', '2', '3', '4', '5', '6'].map((slot: LayoutSlot) => (
+      {['1', '2', '3', '4'].map((slot: LayoutSlot) => (
         <div
           className={classForSlot(slot)}
           id={slot}
@@ -80,18 +72,6 @@ function DisplayedLayout() {
           }
         >
           <span>{LayoutService.views.elementTitle(elementInSlot(slot))}</span>
-          {elementInSlot(slot) === ELayoutElement.Browser && (
-            <div className={styles.urlInput}>
-              <TextInput
-                value={browserUrl}
-                onChange={setBrowserUrl}
-                onFocus={() => setCanDragSlot(false)}
-                onBlur={() => setCanDragSlot(true)}
-                placeholder={$t('Enter Target URL')}
-                nowrap
-              />
-            </div>
-          )}
         </div>
       ))}
     </>
