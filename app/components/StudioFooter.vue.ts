@@ -1,18 +1,18 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Inject } from '../services/core/injector';
-import { StreamingService, EReplayBufferState, EStreamingState } from '../services/streaming';
+import { EReplayBufferState, EStreamingState, StreamingService } from '../services/streaming';
 import {
+  NotificationsArea,
   PerformanceMetrics,
   StartStreamingButton,
   TestWidgets,
-  NotificationsArea,
 } from 'components/shared/ReactComponentList';
 import { UserService } from '../services/user';
 import { getPlatformService } from 'services/platforms';
 import { YoutubeService } from 'services/platforms/youtube';
 import { FlexTvService } from 'services/platforms/flextv';
-import { PerformanceService, EStreamQuality } from 'services/performance';
+import { EStreamQuality, PerformanceService } from 'services/performance';
 import { CustomizationService } from 'services/customization';
 import { WindowsService } from 'services/windows';
 import { $t } from 'services/i18n';
@@ -67,6 +67,10 @@ export default class StudioFooterComponent extends Vue {
 
   get streamingStatus() {
     return this.streamingService.state.streamingStatus;
+  }
+
+  get isStreaming() {
+    return this.streamingService.state.streamingStatus !== EStreamingState.Offline;
   }
 
   get performanceIconClassName() {
@@ -187,9 +191,7 @@ export default class StudioFooterComponent extends Vue {
     return this.flexTvService
       .fetchHelperToken()
       .then(token => {
-        const url = `${this.flexTvService.helperUrl}${encodeURIComponent(
-          token,
-        )}`;
+        const url = `${this.flexTvService.helperUrl}${encodeURIComponent(token)}`;
         return remote.shell.openExternal(url);
       })
       .catch((e: unknown) => {

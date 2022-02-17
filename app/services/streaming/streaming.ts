@@ -726,6 +726,19 @@ export class StreamingService
     return Promise.resolve();
   }
 
+  async replayStreaming() {
+    obs.NodeObs.OBS_service_startStreaming();
+
+    const recordWhenStreaming = this.streamSettingsService.settings.recordWhenStreaming;
+
+    if (recordWhenStreaming && this.state.recordingStatus === ERecordingState.Offline) {
+      this.toggleRecording();
+    }
+
+    this.UPDATE_STREAM_INFO({ lifecycle: 'live' });
+    return Promise.resolve();
+  }
+
   async finishPlatformStream() {
     this.views.enabledPlatforms.forEach(platform => {
       const service = getPlatformService(platform);
