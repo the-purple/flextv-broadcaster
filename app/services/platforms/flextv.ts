@@ -35,10 +35,10 @@ interface IFlexTvWidget {
   type: string;
 }
 
-// const BASE_URL = 'https://www.flextv.co.kr';
-// const HELPER_BASE_URL = 'https://api.flexhp.kr';
-const BASE_URL = 'https://www.hotaetv.com';
-const HELPER_BASE_URL = 'https://api.stage.flexhp.kro.kr';
+const isProd = process.env.NODE_ENV === 'production';
+
+const BASE_URL = isProd ? 'https://www.flextv.co.kr' : 'https://www.hotaetv.com';
+const HELPER_BASE_URL = isProd ? 'https://api.flexhp.kr' : 'https://api.stage.flexhp.kro.kr';
 
 @InheritMutations()
 export class FlexTvService
@@ -198,7 +198,6 @@ export class FlexTvService
         isForAdult,
       }),
     });
-    await Utils.sleep(1000);
   }
 
   async afterStopStream() {

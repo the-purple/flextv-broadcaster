@@ -1,7 +1,7 @@
 const { execSync } = require('child_process');
 
 const base = {
-  appId: 'com.streamlabs.slobs',
+  appId: 'com.flexenm.broadcaster',
   productName: 'FlexTV Broadcaster',
   icon: 'media/images/flextv.ico',
   files: [
