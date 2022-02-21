@@ -25,38 +25,12 @@ export default class ConnectFlex extends TsxComponent<ConnectProps> {
   @Inject() incrementalRolloutService: IncrementalRolloutService;
   @Inject() flexTvService: FlexTvService;
 
-  selectedExtraPlatform = '';
-
   get loading() {
     return this.userService.state.authProcessState === EAuthProcessState.Loading;
   }
 
   get isRelog() {
     return this.userService.state.isRelog;
-  }
-
-  get isSecurityUpgrade() {
-    return this.onboardingService.options.isSecurityUpgrade;
-  }
-
-  get securityUpgradeLink() {
-    return (
-      <span>
-        {$t(
-          'We are improving our backend systems. As part of the migration process, we will need you to log in again. If you have any questions, you can ',
-        )}
-        <a onClick="contactSupport">{$t('contact support.')}</a>
-      </span>
-    );
-  }
-
-  contactSupport() {
-    remote.shell.openExternal(`${this.flexTvService.baseUrl}/cs/guide`);
-  }
-
-  onSkip() {
-    if (this.loading) return;
-    this.props.continue();
   }
 
   render() {

@@ -146,6 +146,7 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
 
     steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ConnectFlex]);
 
+    /*
     if (isOBSinstalled) {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ChooseYourAdventure]);
     }
@@ -168,11 +169,7 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
 
     if (userViews.isTwitchAuthed) {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.Optimize]);
-    }
-
-    if (userViews.isLoggedIn && !userViews.isPrime) {
-      steps.push(ONBOARDING_STEPS()[EOnboardingSteps.Prime]);
-    }
+    } */
 
     return steps;
   }

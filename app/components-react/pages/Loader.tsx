@@ -45,7 +45,6 @@ export default function Loader() {
       <div className="s-loader__bg">
         <div className="s-loader__inner">
           <Spinner />
-          <div className="s-loader__text">{loaderText}</div>
         </div>
       </div>
     </div>
