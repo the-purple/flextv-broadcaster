@@ -27,6 +27,9 @@ import { TPlatform } from '../platforms';
 import { getAlertsConfig, TAlertType } from './alerts-config';
 import { getWidgetsConfig } from './widgets-config';
 import { WidgetDisplayData } from '.';
+import * as remote from '@electron/remote';
+import { $t } from '../i18n';
+import Utils from '../utils';
 
 export interface IWidgetSourcesState {
   widgetSources: Dictionary<IWidgetSource>;
@@ -143,9 +146,20 @@ export class WidgetsService
     return this.state.widgetSources[sourceId] ? new WidgetSource(sourceId) : null;
   }
 
-  getWidgetUrl(type: WidgetType) {
-    if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return;
-    return this.flexTvService.getWidgetUrl(FlexTvWidgetTypeKey[type]);
+  async getWidgetUrl(type: WidgetType): Promise<string> {
+    if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return '';
+    const widgets = this.flexTvService.getWidgetUrl(FlexTvWidgetTypeKey[type]);
+    if (widgets.length === 0) return '';
+    if (widgets.length > 1) {
+      const selected = await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: '두 개 이상의 프리셋이 있습니다.',
+        type: 'info',
+        message: '원하는 프리셋을 선택하세요.',
+        buttons: widgets.map(w => w.name),
+      });
+      return widgets[selected.response].url;
+    }
+    return widgets[0].url;
   }
 
   getWidgetComponent(type: WidgetType): TWindowComponentName {

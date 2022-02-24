@@ -33,6 +33,7 @@ interface IFlexTvServiceState extends IPlatformState {
 interface IFlexTvWidget {
   url: string;
   type: string;
+  name: string;
 }
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -246,10 +247,8 @@ export class FlexTvService
     return '';
   }
 
-  getWidgetUrl(type: string) {
-    const widget = this.widgets.find(w => w.type === type);
-    if (widget) return widget.url;
-    return '';
+  getWidgetUrl(type: string): IFlexTvWidget[] {
+    return this.widgets.filter(w => w.type === type);
   }
 
   /**
