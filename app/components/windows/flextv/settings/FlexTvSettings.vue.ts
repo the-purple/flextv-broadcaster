@@ -12,7 +12,6 @@ import InstalledApps from 'components/InstalledApps.vue';
 import Hotkeys from 'components/windows/settings/Hotkeys.vue';
 import OverlaySettings from 'components/windows/settings/OverlaySettings';
 import NotificationsSettings from 'components/windows/settings/NotificationsSettings.vue';
-import ExperimentalSettings from 'components/windows/settings/ExperimentalSettings.vue';
 import GameOverlaySettings from 'components/windows/settings/GameOverlaySettings';
 import SearchablePages from 'components/shared/SearchablePages';
 import FormInput from 'components/shared/inputs/FormInput.vue';
@@ -36,7 +35,6 @@ import * as remote from '@electron/remote';
     DeveloperSettings,
     OverlaySettings,
     NotificationsSettings,
-    ExperimentalSettings,
     InstalledApps,
     GameOverlaySettings,
     FormInput,
@@ -72,7 +70,6 @@ export default class FlexTvSettings extends Vue {
     Appearance: 'icon-settings-3-1',
     'Face Masks': 'icon-face-masks-3',
     'Remote Control': 'fas fa-play-circle',
-    Experimental: 'fas fa-flask',
     'Installed Apps': 'icon-store',
   };
 
@@ -139,7 +136,6 @@ export default class FlexTvSettings extends Vue {
       'Overlays',
       'Notifications',
       'Appearance',
-      'Experimental',
       'Remote Control',
       'Installed Apps',
       'Virtual Webcam',
