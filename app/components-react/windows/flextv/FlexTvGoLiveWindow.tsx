@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Spin } from 'antd'
+import { Spin, Button } from 'antd';
 import { ModalLayout } from '../../shared/ModalLayout';
-import { Button } from 'antd';
 import { useOnCreate, useOnDestroy } from '../../hooks';
 import { Services } from '../../service-provider';
 import { $t } from '../../../services/i18n';
@@ -32,7 +31,7 @@ export default function FlexTvGoLiveWindow() {
   const [isForAdult, setIsForAdult] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
   const [password, setPassword] = useState('');
-  const [maxUserCount, setMaxUserCount] = useState(300);
+  // const [maxUserCount, setMaxUserCount] = useState(300);
 
   const shouldShowConfirm = ['prepopulate', 'waitForNewSettings'].includes(lifecycle);
 
@@ -133,6 +132,10 @@ export default function FlexTvGoLiveWindow() {
                   value: '7',
                   label: '19+',
                 },
+                {
+                  value: '8',
+                  label: '홍보방',
+                },
               ]}
               value={theme}
               onChange={setTheme}
@@ -211,7 +214,8 @@ export default function FlexTvGoLiveWindow() {
               onChange={useResolution}
             />
           </div>
-          <div className="section thin">
+          {/*
+           <div className="section thin">
             <NumberInput
               label={'유저 수'}
               value={maxUserCount}
@@ -219,6 +223,7 @@ export default function FlexTvGoLiveWindow() {
               max={700}
             />
           </div>
+             */}
         </Form>
       </Spin>
     </ModalLayout>
