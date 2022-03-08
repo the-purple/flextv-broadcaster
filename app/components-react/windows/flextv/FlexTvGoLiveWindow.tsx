@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Spin } from 'antd'
+import { Spin, Button } from 'antd';
 import { ModalLayout } from '../../shared/ModalLayout';
-import { Button } from 'antd';
 import { useOnCreate, useOnDestroy } from '../../hooks';
 import { Services } from '../../service-provider';
 import { $t } from '../../../services/i18n';
@@ -9,6 +8,7 @@ import Form from '../../shared/inputs/Form';
 import { alertAsync } from '../../modals';
 import { NumberInput, TextInput, RadioInput, CheckboxInput, ListInput } from '../../shared/inputs';
 import { useGoLiveSettingsRoot } from '../go-live/useGoLiveSettings';
+import { IFlexTvTheme } from 'services/platforms/flextv'
 
 export default function FlexTvGoLiveWindow() {
   const { StreamingService, WindowsService, FlexTvService } = Services;
@@ -32,7 +32,8 @@ export default function FlexTvGoLiveWindow() {
   const [isForAdult, setIsForAdult] = useState(false);
   const [isSecret, setIsSecret] = useState(false);
   const [password, setPassword] = useState('');
-  const [maxUserCount, setMaxUserCount] = useState(300);
+  const [themeOptions, setThemeOptions] = useState<IFlexTvTheme[]>([]);
+  // const [maxUserCount, setMaxUserCount] = useState(300);
 
   const shouldShowConfirm = ['prepopulate', 'waitForNewSettings'].includes(lifecycle);
 
@@ -48,7 +49,12 @@ export default function FlexTvGoLiveWindow() {
   });
 
   useEffect(() => {
-    FlexTvService.fetchStreamConfig().then(streamOptions => {
+    setLoading(true);
+    Promise.all([FlexTvService.fetchThemes(), FlexTvService.fetchStreamConfig()]).then(result => {
+      const [themes = [], streamOptions] = result;
+
+      setThemeOptions(themes);
+      setLoading(false);
       if (!streamOptions) return;
 
       setTitle(streamOptions.title ?? '');
@@ -124,16 +130,7 @@ export default function FlexTvGoLiveWindow() {
           <div className="section thin">
             <RadioInput
               label={'카테고리'}
-              options={[
-                {
-                  value: '5',
-                  label: '토크방',
-                },
-                {
-                  value: '7',
-                  label: '19+',
-                },
-              ]}
+              options={themeOptions.map((t: any) => ({ value: t.value, label: t.text }))}
               value={theme}
               onChange={setTheme}
             />
@@ -211,7 +208,8 @@ export default function FlexTvGoLiveWindow() {
               onChange={useResolution}
             />
           </div>
-          <div className="section thin">
+          {/*
+           <div className="section thin">
             <NumberInput
               label={'유저 수'}
               value={maxUserCount}
@@ -219,6 +217,7 @@ export default function FlexTvGoLiveWindow() {
               max={700}
             />
           </div>
+             */}
         </Form>
       </Spin>
     </ModalLayout>

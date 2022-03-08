@@ -18,6 +18,12 @@ export interface IFlextvStartStreamOptions {
   maxViewerCount?: number;
 }
 
+export interface IFlexTvTheme {
+  key: string;
+  value: string;
+  text: string;
+}
+
 export interface IFlexTvCommonResponse {
   success: boolean;
   error?: {
@@ -33,6 +39,7 @@ interface IFlexTvServiceState extends IPlatformState {
 interface IFlexTvWidget {
   url: string;
   type: string;
+  name: string;
 }
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -246,10 +253,8 @@ export class FlexTvService
     return '';
   }
 
-  getWidgetUrl(type: string) {
-    const widget = this.widgets.find(w => w.type === type);
-    if (widget) return widget.url;
-    return '';
+  getWidgetUrl(type: string): IFlexTvWidget[] {
+    return this.widgets.filter(w => w.type === type);
   }
 
   /**
@@ -277,6 +282,10 @@ export class FlexTvService
       data: IFlextvStartStreamOptions,
     }>('flextv', `${this.apiBase}/api/m/channel/config`);
     return config.data;
+  }
+
+  async fetchThemes(): Promise<IFlexTvTheme[]> {
+    return platformAuthorizedRequest<IFlexTvTheme[]>('flextv', `${this.apiBase}/api/guest/themes`);
   }
 
   async fetchUserInfo(): Promise<IUserInfo> {

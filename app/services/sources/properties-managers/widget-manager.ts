@@ -32,9 +32,10 @@ export class WidgetManager extends PropertiesManager {
   }
 
   setWidgetType(type: WidgetType) {
-    const url = this.widgetsService.getWidgetUrl(type);
-    if (url && this.obsSource.settings['url'] !== url) {
-      this.obsSource.update({ url });
-    }
+    this.widgetsService.getWidgetUrl(type).then(url => {
+      if (url && this.obsSource.settings['url'] !== url) {
+        this.obsSource.update({ url });
+      }
+    });
   }
 }
