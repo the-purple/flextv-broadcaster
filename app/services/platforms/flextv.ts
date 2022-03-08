@@ -111,7 +111,7 @@ export class FlexTvService
     if (hardwareEncoders.length > 0) {
       this.settingsService.setSettingValue(
         'Output',
-        'Encoder',
+        'StreamEncoder',
         hardwareEncoders[hardwareEncoders.length - 1],
       );
       this.settingsService.setSettingValue('Output', 'preset', 'llhp');
