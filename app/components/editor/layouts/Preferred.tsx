@@ -24,7 +24,7 @@ export default class Preferred extends BaseLayout {
 
   render() {
     return (
-      <div class={cx(styles.columns, styles.sidePadded)}>
+      <div class={cx(styles.columns)}>
         <div class={styles.rows} style={{ width: `${100 - this.resizes.bar2 * 100}%` }}>
           <div class={styles.cell} style={{ height: `${100 - this.resizes.bar1 * 100}%` }}>
             {this.$slots['1']}
@@ -44,7 +44,9 @@ export default class Preferred extends BaseLayout {
             style={{ height: `${this.resizes.bar1 * 100}%`, padding: '0 8px' }}
           >
             <div class={styles.cell}>{this.$slots['3']}</div>
-            <div class={styles.cell}>{this.$slots['4']}</div>
+            <div class={cx(styles.cell, styles.fixed)} style={{ width: '280px' }}>
+              {this.$slots['4']}
+            </div>
           </div>
         </div>
         <ResizeBar

@@ -73,7 +73,7 @@ export default class FlexTvChat extends BaseElement {
               />
             </div>
           ) : (
-            <div style="height: 100%;" />
+            <div style="height: 100%; background-color: #252525;" />
           )}
         </Scrollable>
       </div>
