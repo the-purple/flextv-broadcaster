@@ -85,7 +85,7 @@
       </tabs>
       <modal name="transition-settings" :height="550">
         <scrollable className="transition-settings-modal">
-          <transition-settings :transition-id="inspectedTransition" />
+          <transition-settings />
           <button
             class="button button--action transition-done"
             @click="dismissModal('transition-settings')"

@@ -22,11 +22,11 @@ export default class SceneTransitions extends Vue {
   @Inject() transitionsService!: TransitionsService;
   @Inject() private editorCommandsService: EditorCommandsService;
 
-  @Prop() transitionId!: string;
-
+  transitionId: string = '';
   propertiesChanged: Subscription;
 
   mounted() {
+    this.transitionId = this.transitionsService.state.transitions[0].id;
     this.propertiesChanged = this.transitionsService.transitionPropertiesChanged.subscribe(id => {
       if (id === this.transitionId) {
         this.properties = this.transitionsService.getPropertiesFormData(this.transitionId);
@@ -35,8 +35,7 @@ export default class SceneTransitions extends Vue {
   }
 
   get typeModel(): ETransitionType {
-    return this.transitionsService.state.transitions.find(tran => tran.id === this.transitionId)
-      .type;
+    return this.transitionsService.state.transitions[0].type;
   }
 
   set typeModel(value: ETransitionType) {
@@ -50,8 +49,7 @@ export default class SceneTransitions extends Vue {
   }
 
   get durationModel(): number {
-    return this.transitionsService.state.transitions.find(tran => tran.id === this.transitionId)
-      .duration;
+    return this.transitionsService.state.transitions[0].duration;
   }
 
   @debounce(500)
@@ -62,8 +60,7 @@ export default class SceneTransitions extends Vue {
   }
 
   get nameModel(): string {
-    return this.transitionsService.state.transitions.find(tran => tran.id === this.transitionId)
-      .name;
+    return this.transitionsService.state.transitions[0].name;
   }
 
   @debounce(500)
