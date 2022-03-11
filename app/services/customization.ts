@@ -143,8 +143,8 @@ export class CustomizationService extends PersistentStatefulService<ICustomizati
     enableFlexTVOptimization: true,
     designerMode: false,
     pinnedStatistics: {
-      cpu: false,
-      fps: false,
+      cpu: true,
+      fps: true,
       droppedFrames: false,
       bandwidth: false,
     },
