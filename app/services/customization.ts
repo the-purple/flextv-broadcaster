@@ -52,6 +52,7 @@ export interface ICustomizationServiceState {
   livePreviewEnabled: boolean;
   leftDock: boolean;
   hideViewerCount: boolean;
+  showChatBox: boolean;
   folderSelection: boolean;
   legacyAlertbox: boolean | null;
   livedockCollapsed: boolean;
@@ -126,6 +127,7 @@ export class CustomizationService extends PersistentStatefulService<ICustomizati
     livePreviewEnabled: true,
     leftDock: false,
     hideViewerCount: false,
+    showChatBox: true,
     livedockCollapsed: true,
     livedockSize: 0,
     eventsSize: 156,
@@ -228,6 +230,10 @@ export class CustomizationService extends PersistentStatefulService<ICustomizati
 
   setLeftDock(enabled: boolean) {
     this.setSettings({ leftDock: enabled });
+  }
+
+  setShowChatBox(show: boolean) {
+    this.setSettings({ showChatBox: show });
   }
 
   setLiveDockCollapsed(collapsed: boolean) {

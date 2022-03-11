@@ -188,7 +188,7 @@ export default function SceneSelector() {
           renderItem={item => {
             if (item.title === '+') {
               return (
-                <List.Item>
+                <List.Item style={{ marginBottom: 4 }}>
                   <div
                     onClick={addScene}
                     className={cx(styles.sceneCard)}
@@ -200,10 +200,12 @@ export default function SceneSelector() {
               );
             }
             return (
-              <List.Item>
+              <List.Item style={{ marginBottom: 4 }}>
                 <div
                   onClick={() => makeActive(item.key)}
-                  className={cx(styles.sceneCard, { [styles.selected]: activeSceneId === item.key })}
+                  className={cx(styles.sceneCard, {
+                    [styles.selected]: activeSceneId === item.key,
+                  })}
                 >
                   {item.title}
                 </div>

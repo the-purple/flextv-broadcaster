@@ -19,7 +19,7 @@ export enum ELayoutElement {
   // Minifeed = 'Minifeed',
   // LegacyEvents = 'LegacyEvents',
   Display = 'Display',
-  // Mixer = 'Mixer',
+  Mixer = 'Mixer',
   Scenes = 'Scenes',
   Sources = 'Sources',
   // StreamPreview = 'StreamPreview',
@@ -66,7 +66,7 @@ type IElementData = {
 export const ELEMENT_DATA = (): IElementData => ({
   [ELayoutElement.Display]: { title: $t('Editor Display'), component: Elements.Display },
   // [ELayoutElement.Minifeed]: { title: $t('Mini Feed'), component: Elements.MiniFeed },
-  // [ELayoutElement.Mixer]: { title: $t('Audio Mixer'), component: Elements.Mixer },
+  [ELayoutElement.Mixer]: { title: $t('Audio Mixer'), component: Elements.Mixer },
   [ELayoutElement.Scenes]: { title: $t('Scene Selector'), component: Elements.SceneSelector },
   [ELayoutElement.Sources]: { title: $t('Source Selector'), component: Elements.SourceSelector },
   // [ELayoutElement.LegacyEvents]: { title: $t('Legacy Events'), component: Elements.LegacyEvents },

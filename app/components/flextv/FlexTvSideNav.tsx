@@ -155,6 +155,10 @@ export default class FlexTvSideNav extends Vue {
     );
   }
 
+  toggleChatBox() {
+    this.customizationService.setShowChatBox(!this.customizationService.state.showChatBox);
+  }
+
   studioTab(page: { target: string; title: string; icon: string; trackingTarget: string }) {
     return (
       <div
@@ -174,7 +178,7 @@ export default class FlexTvSideNav extends Vue {
   render() {
     return (
       <div class={cx('side-nav', styles.container, { [styles.leftDock]: this.leftDock })}>
-        {this.primaryStudioTab}
+        <i class={cx('icon-button', styles.iconToggleChat, { [styles.active]: this.customizationService.state.showChatBox })} onClick={this.toggleChatBox} />
         {this.pageData.map(page => (
           <div
             class={cx(styles.mainCell, {

@@ -15,10 +15,6 @@
         'main-contents--onboarding': page === 'Onboarding',
       }"
     >
-      <flex-tv-side-nav
-        v-if="page !== 'Onboarding' && !showLoadingSpinner"
-        :locked="applicationLoading"
-      />
       <div class="live-dock-wrapper" v-if="renderDock && leftDock">
         <live-dock :onLeft="true" />
         <resize-bar
@@ -63,6 +59,10 @@
         />
         <live-dock class="live-dock" />
       </div>
+      <flex-tv-side-nav
+        v-if="page !== 'Onboarding' && !showLoadingSpinner"
+        :locked="applicationLoading"
+      />
     </div>
     <ModalWrapper :renderFn="modalOptions.renderFn" />
     <transition name="loader">
@@ -99,7 +99,7 @@
 
 .main-contents {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr auto;
   flex-grow: 1;
   height: 100%;
 }

@@ -59,7 +59,7 @@ function DisplayedLayout() {
 
   return (
     <>
-      {['1', '2', '3', '4'].map((slot: LayoutSlot) => (
+      {['1', '2', '3', '4', '5'].map((slot: LayoutSlot) => (
         <div
           className={classForSlot(slot)}
           id={slot}
