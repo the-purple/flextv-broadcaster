@@ -259,7 +259,7 @@ export class EditorService extends StatefulService<IEditorServiceState> {
 
       const options = {
         ...optionsMap[name],
-        lockRatio: !event.shiftKey,
+        lockRatio: event.shiftKey,
       };
 
       if (this.isCropping) {

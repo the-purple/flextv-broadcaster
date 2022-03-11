@@ -112,11 +112,12 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
         slottedElements: {
           [ELayoutElement.Display]: { slot: '1' },
           [ELayoutElement.FlexTvChat]: { slot: '2' },
-          [ELayoutElement.Scenes]: { slot: '3' },
-          [ELayoutElement.Sources]: { slot: '4' },
+          [ELayoutElement.Sources]: { slot: '3' },
+          [ELayoutElement.Mixer]: { slot: '4' },
+          [ELayoutElement.Scenes]: { slot: '5' },
         },
         resizes: {
-          bar1: 156,
+          bar1: 250,
           bar2: 240,
         },
       },
@@ -258,8 +259,9 @@ export class LayoutService extends PersistentStatefulService<ILayoutServiceState
       slottedElements: {
         [ELayoutElement.Display]: { slot: '1' },
         [ELayoutElement.FlexTvChat]: { slot: '2' },
-        [ELayoutElement.Scenes]: { slot: '3' },
-        [ELayoutElement.Sources]: { slot: '4' },
+        [ELayoutElement.Sources]: { slot: '3' },
+        [ELayoutElement.Mixer]: { slot: '4' },
+        [ELayoutElement.Scenes]: { slot: '5' },
       },
       resizes: {
         bar1: 156,

@@ -15,6 +15,7 @@ import Settings from 'components/windows/settings/Settings.vue';
 import FFZSettings from 'components/windows/FFZSettings.vue';
 import FlexTvSettings from 'components/windows/flextv/settings/FlexTvSettings.vue';
 import SceneTransitions from 'components/windows/SceneTransitions.vue';
+import FlexTvSceneTransitions from 'components/windows/flextv/FlexTvSceneTransitions.vue';
 import AddSource from 'components/windows/AddSource.vue';
 import NameScene from 'components/windows/NameScene.vue';
 import {
@@ -97,6 +98,7 @@ export function getComponents() {
     FFZSettings,
     FlexTvSettings,
     SceneTransitions,
+    FlexTvSceneTransitions,
     RenameSource,
     AddSource,
     NameScene,

@@ -1,10 +1,6 @@
 <template>
   <div>
     <h-form-group
-      v-model="nameModel"
-      :metadata="{ title: $t('Name'), type: 'text', name: 'name', fullWidth: true }"
-    />
-    <h-form-group
       v-model="typeModel"
       :metadata="{
         title: $t('Type'),

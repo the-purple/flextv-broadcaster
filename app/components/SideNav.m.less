@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 52px;
-  left: 0;
+  width: 45px;
+  right: 0;
   top: 0;
   bottom: 0;
   background: var(--section-alt);
@@ -143,5 +143,32 @@
         fill: var(--teal);
       }
     }
+  }
+}
+
+.button-icon {
+  font-size: 25px;
+  text-align: center;
+
+  &:hover {
+    color: var(--teal);
+    fill: var(--teal);
+  }
+}
+
+.icon-toggle-chat {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  position: relative;
+  left: 3px;
+  margin-top: 5px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url('../../media/images/icons/chatbox.png');
+  opacity: 0.5;
+
+  &.active {
+    opacity: 1;
   }
 }

@@ -29,8 +29,6 @@
 }
 
 .scenes-container {
-  background: var(--section);
-
   :global(.ant-tree-switcher) {
     display: none;
   }
@@ -83,4 +81,17 @@
       cursor: not-allowed;
     }
   }
+}
+
+.scene-card {
+  padding: 15px 0;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--section) !important;
+}
+
+.scene-card:hover, .scene-card.selected {
+  font-weight: 500;
+  background-color: var(--solid-input) !important;
+  color: var(--title) !important;
 }

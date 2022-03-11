@@ -449,11 +449,11 @@ export class TransitionsService extends StatefulService<ITransitionsState> {
 
   showSceneTransitions() {
     this.windowsService.showWindow({
-      componentName: 'SceneTransitions',
+      componentName: 'FlexTvSceneTransitions',
       title: $t('Scene Transitions'),
       size: {
-        width: 800,
-        height: 650,
+        width: 600,
+        height: 350,
       },
     });
   }

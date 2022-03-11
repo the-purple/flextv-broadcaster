@@ -53,13 +53,13 @@ export default class Mixer extends BaseElement {
 
   get element() {
     return (
-      <div onContextmenu={() => this.handleRightClick()}>
+      <div onContextmenu={() => this.handleRightClick()} style={{ height: '100%' }}>
         <div class="studio-controls-top">
           <h2
             class="studio-controls__label"
             v-tooltip={{ content: this.mixerTooltip, placement: 'bottom' }}
           >
-            {$t('Mixer')}
+            {$t('Sound')}
           </h2>
           <div>
             <i

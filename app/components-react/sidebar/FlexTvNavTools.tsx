@@ -66,9 +66,6 @@ export default function FlexTvNavTools() {
           <i className="icon-developer" />
         </div>
       )}
-      <div className={styles.cell} onClick={openLayoutEditor} title={$t('Layout Editor')}>
-        <i className="fas fa-th-large" />
-      </div>
       <div
         className={cx(styles.cell, { [styles.toggleOn]: v.studioMode })}
         onClick={studioMode}

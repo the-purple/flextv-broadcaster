@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Fuse from 'fuse.js';
 import cx from 'classnames';
-import { Dropdown, Tooltip, Tree } from 'antd';
+import { Dropdown, Tooltip, List } from 'antd';
 import * as remote from '@electron/remote';
 import { Menu } from 'util/menus/Menu';
 import { getOS } from 'util/operating-systems';
@@ -71,8 +71,8 @@ export default function SceneSelector() {
     menu.popup();
   }
 
-  function makeActive(selectedKeys: string[]) {
-    ScenesService.actions.makeSceneActive(selectedKeys[0]);
+  function makeActive(selectedKey: string) {
+    ScenesService.actions.makeSceneActive(selectedKey);
   }
 
   function handleSort(info: IOnDropInfo) {
@@ -167,22 +167,7 @@ export default function SceneSelector() {
   return (
     <>
       <div className={styles.topContainer}>
-        <Dropdown
-          overlay={DropdownMenu}
-          trigger={['click']}
-          getPopupContainer={() => document.getElementById('mainWrapper')!}
-          visible={showDropdown}
-          onVisibleChange={setShowDropdown}
-          placement="bottomLeft"
-        >
-          <span className={styles.activeSceneContainer} data-name="SceneSelectorDropdown">
-            <span className={styles.activeScene}>{activeCollection?.name}</span>
-            <DownOutlined style={{ marginLeft: '4px' }} />
-          </span>
-        </Dropdown>
-        <Tooltip title={$t('Add a new Scene.')} placement="bottom">
-          <i className="icon-add icon-button icon-button--lg" onClick={addScene} />
-        </Tooltip>
+        <h2 style={{ flexGrow: 1 }}>{$t('Scene')}</h2>
         <Tooltip title={$t('Remove Scene.')} placement="bottom">
           <i className="icon-subtract icon-button icon-button--lg" onClick={removeScene} />
         </Tooltip>
@@ -191,13 +176,42 @@ export default function SceneSelector() {
         </Tooltip>
       </div>
       <Scrollable style={{ height: '100%' }} className={styles.scenesContainer}>
-        <Tree
-          draggable
-          treeData={scenes}
-          onDrop={handleSort}
-          onSelect={makeActive}
-          onRightClick={showContextMenu}
-          selectedKeys={[activeSceneId]}
+        <List
+          grid={{ gutter: 4, column: 2 }}
+          dataSource={[
+            ...scenes,
+            {
+              title: '+',
+              key: 'plus',
+            },
+          ]}
+          renderItem={item => {
+            if (item.title === '+') {
+              return (
+                <List.Item style={{ marginBottom: 4 }}>
+                  <div
+                    onClick={addScene}
+                    className={cx(styles.sceneCard)}
+                    style={{ fontSize: 25, padding: '6px 0' }}
+                  >
+                    {item.title}
+                  </div>
+                </List.Item>
+              );
+            }
+            return (
+              <List.Item style={{ marginBottom: 4 }}>
+                <div
+                  onClick={() => makeActive(item.key)}
+                  className={cx(styles.sceneCard, {
+                    [styles.selected]: activeSceneId === item.key,
+                  })}
+                >
+                  {item.title}
+                </div>
+              </List.Item>
+            );
+          }}
         />
       </Scrollable>
       <HelpTip

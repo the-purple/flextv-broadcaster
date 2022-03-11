@@ -20,7 +20,7 @@ export interface ILayoutSlotArray extends Array<ILayoutSlotArray | LayoutSlot> {
 
 export default class BaseLayout extends TsxComponent<LayoutProps> {
   @Inject() private layoutService: LayoutService;
-  @Inject() private customizationService: CustomizationService;
+  @Inject() protected customizationService: CustomizationService;
   @Inject() private windowsService: WindowsService;
 
   mins: IResizeMins = { rest: null, bar1: null };
