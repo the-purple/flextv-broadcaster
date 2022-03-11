@@ -29,8 +29,6 @@ export default class FlexTvSceneTransitions extends Vue {
   @Inject() scenesService: ScenesService;
   @Inject() private editorCommandsService: EditorCommandsService;
 
-  inspectedTransition = '';
-
   tabs: ITab[] = [
     {
       name: 'Transitions',
@@ -41,10 +39,6 @@ export default class FlexTvSceneTransitions extends Vue {
       value: 'connections',
     },
   ];
-
-  get transitionsEnabled() {
-    return this.scenesService.views.scenes.length > 1;
-  }
 
   lockStates: Dictionary<boolean>;
 
@@ -81,9 +75,5 @@ export default class FlexTvSceneTransitions extends Vue {
 
   done() {
     this.windowsService.closeChildWindow();
-  }
-
-  dismissModal(modal: string) {
-    this.$modal.hide(modal);
   }
 }

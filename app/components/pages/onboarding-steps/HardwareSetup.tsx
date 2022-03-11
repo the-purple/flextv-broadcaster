@@ -112,7 +112,7 @@ export default class HardwareSetup extends TsxComponent {
           {!!this.videoDevices.length && (
             <div>
               <VFormGroup
-                metadata={metadata.list({ options: this.videoDevices })}
+                metadata={metadata.list({ options: this.videoDevices, title: $t('Webcam') })}
                 value={this.selectedVideoDevice}
                 onInput={(id: string) => this.setVideoDevice(id)}
               />
@@ -123,6 +123,16 @@ export default class HardwareSetup extends TsxComponent {
               />
             </div>
           )}
+          <VFormGroup
+            metadata={metadata.list({
+              options: this.audioDevices,
+              title: $t('Microphone'),
+              openDirection: 'bottom',
+              optionsHeight: 120,
+            })}
+            value={this.selectedAudioDevice}
+            onInput={(id: string) => (this.selectedAudioDevice = id)}
+          />
           {this.defaultHardwareService.selectedAudioSource && (
             <div
               class={styles.volmeter}
@@ -135,15 +145,6 @@ export default class HardwareSetup extends TsxComponent {
               />
             </div>
           )}
-          <VFormGroup
-            metadata={metadata.list({
-              options: this.audioDevices,
-              openDirection: 'bottom',
-              optionsHeight: 120,
-            })}
-            value={this.selectedAudioDevice}
-            onInput={(id: string) => (this.selectedAudioDevice = id)}
-          />
         </div>
       </div>
     );
