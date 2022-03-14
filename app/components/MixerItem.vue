@@ -48,6 +48,8 @@
   .padding-h-sides(2);
   .padding-v-sides();
 
+  padding-left: 4px;
+
   .source-name {
     white-space: nowrap;
     overflow: hidden;

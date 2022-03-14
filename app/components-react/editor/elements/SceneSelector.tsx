@@ -15,7 +15,6 @@ import { $t } from 'services/i18n';
 import { EDismissable } from 'services/dismissables';
 import { ERenderingMode } from '../../../../obs-api';
 import styles from './SceneSelector.m.less';
-import { DownOutlined } from '@ant-design/icons';
 
 export default function SceneSelector() {
   const {
@@ -167,7 +166,7 @@ export default function SceneSelector() {
   return (
     <>
       <div className={styles.topContainer}>
-        <h2 style={{ flexGrow: 1 }}>{$t('Scene')}</h2>
+        <h3 style={{ flexGrow: 1 }}>{$t('Scene')}</h3>
         <Tooltip title={$t('Remove Scene.')} placement="bottom">
           <i className="icon-subtract icon-button icon-button--lg" onClick={removeScene} />
         </Tooltip>

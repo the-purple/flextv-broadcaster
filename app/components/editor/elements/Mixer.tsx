@@ -55,12 +55,12 @@ export default class Mixer extends BaseElement {
     return (
       <div onContextmenu={() => this.handleRightClick()} style={{ height: '100%' }}>
         <div class="studio-controls-top">
-          <h2
+          <h3
             class="studio-controls__label"
             v-tooltip={{ content: this.mixerTooltip, placement: 'bottom' }}
           >
             {$t('Sound')}
-          </h2>
+          </h3>
           <div>
             <i
               class="icon-settings icon-button"
@@ -72,7 +72,7 @@ export default class Mixer extends BaseElement {
         <Scrollable className="studio-controls-selector mixer-panel">
           <div style={{ position: 'relative' }}>
             {this.audioSources.length !== 0 && !this.performanceMode && (
-              <GLVolmeters style={{ left: '17px', right: '17px', height: '100%' }} />
+              <GLVolmeters style={{ left: '4px', right: '17px', height: '100%' }} />
             )}
             {this.audioSources.map(audioSource => (
               <MixerItem
