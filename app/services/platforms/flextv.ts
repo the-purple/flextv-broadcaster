@@ -97,7 +97,9 @@ export class FlexTvService
     const streamSetting = forms.find(f => f.nameSubCategory === 'Streaming');
     if (!streamSetting) return [];
 
-    const param = streamSetting.parameters.find(p => p.description === 'Encoder');
+    const param = streamSetting.parameters.find(p =>
+      ['StreamEncoder', 'Encoder'].includes(p.description),
+    );
     if (!param) return [];
     // @ts-ignore
     return param.options.map((o: any) => o.value);
@@ -109,11 +111,9 @@ export class FlexTvService
     const encoderOptions = this.findOBSEncoderOptions();
     const hardwareEncoders = encoderOptions.filter(e => e !== 'obs_x264');
     if (hardwareEncoders.length > 0) {
-      this.settingsService.setSettingValue(
-        'Output',
-        'StreamEncoder',
-        hardwareEncoders[hardwareEncoders.length - 1],
-      );
+      const defaultEncoder = hardwareEncoders[hardwareEncoders.length - 1];
+      this.settingsService.setSettingValue('Output', 'StreamEncoder', defaultEncoder);
+      this.settingsService.setSettingValue('Output', 'Encoder', defaultEncoder);
       this.settingsService.setSettingValue('Output', 'preset', 'llhp');
       this.settingsService.setSettingValue('Output', 'keyint_sec', 1);
     } else {

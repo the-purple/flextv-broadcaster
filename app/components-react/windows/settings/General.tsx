@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import * as remote from '@electron/remote';
 import { useVuex } from 'components-react/hooks';
-import { ObsGenericSettingsForm, ObsSettingsSection } from './ObsSettings';
-import { $t, I18nService } from '../../../services/i18n';
+import { ObsSettingsSection } from './ObsSettings';
+import { $t } from '../../../services/i18n';
 import { alertAsync, confirmAsync } from '../../modals';
-import { CheckboxInput, ListInput } from '../../shared/inputs';
+import { CheckboxInput } from '../../shared/inputs';
 import { Services } from '../../service-provider';
 import fs from 'fs';
 import path from 'path';
@@ -17,7 +17,6 @@ export function GeneralSettings() {
       <FlexTVSettings />
       <CacheSettings />
       <ExtraSettings />
-      <ObsGenericSettingsForm />
     </div>
   );
 }

@@ -70,7 +70,7 @@ export default function GlobalSettings() {
       <ObsSettingsSection>
         {monitoringDevice && (
           <ListInput
-            label={monitoringDevice.description}
+            label={$t(monitoringDevice.description)}
             value={monitoringDevice.value}
             options={monitoringDevice.options.map(opt => ({
               value: opt.value,
@@ -83,7 +83,7 @@ export default function GlobalSettings() {
         )}
         {audioDucking && (
           <SwitchInput
-            label={audioDucking.description}
+            label={$t(audioDucking.description)}
             value={audioDucking.value}
             onChange={(value: boolean) =>
               handleAdvancedSettingsChange('DisableAudioDucking', value)
