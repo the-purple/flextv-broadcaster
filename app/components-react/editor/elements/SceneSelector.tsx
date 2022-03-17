@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Fuse from 'fuse.js';
 import cx from 'classnames';
-import { Dropdown, Tooltip, List } from 'antd';
+import { Tooltip, List } from 'antd';
 import * as remote from '@electron/remote';
 import { Menu } from 'util/menus/Menu';
 import { getOS } from 'util/operating-systems';
@@ -62,11 +62,11 @@ export default function SceneSelector() {
       label: $t('Filters'),
       click: () => SourceFiltersService.actions.showSourceFilters(activeSceneId),
     });
-    menu.append({
-      label: $t('Create Scene Projector'),
-      click: () =>
-        ProjectorService.actions.createProjector(ERenderingMode.OBS_MAIN_RENDERING, activeSceneId),
-    });
+    // menu.append({
+    //   label: $t('Create Scene Projector'),
+    //   click: () =>
+    //     ProjectorService.actions.createProjector(ERenderingMode.OBS_MAIN_RENDERING, activeSceneId),
+    // });
     menu.popup();
   }
 
@@ -204,7 +204,14 @@ export default function SceneSelector() {
             return (
               <List.Item style={{ marginBottom: 4 }}>
                 <div
-                  onClick={() => makeActive(item.key)}
+                  onContextMenu={e => {
+                    console.log('1');
+                    showContextMenu({ event: e });
+                    return false;
+                  }}
+                  onClick={() => {
+                    makeActive(item.key);
+                  }}
                   className={cx(styles.sceneCard, {
                     [styles.selected]: activeSceneId === item.key,
                   })}

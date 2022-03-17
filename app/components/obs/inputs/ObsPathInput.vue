@@ -18,12 +18,12 @@
 
     > span {
       flex-wrap: nowrap;
-      width: 100%;
+      width: 85%;
     }
 
     button {
       margin: 0;
-      margin-left: -5px;
+      margin-left: -1px;
     }
   }
 </style>
