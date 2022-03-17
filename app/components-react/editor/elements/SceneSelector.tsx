@@ -140,7 +140,7 @@ export default function SceneSelector() {
         {$t('Manage All')}
       </div>
       <hr style={{ borderColor: 'var(--border)' }} />
-      <Scrollable style={{ height: '150px' }}>
+      <Scrollable style={{ height: 'calc(100% - 60px)' }}>
         {filteredCollections().map(collection => (
           <div
             key={collection.id}
@@ -165,8 +165,11 @@ export default function SceneSelector() {
 
   return (
     <>
-      <div className={styles.topContainer}>
+      <div className={styles.topContainer} id="sceneSelector">
         <h3 style={{ flexGrow: 1 }}>{$t('Scene')}</h3>
+        <Tooltip title={$t('Add a new Scene.')} placement="bottom">
+          <i className="icon-add icon-button icon-button--lg" onClick={addScene} />
+        </Tooltip>
         <Tooltip title={$t('Remove Scene.')} placement="bottom">
           <i className="icon-subtract icon-button icon-button--lg" onClick={removeScene} />
         </Tooltip>

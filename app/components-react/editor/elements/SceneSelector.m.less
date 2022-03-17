@@ -5,6 +5,23 @@
   margin-bottom: 8px;
   align-items: center;
   justify-content: flex-end;
+
+  > div:last-child {
+    top: 44px !important;
+    height: calc(100% - 44px);
+  }
+
+  :global(.ant-dropdown) {
+    top: 0 !important;
+    height: 100%;
+  }
+}
+
+:global(.no-top-padding) {
+  .top-container > div:last-child {
+    top: 32px !important;
+    height: calc(100% - 32px);
+  }
 }
 
 .active-scene-container {
@@ -29,12 +46,25 @@
 }
 
 .scenes-container {
+  background: var(--section);
+  border-radius: 4px;
+
+  &:global(.os-host) {
+    overflow: hidden !important;
+  }
+
+  :global(.ant-tree) {
+    background: transparent;
+  }
+
   :global(.ant-tree-switcher) {
     display: none;
   }
 
   :global(.ant-tree-treenode), :global(.ant-tree-node-content-wrapper) {
     width: 100%;
+    transition: all 0s !important;
+    border-radius: 0 !important;
   }
 
   :global(.ant-tree-node-content-wrapper) {
@@ -55,7 +85,7 @@
   border: 1px solid var(--border);
   padding: 8px;
   border-radius: 4px;
-  height: 230px;
+  height: 100%;
 }
 
 .dropdown-item {

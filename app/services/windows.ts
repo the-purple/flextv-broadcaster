@@ -17,9 +17,9 @@ import FlexTvSettings from 'components/windows/flextv/settings/FlexTvSettings.vu
 import SceneTransitions from 'components/windows/SceneTransitions.vue';
 import FlexTvSceneTransitions from 'components/windows/flextv/FlexTvSceneTransitions.vue';
 import AddSource from 'components/windows/AddSource.vue';
-import NameScene from 'components/windows/NameScene.vue';
 import {
   NameFolder,
+  NameScene,
   GoLiveWindow,
   FlexTvGoLiveWindow,
   EditStreamWindow,

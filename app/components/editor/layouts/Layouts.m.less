@@ -36,6 +36,10 @@
   width: 100%;
   min-width: 0;
 
+  &:global(.no-top-padding) {
+    padding-top: 0;
+  }
+
   > div {
     height: 100%;
     display: flex;
@@ -49,8 +53,4 @@
 
 .side-padded {
   .padding-h-sides();
-}
-
-.no-top-padding {
-  padding-top: 0;
 }
