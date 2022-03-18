@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Empty, Row, Button } from 'antd';
+import { Empty, Row, Button, Col, PageHeader } from 'antd';
 import Scrollable from 'components-react/shared/Scrollable';
 import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
@@ -9,6 +9,15 @@ import { $t } from 'services/i18n';
 import SourceTag from './SourceTag';
 import FlexTVSourceTag from './FlexTVSourceTag';
 import { useSourceShowcaseSettings } from './useSourceShowcase';
+
+const essentialSources = [
+  'monitor_capture',
+  'window_capture',
+  'dshow_input',
+  'wasapi_input_capture',
+  'wasapi_output_capture',
+  'screen_capture',
+];
 
 export default function SourceGrid(p: { activeTab: string }) {
   const {
@@ -59,6 +68,8 @@ export default function SourceGrid(p: { activeTab: string }) {
     UserService.showLogin();
   }
 
+  console.log(availableSources, 'source')
+
   return (
     <Scrollable style={{ height: 'calc(100% - 64px)' }}>
       <Row
@@ -67,13 +78,23 @@ export default function SourceGrid(p: { activeTab: string }) {
       >
         {showContent('general') && (
           <>
-            {availableSources.map(source => (
-              <SourceTag key={source.value} type={source.value} />
-            ))}
+            <Col span={24}>
+              <PageHeader style={{ paddingLeft: 0 }} title={'자주사용하는 소스'} />
+            </Col>
+            {availableSources
+              .filter(source => essentialSources.includes(source.value))
+              .map(source => (
+                <SourceTag key={source.value} type={source.value} />
+              ))}
+            <Col span={24}>
+              <PageHeader style={{ paddingLeft: 0 }} title={'일반 소스'} />
+            </Col>
+            {availableSources
+              .filter(source => !essentialSources.includes(source.value))
+              .map(source => (
+                <SourceTag key={source.value} type={source.value} />
+              ))}
             <SourceTag key="replay" name={$t('Instant Replay')} type="replay" />
-            {designerMode && (
-              <SourceTag key="icon_library" name={$t('Custom Icon')} type={'icon_library'} />
-            )}
           </>
         )}
         {showContent('widgets') && (

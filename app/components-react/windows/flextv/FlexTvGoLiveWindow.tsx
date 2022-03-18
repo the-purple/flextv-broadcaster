@@ -190,13 +190,26 @@ export default function FlexTvGoLiveWindow() {
           <div className="section thin">
             <h3 className="section-title">{'방송속성'}</h3>
             <CheckboxInput label={'연령제한'} value={isForAdult} onChange={setIsForAdult} />
-            <CheckboxInput label={'비밀번호방'} value={isSecret} onChange={setIsSecret} />
+            <CheckboxInput
+              label={'비밀번호방'}
+              value={isSecret}
+              onChange={setIsSecret}
+              style={{
+                display: 'inline-block',
+                width: 120,
+              }}
+            />
+            {isSecret ? (
+              <div style={{ display: 'inline-block', width: 300 }}>
+                <TextInput
+                  label={'비밀번호'}
+                  value={password}
+                  onChange={setPassword}
+                  nowrap={true}
+                />
+              </div>
+            ) : null}
           </div>
-          {isSecret ? (
-            <div style={{ paddingLeft: 30 }}>
-              <TextInput label={'비밀번호'} value={password} onChange={setPassword} />
-            </div>
-          ) : null}
           <div className="section thin">
             <RadioInput
               label={'방송화질'}
