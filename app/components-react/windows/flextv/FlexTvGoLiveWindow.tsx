@@ -34,6 +34,7 @@ export default function FlexTvGoLiveWindow() {
   const [password, setPassword] = useState('');
   const [themeOptions, setThemeOptions] = useState<IFlexTvTheme[]>([]);
   const [termAgreed, setTermAgreed] = useState('false');
+  const [useHigh, setUseHigh] = useState(false);
   // const [maxUserCount, setMaxUserCount] = useState(300);
 
   const shouldShowConfirm = ['prepopulate', 'waitForNewSettings'].includes(lifecycle);
@@ -63,6 +64,7 @@ export default function FlexTvGoLiveWindow() {
       setIsSecret(!!streamOptions.password);
       setPassword(streamOptions.password ?? '');
       setIsForAdult(streamOptions.isForAdult ?? false);
+      setUseHigh(!!streamOptions.useHigh);
     });
   }, []);
 
@@ -221,12 +223,26 @@ export default function FlexTvGoLiveWindow() {
                 {
                   value: '1080',
                   label: '고화질(1080p)',
+                  disabled: !useHigh,
                 },
               ]}
               value={resolution}
               onChange={useResolution}
               direction={'horizontal'}
             />
+            <Tooltip
+              title={'승인된 BJ만 1080p로 방송이 가능합니다. 고객센터로 연락 주시기 바랍니다.'}
+            >
+              <h5
+                className="strong"
+                style={{
+                  display: 'inline-block',
+                  cursor: 'pointer',
+                }}
+              >
+                * 고화질 스트리밍 사용 문의
+              </h5>
+            </Tooltip>
           </div>
           <div className="section thin">
             <div className="broadcast-agree">

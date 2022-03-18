@@ -22,7 +22,6 @@ export const RadioInput = InputComponent((p: TRadioInputProps) => {
           value={p.value}
           onChange={e => p.onChange && p.onChange(e.target.value)}
           options={p.options}
-          disabled={p.disabled}
           optionType="button"
           buttonStyle="solid"
         />
@@ -32,7 +31,7 @@ export const RadioInput = InputComponent((p: TRadioInputProps) => {
           <Space direction={p.direction || 'vertical'}>
             {p.options.map(option => {
               return (
-                <Radio key={option.value} value={option.value} disabled={p.disabled}>
+                <Radio key={option.value} value={option.value} disabled={option.disabled}>
                   {option.label}
                   {option.description && <br />}
                   {option.description && <span style={{ fontSize: 12 }}>{option.description}</span>}

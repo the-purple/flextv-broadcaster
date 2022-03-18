@@ -4,10 +4,7 @@ import { ModalLayout } from 'components-react/shared/ModalLayout';
 import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
 import { SourceDisplayData } from 'services/sources';
-import {
-  WidgetDisplayData,
-  WidgetType,
-} from 'services/widgets';
+import { WidgetDisplayData, WidgetType } from 'services/widgets';
 import { $t } from 'services/i18n';
 import { useSourceShowcaseSettings } from './useSourceShowcase';
 import styles from './SourceShowcase.m.less';
@@ -16,9 +13,7 @@ import SourceGrid from './SourceGrid';
 const { Content, Sider } = Layout;
 
 export default function SourcesShowcase() {
-  const {
-    selectInspectedSource,
-  } = useSourceShowcaseSettings();
+  const { selectInspectedSource } = useSourceShowcaseSettings();
 
   const [activeTab, setActiveTab] = useState('general');
 

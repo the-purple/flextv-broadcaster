@@ -68,8 +68,6 @@ export default function SourceGrid(p: { activeTab: string }) {
     UserService.showLogin();
   }
 
-  console.log(availableSources, 'source')
-
   return (
     <Scrollable style={{ height: 'calc(100% - 64px)' }}>
       <Row
