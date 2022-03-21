@@ -11488,10 +11488,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"obs-studio-node@https://s3-us-west-2.amazonaws.com/obsstudionodes3.streamlabs.com/osn-0.0.0-release.tar.gz":
-  version: 0.3.99
-  resolution: "obs-studio-node@https://s3-us-west-2.amazonaws.com/obsstudionodes3.streamlabs.com/osn-0.0.0-release.tar.gz"
-  checksum: 95327de55116d6050a13541f22ebec389d3ffd2b652f140479b7df5880626bda736a0ebbe4af10933ed832d902a51a179a5e4afda5409bd4ac73003759177294
+"obs-studio-node@npm:^0.10.10":
+  version: 0.10.10
+  resolution: "obs-studio-node@npm:0.10.10"
+  checksum: acce9891be46906f79074801ef4e21781715b1bdc98a23462f6ecef9ec7683930807e94f5049ad894f0afa296a2f2466c092748367cb168e884956e6c96de7a7
   languageName: node
   linkType: hard
 
@@ -14585,7 +14585,7 @@ __metadata:
     node-libuiohook: "https://slobs-node-libuiohook.s3-us-west-2.amazonaws.com/node-libuiohook-0.0.0.tar.gz"
     node-win32-np: 1.0.6
     node-window-rendering: "https://slobs-node-window-rendering.s3-us-west-2.amazonaws.com/node-window-rendering-0.0.0.tar.gz"
-    obs-studio-node: "https://s3-us-west-2.amazonaws.com/obsstudionodes3.streamlabs.com/osn-0.0.0-release.tar.gz"
+    obs-studio-node: ^0.10.10
     overlayscrollbars: 1.13.0
     overlayscrollbars-react: ^0.2.2
     overlayscrollbars-vue: 0.2.2

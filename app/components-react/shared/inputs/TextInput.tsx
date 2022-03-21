@@ -15,6 +15,7 @@ export type TTextInputProps = TSlobsInputProps<
     onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
     inputRef?: React.Ref<Input>;
     isPassword?: boolean;
+    nowrap?: boolean;
   },
   string,
   InputProps,
@@ -30,7 +31,7 @@ export const TextInput = InputComponent((p: TTextInputProps) => {
     ref: p.inputRef,
   };
   return (
-    <InputWrapper {...wrapperAttrs}>
+    <InputWrapper {...wrapperAttrs} nowrap={p.nowrap}>
       {p.isPassword && <Input.Password {...textInputAttrs} />}
       {!p.isPassword && <Input {...textInputAttrs} />}
     </InputWrapper>

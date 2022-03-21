@@ -4,7 +4,6 @@ import { BasePlatformService } from './base-platform';
 import { IPlatformState, TPlatformCapability } from './index';
 import { IGoLiveSettings } from '../streaming';
 import { platformAuthorizedRequest } from './utils';
-import Utils from 'services/utils';
 import { CustomizationService } from 'services/customization';
 import * as remote from '@electron/remote';
 
@@ -16,6 +15,7 @@ export interface IFlextvStartStreamOptions {
   password?: string;
   isForAdult?: boolean;
   maxViewerCount?: number;
+  useHigh?: number;
 }
 
 export interface IFlexTvTheme {
