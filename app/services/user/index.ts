@@ -924,11 +924,6 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
       const userInfo = await service.fetchUserInfo();
       if (!userInfo) {
         this.logOut();
-        await remote.dialog.showMessageBox({
-          title: 'FlexTV Broadcaster',
-          message: $t('You have been logged out'),
-        });
-
         return EPlatformCallResult.Error;
       }
       const newAuth = this.parseAuthFromToken(
@@ -938,7 +933,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
         userInfo.token,
       );
       this.LOGIN(newAuth);
-      
+
       await this.refreshUserInfo();
 
       return EPlatformCallResult.Success;
