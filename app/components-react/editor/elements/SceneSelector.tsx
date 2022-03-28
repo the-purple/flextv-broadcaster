@@ -11,9 +11,9 @@ import { TextInput } from 'components-react/shared/inputs';
 import HelpTip from 'components-react/shared/HelpTip';
 import Scrollable from 'components-react/shared/Scrollable';
 import { useTree, IOnDropInfo } from 'components-react/hooks/useTree';
+import { alertAsync, confirmAsync } from 'components-react/modals';
 import { $t } from 'services/i18n';
 import { EDismissable } from 'services/dismissables';
-import { ERenderingMode } from '../../../../obs-api';
 import styles from './SceneSelector.m.less';
 
 export default function SceneSelector() {
@@ -85,25 +85,21 @@ export default function SceneSelector() {
 
   function removeScene() {
     const name = ScenesService.views.activeScene?.name;
-    remote.dialog
-      .showMessageBox(remote.getCurrentWindow(), {
-        title: 'Streamlabs Desktop',
-        type: 'warning',
-        message: $t('Are you sure you want to remove %{sceneName}?', { sceneName: name }),
-        buttons: [$t('Cancel'), $t('OK')],
-      })
-      .then(({ response }) => {
-        if (!response) return;
-        if (!ScenesService.canRemoveScene()) {
-          remote.dialog.showMessageBox({
-            title: 'Streamlabs Desktop',
-            message: $t('There needs to be at least one scene.'),
-          });
-          return;
-        }
 
-        EditorCommandsService.actions.executeCommand('RemoveSceneCommand', activeSceneId);
-      });
+    confirmAsync({
+      type: 'warn',
+      content: $t('Are you sure you want to remove %{sceneName}?', {
+        sceneName: name,
+      }),
+      okText: $t('OK'),
+      cancelText: $t('Cancel'),
+    }).then((isOk: boolean) => {
+      if (!isOk) return;
+      if (!ScenesService.canRemoveScene()) {
+        return alertAsync($t('There needs to be at least one scene.'));
+      }
+      EditorCommandsService.actions.executeCommand('RemoveSceneCommand', activeSceneId);
+    });
   }
 
   function showTransitions() {

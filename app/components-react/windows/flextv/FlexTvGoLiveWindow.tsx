@@ -6,7 +6,7 @@ import { Services } from '../../service-provider';
 import { $t } from '../../../services/i18n';
 import Form from '../../shared/inputs/Form';
 import { alertAsync } from '../../modals';
-import { NumberInput, TextInput, RadioInput, CheckboxInput, ListInput } from '../../shared/inputs';
+import { TextInput, RadioInput, CheckboxInput, ListInput } from '../../shared/inputs';
 import { useGoLiveSettingsRoot } from '../go-live/useGoLiveSettings';
 import { IFlexTvTheme } from 'services/platforms/flextv';
 
@@ -35,7 +35,6 @@ export default function FlexTvGoLiveWindow() {
   const [themeOptions, setThemeOptions] = useState<IFlexTvTheme[]>([]);
   const [termAgreed, setTermAgreed] = useState('false');
   const [useHigh, setUseHigh] = useState(false);
-  // const [maxUserCount, setMaxUserCount] = useState(300);
 
   const shouldShowConfirm = ['prepopulate', 'waitForNewSettings'].includes(lifecycle);
 
@@ -335,16 +334,6 @@ export default function FlexTvGoLiveWindow() {
               onChange={setTermAgreed}
             />
           </div>
-          {/*
-           <div className="section thin">
-            <NumberInput
-              label={'유저 수'}
-              value={maxUserCount}
-              onChange={setMaxUserCount}
-              max={700}
-            />
-          </div>
-             */}
         </Form>
       </Spin>
     </ModalLayout>

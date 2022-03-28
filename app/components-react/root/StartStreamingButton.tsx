@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import { EPlatformState, EStreamingState } from 'services/streaming';
 import { $t } from 'services/i18n';
+import { confirmAsync } from 'components-react/modals';
 import { useVuex } from '../hooks';
 import { Services } from '../service-provider';
 import * as remote from '@electron/remote';
@@ -47,49 +48,39 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
 
   async function toggleStreaming() {
     if (StreamingService.isStreaming || StreamingService.isPaused) {
-      const options = {
+      await confirmAsync({
         type: 'warning',
-        buttons: ['종료', '취소'],
         title: '방송을 종료하시겠습니까?',
-        message: '종료를 선택하시면 즉시 방송이 종료 됩니다.',
-      };
-      const response = await remote.dialog.showMessageBox(remote.getCurrentWindow(), options);
-      if (response.response === 0) {
+        content: '종료를 선택하시면 즉시 방송이 종료 됩니다.',
+        okText: '종료',
+        cancelText: $t('Cancel'),
+      }).then((isOk: boolean) => {
+        if (!isOk) return;
         if (StreamingService.isPaused) {
           return StreamingService.finishPlatformStream();
         } else {
           return StreamingService.toggleStreaming();
         }
-      }
+      });
     } else {
       const streamStatus = await FlexTvService.checkReadyToStream();
       if (!streamStatus.success) {
         if (streamStatus.error?.code === 'NO_AUTH') {
-          await remote.dialog
-            .showMessageBox(remote.getCurrentWindow(), {
-              title: '안내',
-              type: 'warning',
-              message: '방송은 본인인증후 이용이 가능합니다.',
-              buttons: [$t('Cancel'), '본인 인증하러 가기'],
-            })
-            .then(({ response: isOk }) => {
-              if (isOk) {
-                remote.shell.openExternal(FlexTvService.apiBase);
-              }
-            });
+          await confirmAsync({
+            content: '방송은 본인인증후 이용이 가능합니다.',
+            okText: '인증하러 가기',
+            cancelText: $t('Cancel'),
+          }).then((isOk: boolean) => {
+            if (isOk) {
+              remote.shell.openExternal(FlexTvService.apiBase);
+            }
+          });
           return;
         } else if (streamStatus.error?.code === 'CREATING') {
-          await remote.dialog
-            .showMessageBox(remote.getCurrentWindow(), {
-              title: '안내',
-              type: 'info',
-              message: '방송 송출을 위한 준비를 완료 하였습니다.',
-            })
-            .then(({ response: isOk }) => {
-              if (isOk) {
-                remote.shell.openExternal(FlexTvService.apiBase);
-              }
-            });
+          await confirmAsync({
+            type: 'success',
+            content: '방송 송출을 위한 준비를 완료 하였습니다.',
+          });
         }
       }
 
