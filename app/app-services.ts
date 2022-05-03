@@ -55,6 +55,7 @@ export { VirtualWebcamService } from 'services/virtual-webcam';
 export { MetricsService } from 'services/metrics';
 export { HighlighterService } from 'services/highlighter';
 export { DiagnosticsService } from 'services/diagnostics';
+export { RecordingModeService } from 'services/recording-mode';
 
 // ONLINE SERVICES
 export { UserService } from './services/user';
@@ -99,7 +100,6 @@ export { StarsGoalService } from 'services/widgets/settings/stars-goal';
 export { SupporterGoalService } from 'services/widgets/settings/supporter-goal';
 export { SubscriberGoalService } from 'services/widgets/settings/subscriber-goal';
 export { CharityGoalService } from 'services/widgets/settings/charity-goal';
-export { ViewerCountService } from 'services/widgets/settings/viewer-count';
 export { StreamBossService } from 'services/widgets/settings/stream-boss';
 export { DonationTickerService } from 'services/widgets/settings/donation-ticker';
 export { CreditsService } from 'services/widgets/settings/credits';
@@ -166,6 +166,14 @@ import { WebsocketService } from './services/websocket';
 import { SpinWheelService } from 'services/widgets/settings/spin-wheel';
 import { LayoutService } from './services/layout';
 import { ProjectorService } from './services/projector';
+import { ObsImporterService } from 'services/obs-importer';
+import { DefaultHardwareService } from 'services/hardware';
+import { AutoConfigService } from 'services/auto-config';
+import { MacPermissionsService } from 'services/mac-permissions';
+import { IncrementalRolloutService } from './services/incremental-rollout';
+import { RecordingModeService } from 'services/recording-mode';
+import { JsonrpcService } from 'services/api/jsonrpc';
+import { OverlaysPersistenceService } from 'services/scene-collections/overlays';
 
 export const AppServices = {
   AppService,
@@ -219,4 +227,12 @@ export const AppServices = {
   SpinWheelService,
   LayoutService,
   ProjectorService,
+  ObsImporterService,
+  DefaultHardwareService,
+  AutoConfigService,
+  MacPermissionsService,
+  IncrementalRolloutService,
+  RecordingModeService,
+  JsonrpcService,
+  OverlaysPersistenceService,
 };

@@ -48,10 +48,13 @@ export interface ISettingsValues {
     server: string;
   };
   Output: {
+    Mode: string;
     RecRB?: boolean;
     RecRBTime?: number;
     RecFormat: string;
     RecTracks?: number;
+    RecEncoder?: string;
+    RecQuality?: string;
     TrackIndex?: string;
     VodTrackEnabled?: boolean;
     VodTrackIndex?: string;
@@ -378,7 +381,7 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
   private getAudioSettingsFormData(OBSsettings: ISettingsSubCategory): ISettingsSubCategory[] {
     // Make sure we are working with the latest devices plugged into the system
     this.hardwareService.refreshDevices(true);
-    const audioDevices = this.audioService.getDevices();
+    const audioDevices = this.audioService.devices;
     const sourcesInChannels = this.sourcesService.views
       .getSources()
       .filter(source => source.channel !== void 0);
@@ -488,7 +491,7 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
   }
 
   private setAudioSettings(settingsData: ISettingsSubCategory[]) {
-    const audioDevices = this.audioService.getDevices();
+    const audioDevices = this.audioService.devices;
 
     settingsData[0].parameters.forEach((deviceForm, ind) => {
       const channel = ind + 1;

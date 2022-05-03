@@ -4,7 +4,7 @@ import * as remote from '@electron/remote';
 import electron from 'electron';
 import Utils from '../../services/utils';
 import { $t } from '../../services/i18n';
-import styles from '../../components/SideNav.m.less';
+import styles from './SideNav.m.less';
 import { Services } from '../service-provider';
 import { useVuex } from '../hooks';
 
@@ -14,7 +14,6 @@ export default function FlexTvNavTools() {
     TransitionsService,
     SettingsService,
     NavigationService,
-    MagicLinkService,
     UsageStatisticsService,
   } = Services;
 
