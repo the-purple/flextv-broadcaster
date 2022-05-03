@@ -5,7 +5,7 @@ import FlexTvGoLiveWindow from './windows/flextv/FlexTvGoLiveWindow';
 import EditStreamWindow from './windows/go-live/EditStreamWindow';
 import IconLibraryProperties from './windows/IconLibraryProperties';
 import ScreenCaptureProperties from './windows/ScreenCaptureProperties';
-import NewsBanner from './root/NewsBanner';
+import News from './windows/News';
 import PerformanceMetrics from './shared/PerformanceMetrics';
 import PatchNotes from './pages/PatchNotes';
 import Display from './shared/Display';
@@ -17,7 +17,9 @@ import Loader from './pages/Loader';
 import NavTools from './sidebar/NavTools';
 import FlexTvNavTools from './sidebar/FlexTvNavTools';
 import PlatformLogo from './shared/PlatformLogo';
+import Onboarding from './pages/onboarding/Onboarding';
 import AdvancedStatistics from './windows/AdvancedStatistics';
+import StudioFooter from './root/StudioFooter';
 import StreamScheduler from './pages/stream-scheduler/StreamScheduler';
 import { createRoot } from './root/ReactRoot';
 import StartStreamingButton from './root/StartStreamingButton';
@@ -25,7 +27,6 @@ import SourceProperties from './windows/SourceProperties';
 import TestWidgets from './root/TestWidgets';
 import RenameSource from './windows/RenameSource';
 import NotificationsArea from './root/NotificationsArea';
-import AppsNav from './sidebar/AppsNav';
 import StudioEditor from './root/StudioEditor';
 import SharedComponentsLibrary from './windows/sharedComponentsLibrary/SharedComponentsLibrary';
 import { ObsSettings } from './windows/settings/ObsSettings';
@@ -44,9 +45,13 @@ import MediaGallery from './windows/MediaGallery';
 import LayoutEditor from './pages/layout-editor/LayoutEditor';
 import Projector from './windows/Projector';
 import SceneSelector from './editor/elements/SceneSelectorElement';
+import AddSource from './windows/AddSource';
+import SideNav from './sidebar/SideNav';
+import AlertboxLibrary from './pages/AlertboxLibrary';
 
 // list of React components to be used inside Vue components
 export const components = {
+  AlertboxLibrary,
   NameFolder,
   NameScene,
   BrowserView,
@@ -55,7 +60,7 @@ export const components = {
   EditStreamWindow: createRoot(EditStreamWindow),
   IconLibraryProperties,
   ScreenCaptureProperties,
-  NewsBanner,
+  News,
   PerformanceMetrics,
   PatchNotes,
   Display,
@@ -67,18 +72,19 @@ export const components = {
   NavTools,
   FlexTvNavTools,
   PlatformLogo,
+  Onboarding: createRoot(Onboarding),
   Projector,
   StreamScheduler: createRoot(StreamScheduler),
   AdvancedStatistics,
   SourceProperties: createRoot(SourceProperties),
   SharedComponentsLibrary: createRoot(SharedComponentsLibrary),
-  StartStreamingButton,
   TestWidgets,
   RenameSource,
+  StudioFooter: createRoot(StudioFooter),
+  StartStreamingButton,
   NotificationsArea,
   ObsSettings: createRoot(ObsSettings),
   ThemeAudit,
-  AppsNav,
   StudioEditor,
   WidgetWindow: createRoot(WidgetWindow),
   CustomCodeWindow: createRoot(CustomCodeWindow),
@@ -92,4 +98,6 @@ export const components = {
   MediaGallery,
   LayoutEditor: createRoot(LayoutEditor),
   SceneSelector: createRoot(SceneSelector),
+  AddSource,
+  SideNav,
 };

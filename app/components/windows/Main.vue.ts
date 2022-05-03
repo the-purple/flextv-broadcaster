@@ -1,17 +1,19 @@
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
-import SideNav from '../SideNav';
-import FlexTvSideNav from '../flextv/FlexTvSideNav';
 import {
-  NewsBanner,
   TitleBar,
   Grow,
   PatchNotes,
   Loader,
   StreamScheduler,
+  StudioFooter,
   Highlighter,
   ThemeAudit,
   LayoutEditor,
+  Onboarding,
+  SideNav,
+  FlexTvSideNav,
+  AlertboxLibrary,
 } from 'components/shared/ReactComponentList';
 import { ScenesService } from 'services/scenes';
 import { PlatformAppsService } from 'services/platform-apps';
@@ -26,8 +28,6 @@ Vue.use(VueResize);
 import Studio from '../pages/Studio';
 import PlatformAppStore from '../pages/PlatformAppStore.vue';
 import BrowseOverlays from 'components/pages/BrowseOverlays.vue';
-import AlertboxLibrary from 'components/pages/AlertboxLibrary';
-import Onboarding from '../pages/Onboarding';
 import { Inject } from '../../services/core/injector';
 import { CustomizationService } from 'services/customization';
 import { NavigationService } from 'services/navigation';
@@ -35,7 +35,6 @@ import { AppService } from 'services/app';
 import { UserService } from 'services/user';
 import { IModalOptions, WindowsService } from 'services/windows';
 import LiveDock from '../LiveDock.vue';
-import StudioFooter from '../StudioFooter.vue';
 import PlatformAppMainPage from '../pages/PlatformAppMainPage.vue';
 import ResizeBar from 'components/shared/ResizeBar.vue';
 import PlatformMerge from 'components/pages/PlatformMerge';
@@ -62,7 +61,6 @@ const loadedTheme = () => {
     StudioFooter,
     CustomLoader: Loader,
     PatchNotes,
-    NewsBanner,
     PlatformAppMainPage,
     PlatformAppStore,
     ResizeBar,

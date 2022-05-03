@@ -107,16 +107,20 @@ function ExtraSettings() {
     OnboardingService,
     WindowsService,
     StreamlabelsService,
+    RecordingModeService,
   } = Services;
   const isLoggedIn = UserService.isLoggedIn;
   const isTwitch = isLoggedIn && getDefined(UserService.platform).type === 'twitch';
   const isFacebook = isLoggedIn && getDefined(UserService.platform).type === 'facebook';
   const isYoutube = isLoggedIn && getDefined(UserService.platform).type === 'youtube';
-  const isRecordingOrStreaming = StreamingService.isStreaming || StreamingService.isRecording;
   const protectedMode = StreamSettingsService.state.protectedModeEnabled;
-  const canRunOptimizer = isTwitch && !isRecordingOrStreaming && protectedMode;
   const disableHAFilePath = path.join(AppService.appDataDirectory, 'HADisable');
   const [disableHA, setDisableHA] = useState(() => fs.existsSync(disableHAFilePath));
+  const { isRecordingOrStreaming, recordingMode } = useVuex(() => ({
+    isRecordingOrStreaming: StreamingService.isStreaming || StreamingService.isRecording,
+    recordingMode: RecordingModeService.views.isRecordingModeEnabled,
+  }));
+  const canRunOptimizer = isTwitch && !isRecordingOrStreaming && protectedMode;
 
   function restartStreamlabelsSession() {
     StreamlabelsService.restartSession().then(result => {
@@ -173,6 +177,11 @@ function ExtraSettings() {
           value={disableHA}
           onChange={disableHardwareAcceleration}
           name="disable_ha"
+        />
+        <CheckboxInput
+          label={$t('Disable live streaming features (Recording Only mode)')}
+          value={recordingMode}
+          onChange={RecordingModeService.actions.setRecordingMode}
         />
 
         <div className="actions">

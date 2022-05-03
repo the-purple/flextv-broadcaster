@@ -12,8 +12,8 @@ import { ServicesManager } from 'services-manager';
 import { authorizedHeaders, handleResponse } from 'util/requests';
 import { ISerializableWidget, IWidgetSource, IWidgetsServiceApi } from './widgets-api';
 import { WidgetType, WidgetDefinitions, WidgetTesters } from './widgets-data';
-import { FlexTvWidgetTypeKey } from './flextv-widgets-data'
-import { mutation, StatefulService } from '../core/stateful-service';
+import { FlexTvWidgetTypeKey } from './flextv-widgets-data';
+import { mutation, StatefulService, ViewHandler } from '../core/stateful-service';
 import { WidgetSource } from './widget-source';
 import { InitAfter } from 'services/core/service-initialization-observer';
 import Vue from 'vue';
@@ -33,6 +33,27 @@ import Utils from '../utils';
 
 export interface IWidgetSourcesState {
   widgetSources: Dictionary<IWidgetSource>;
+}
+
+class WidgetsServiceViews extends ViewHandler<IWidgetSourcesState> {
+  get userService() {
+    return this.getServiceViews(UserService);
+  }
+
+  // hack since in the current iteration HostsService cannot have views be fetched
+  @Inject() hostsService: HostsService;
+
+  get testers(): { name: string; url: string }[] {
+    if (!this.userService.isLoggedIn) return;
+    return WidgetTesters.filter(tester => {
+      return tester.platforms.includes(this.userService.platform.type);
+    }).map(tester => {
+      return {
+        name: tester.name,
+        url: tester.url(this.hostsService.streamlabs, this.userService.platform.type),
+      };
+    });
+  }
 }
 
 @InitAfter('SourcesService')
@@ -83,7 +104,11 @@ export class WidgetsService
     });
   }
 
-  async createWidget(type: WidgetType, name?: string): Promise<SceneItem> {
+  get views() {
+    return new WidgetsServiceViews(this.state);
+  }
+
+  createWidget(type: WidgetType, name?: string): SceneItem {
     if (!this.userService.isLoggedIn) return;
 
     const widget = this.widgetsConfig[type] || WidgetDefinitions[type];
@@ -172,24 +197,12 @@ export class WidgetsService
     return servicesManager.getResource(serviceName);
   }
 
-  getTesters(): { name: string; url: string }[] {
-    if (!this.userService.isLoggedIn) return;
-    return WidgetTesters.filter(tester => {
-      return tester.platforms.includes(this.userService.platform.type);
-    }).map(tester => {
-      return {
-        name: tester.name,
-        url: tester.url(this.hostsService.streamlabs, this.userService.platform.type),
-      };
-    });
-  }
-
   /**
    * @deprecated use .playAlert() instead
    */
   @Throttle(1000)
   test(testerName: string) {
-    const tester = this.getTesters().find(tester => tester.name === testerName);
+    const tester = this.views.testers.find(tester => tester.name === testerName);
     const headers = authorizedHeaders(this.userService.apiToken);
     fetch(new Request(tester.url, { headers }));
   }
