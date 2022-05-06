@@ -144,7 +144,7 @@ export default class AddSource extends Vue {
       let source: ISourceApi;
 
       if (this.sourceAddOptions.propertiesManager === 'widget') {
-        this.widgetsService.createWidget(this.widgetType, this.name).then(() => {});
+        this.widgetsService.createWidget(this.widgetType, this.name);
         this.close();
         return;
       } else {

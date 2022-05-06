@@ -698,7 +698,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
   async showLogin() {
     if (this.isLoggedIn) await this.logOut();
-    this.onboardingService.start({ isLogin: true });
+    this.navigationService.navigate('FlexLoginForm');
   }
 
   @RunInLoadingMode()
