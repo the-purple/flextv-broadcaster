@@ -38,7 +38,7 @@ export default function FlexLoginForm() {
       );
 
       return Services.UserService.startFlexAuth(auth).then(() => {
-        return Services.NavigationService.navigate('Studio')
+        return Services.NavigationService.navigate('Studio');
       });
     } catch (e: unknown) {
       return remote.dialog.showMessageBox({
