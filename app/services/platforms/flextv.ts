@@ -15,6 +15,7 @@ export interface IFlextvStartStreamOptions {
   password?: string;
   isForAdult?: boolean;
   maxViewerCount?: number;
+  useAltThumbUrl?: number;
   useHigh?: number;
 }
 
