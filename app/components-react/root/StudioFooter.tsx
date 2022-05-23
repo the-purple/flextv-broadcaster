@@ -170,7 +170,6 @@ export default function StudioFooterComponent() {
       </div>
 
       <div className={styles.navRight}>
-        <div className={styles.navItem}>{isLoggedIn && <TestWidgets />}</div>
         {recordingModeEnabled && (
           <button className="button button--trans" onClick={showRecordingModeDisableModal}>
             {$t('Looking to stream?')}
@@ -182,31 +181,6 @@ export default function StudioFooterComponent() {
             <Tooltip placement="left" title={$t('Start Replay Buffer')}>
               <button className="circle-button" onClick={toggleReplayBuffer}>
                 <i className="icon-replay-buffer" />
-              </button>
-            </Tooltip>
-          </div>
-        )}
-        {!replayBufferOffline && (
-          <div className={cx(styles.navItem, styles.replayButtonGroup)}>
-            <Tooltip placement="left" title={$t('Stop')}>
-              <button
-                className={cx('circle-button', styles.leftReplay, 'button--soft-warning')}
-                onClick={toggleReplayBuffer}
-              >
-                {replayBufferStopping ? (
-                  <i className="fa fa-spinner fa-pulse" />
-                ) : (
-                  <i className="fa fa-stop" />
-                )}
-              </button>
-            </Tooltip>
-            <Tooltip placement="right" title={$t('Save Replay')}>
-              <button className={cx('circle-button', styles.rightReplay)} onClick={saveReplay}>
-                {replayBufferSaving ? (
-                  <i className="fa fa-spinner fa-pulse" />
-                ) : (
-                  <i className="icon-save" />
-                )}
               </button>
             </Tooltip>
           </div>
