@@ -687,6 +687,11 @@ export class StreamingService
         remote.powerSaveBlocker.stop(this.powerSaveId);
       }
 
+      this.views.enabledPlatforms.forEach(platform => {
+        const service = getPlatformService(platform);
+        if (service.afterStopStream) service.afterStopStream();
+      });
+
       obs.NodeObs.OBS_service_stopStreaming(false);
 
       const keepRecording = this.streamSettingsService.settings.keepRecordingWhenStreamStops;
@@ -700,10 +705,6 @@ export class StreamingService
       }
 
       this.windowsService.closeChildWindow();
-      this.views.enabledPlatforms.forEach(platform => {
-        const service = getPlatformService(platform);
-        if (service.afterStopStream) service.afterStopStream();
-      });
       this.SET_PLATFORM_STATUS(EPlatformState.Offline);
 
       this.UPDATE_STREAM_INFO({ lifecycle: 'empty' });
