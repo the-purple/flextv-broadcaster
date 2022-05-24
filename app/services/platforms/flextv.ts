@@ -12,6 +12,7 @@ export interface IFlextvStartStreamOptions {
   theme?: string;
   resolution?: string;
   minRatingLevel?: number;
+  userAgentType?: string;
   password?: string;
   isForAdult?: boolean;
   maxViewerCount?: number;
@@ -202,6 +203,7 @@ export class FlexTvService
         theme,
         resolution,
         minRatingLevel,
+        userAgentType: 'PC_APP_V1',
         password,
         isForAdult,
       }),

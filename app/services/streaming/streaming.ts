@@ -598,6 +598,13 @@ export class StreamingService
     this.toggleStreaming();
   }
 
+  stopPlatformStreaming() {
+    this.views.enabledPlatforms.forEach(platform => {
+      const service = getPlatformService(platform);
+      if (service.afterStopStream) service.afterStopStream();
+    });
+  }
+
   async finishStartStreaming(): Promise<unknown> {
     // register a promise that we should reject or resolve in the `handleObsOutputSignal`
     const startStreamingPromise = new Promise((resolve, reject) => {
@@ -651,7 +658,8 @@ export class StreamingService
       await remote.dialog.showMessageBox(Utils.getMainWindow(), {
         title: '라이브 실패',
         type: 'warning',
-        message: '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
+        message:
+          '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
         buttons: [$t('Confirm')],
       });
       obs.NodeObs.OBS_service_stopStreaming(false);
@@ -678,21 +686,27 @@ export class StreamingService
       }
     }
 
-    if (
+    if (this.state.streamingStatus === EStreamingState.Ending) {
+      obs.NodeObs.OBS_service_stopStreaming(true);
+      this.stopPlatformStreaming();
+
+      return Promise.resolve();
+    }
+
+    const isInLive =
       this.state.streamingStatus === EStreamingState.Starting ||
       this.state.streamingStatus === EStreamingState.Live ||
-      this.state.streamingStatus === EStreamingState.Reconnecting
-    ) {
+      this.state.streamingStatus === EStreamingState.Reconnecting;
+    if (!isInLive) return;
+
+    try {
       if (this.powerSaveId) {
         remote.powerSaveBlocker.stop(this.powerSaveId);
       }
 
-      this.views.enabledPlatforms.forEach(platform => {
-        const service = getPlatformService(platform);
-        if (service.afterStopStream) service.afterStopStream();
-      });
-
       obs.NodeObs.OBS_service_stopStreaming(false);
+
+      this.stopPlatformStreaming();
 
       const keepRecording = this.streamSettingsService.settings.keepRecordingWhenStreamStops;
       if (!keepRecording && this.state.recordingStatus === ERecordingState.Recording) {
@@ -709,11 +723,8 @@ export class StreamingService
 
       this.UPDATE_STREAM_INFO({ lifecycle: 'empty' });
       return Promise.resolve();
-    }
-
-    if (this.state.streamingStatus === EStreamingState.Ending) {
-      obs.NodeObs.OBS_service_stopStreaming(true);
-      return Promise.resolve();
+    } catch (e: unknown) {
+      this.stopPlatformStreaming();
     }
   }
 
