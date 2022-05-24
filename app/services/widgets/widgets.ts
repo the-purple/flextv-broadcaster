@@ -26,9 +26,8 @@ import { THttpMethod } from './settings/widget-settings';
 import { TPlatform } from '../platforms';
 import { getAlertsConfig, TAlertType } from './alerts-config';
 import { getWidgetsConfig } from './widgets-config';
-import { WidgetDisplayData } from '.';
+import { WidgetDisplayData } from './widgets-data';
 import * as remote from '@electron/remote';
-import { $t } from '../i18n';
 import Utils from '../utils';
 
 export interface IWidgetSourcesState {
@@ -108,7 +107,7 @@ export class WidgetsService
     return new WidgetsServiceViews(this.state);
   }
 
-  createWidget(type: WidgetType, name?: string): SceneItem {
+  async createWidget(type: WidgetType, name?: string): Promise<SceneItem> {
     if (!this.userService.isLoggedIn) return;
 
     const widget = this.widgetsConfig[type] || WidgetDefinitions[type];
@@ -133,7 +132,7 @@ export class WidgetsService
       rect.y = widgetTransform.y * this.videoService.baseHeight;
     });
 
-    const url = this.flexTvService.fetchWidgetUrl(FlexTvWidgetTypeKey[type]);
+    const url = await this.flexTvService.fetchWidgetUrl(FlexTvWidgetTypeKey[type]);
     const item = this.editorCommandsService.executeCommand(
       'CreateNewItemCommand',
       this.scenesService.views.activeSceneId,
@@ -173,10 +172,11 @@ export class WidgetsService
 
   async getWidgetUrl(type: WidgetType): Promise<string> {
     if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return '';
-    const widgets = this.flexTvService.getWidgetUrl(FlexTvWidgetTypeKey[type]);
+    await this.flexTvService.initWidgets();
+    const widgets = this.flexTvService.getWidgetUrls(FlexTvWidgetTypeKey[type]);
     if (widgets.length === 0) {
       await remote.dialog.showMessageBox(Utils.getMainWindow(), {
-        title: '해당 위젯의 프리셋이 없습니다.',
+        title: `${WidgetDisplayData()[type]?.name} 위젯의 프리셋이 없습니다.`,
         type: 'warning',
         message: '하단의 위젯 설정에서 프리셋을 설정해 주세요.',
       });

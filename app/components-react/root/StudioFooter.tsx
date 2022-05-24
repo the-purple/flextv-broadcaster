@@ -7,9 +7,7 @@ import { $t } from '../../services/i18n';
 import { useVuex } from '../hooks';
 import styles from './StudioFooter.m.less';
 import PerformanceMetrics from '../shared/PerformanceMetrics';
-import TestWidgets from './TestWidgets';
 import StartStreamingButton from './StartStreamingButton';
-import NotificationsArea from './NotificationsArea';
 import { Tooltip } from 'antd';
 import { confirmAsync } from 'components-react/modals';
 import { useModule } from 'components-react/hooks/useModule';
@@ -166,7 +164,6 @@ export default function StudioFooterComponent() {
           />
         </Tooltip>
         <PerformanceMetrics mode="limited" className="performance-metrics" />
-        <NotificationsArea />
       </div>
 
       <div className={styles.navRight}>
