@@ -174,7 +174,14 @@ export class WidgetsService
   async getWidgetUrl(type: WidgetType): Promise<string> {
     if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return '';
     const widgets = this.flexTvService.getWidgetUrl(FlexTvWidgetTypeKey[type]);
-    if (widgets.length === 0) return '';
+    if (widgets.length === 0) {
+      await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: '해당 위젯의 프리셋이 없습니다.',
+        type: 'warning',
+        message: '하단의 위젯 설정에서 프리셋을 설정해 주세요.',
+      });
+      return '';
+    }
     if (widgets.length > 1) {
       const selected = await remote.dialog.showMessageBox(Utils.getMainWindow(), {
         title: '두 개 이상의 프리셋이 있습니다.',
