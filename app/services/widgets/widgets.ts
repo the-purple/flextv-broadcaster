@@ -107,10 +107,8 @@ export class WidgetsService
     return new WidgetsServiceViews(this.state);
   }
 
-  async createWidget(type: WidgetType, name?: string): Promise<SceneItem> {
+  async createWidget(type: WidgetType, name?: string): Promise<void> {
     if (!this.userService.isLoggedIn) return;
-
-    const widget = this.widgetsConfig[type] || WidgetDefinitions[type];
     const widgetTransform = this.widgetsConfig[type]?.defaultTransform || WidgetDefinitions[type];
 
     const suggestedName =
@@ -133,7 +131,7 @@ export class WidgetsService
     });
 
     const url = await this.flexTvService.fetchWidgetUrl(FlexTvWidgetTypeKey[type]);
-    const item = this.editorCommandsService.executeCommand(
+    await this.editorCommandsService.actions.return.executeCommand(
       'CreateNewItemCommand',
       this.scenesService.views.activeSceneId,
       suggestedName,
@@ -158,8 +156,6 @@ export class WidgetsService
         },
       },
     );
-
-    return item;
   }
 
   getWidgetSources(): WidgetSource[] {

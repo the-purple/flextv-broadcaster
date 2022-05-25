@@ -127,8 +127,9 @@ export default function AddSource() {
     }
     let source: ISourceApi;
     if (sourceAddOptions.propertiesManager === 'widget') {
-      const widget = await WidgetsService.actions.return.createWidget(widgetType, name);
-      source = widget.getSource();
+      await WidgetsService.actions.return.createWidget(widgetType, name);
+      close();
+      return;
     } else {
       const settings: Dictionary<any> = {};
       if (sourceAddOptions.propertiesManager === 'platformApp') {
