@@ -130,7 +130,28 @@ export class WidgetsService
       rect.y = widgetTransform.y * this.videoService.baseHeight;
     });
 
-    const url = await this.flexTvService.fetchWidgetUrl(FlexTvWidgetTypeKey[type]);
+    let url = '';
+    const widgets = await this.flexTvService.fetchWidgets(FlexTvWidgetTypeKey[type]);
+    if (widgets.length > 1) {
+      const selected = await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: '두 개 이상의 프리셋이 있습니다.',
+        type: 'info',
+        message: '원하는 프리셋을 선택하세요.',
+        buttons: widgets.map(w => w.name),
+      });
+      url = widgets[selected.response].url;
+    } else if (widgets.length === 0) {
+      await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: `${WidgetDisplayData()[type]?.name} 위젯의 프리셋이 없습니다.`,
+        type: 'warning',
+        message: '하단의 위젯 설정에서 프리셋을 설정해 주세요.',
+      });
+      url = '';
+    } else {
+      url = widgets[0].url;
+    }
+    if (!url) return;
+
     await this.editorCommandsService.actions.return.executeCommand(
       'CreateNewItemCommand',
       this.scenesService.views.activeSceneId,

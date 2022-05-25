@@ -247,14 +247,12 @@ export class FlexTvService
     );
   }
 
-  async fetchWidgetUrl(type: string) {
+  async fetchWidgets(type: string) {
     const widgets = await platformAuthorizedRequest<IFlexTvWidget[]>(
       'flextv',
       `${this.apiBase}/api/my/channel/hp/widget-urls`,
     );
-    const widget = widgets.find(w => w.type === type);
-    if (widget) return widget.url;
-    return '';
+    return widgets.filter(w => w.type === type);
   }
 
   getWidgetUrls(type: string): IFlexTvWidget[] {
