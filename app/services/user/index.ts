@@ -338,6 +338,24 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     }
   }
 
+  async autoRefreshToken() {
+    if (!this.state.auth) return;
+
+    const service = getPlatformService(this.state.auth.primaryPlatform);
+    const userInfo = await service.fetchUserInfo();
+    if (!userInfo) {
+      this.logOut();
+      return EPlatformCallResult.Error;
+    }
+    const newAuth = this.parseAuthFromToken(
+      userInfo.id,
+      userInfo.username,
+      userInfo.channelId,
+      userInfo.token,
+    );
+    this.LOGIN(newAuth);
+  }
+
   subscribeToSocketConnection() {
     this.socketConnection = this.websocketService.socketEvent.subscribe(ev =>
       this.onSocketEvent(ev),
