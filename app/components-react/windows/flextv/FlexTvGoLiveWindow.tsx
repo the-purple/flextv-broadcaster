@@ -21,7 +21,7 @@ export default function FlexTvGoLiveWindow() {
     prepopulate,
     updateSettings,
     form,
-  } = useGoLiveSettingsRoot().select();
+  } = useGoLiveSettingsRoot();
 
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');

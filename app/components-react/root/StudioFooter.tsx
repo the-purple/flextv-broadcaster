@@ -10,8 +10,8 @@ import PerformanceMetrics from '../shared/PerformanceMetrics';
 import StartStreamingButton from './StartStreamingButton';
 import { Tooltip } from 'antd';
 import { confirmAsync } from 'components-react/modals';
-import { useModule } from 'components-react/hooks/useModule';
 import * as remote from '@electron/remote';
+import { useModule } from 'slap';
 
 export default function StudioFooterComponent() {
   const {
@@ -37,7 +37,7 @@ export default function StudioFooterComponent() {
     youtubeEnabled,
     recordingModeEnabled,
     replayBufferEnabled,
-  } = useModule(FooterModule).select();
+  } = useModule(FooterModule);
 
   useEffect(confirmYoutubeEnabled, [platform]);
 

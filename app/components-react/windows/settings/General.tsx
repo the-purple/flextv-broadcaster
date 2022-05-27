@@ -8,7 +8,6 @@ import { CheckboxInput } from '../../shared/inputs';
 import { Services } from '../../service-provider';
 import fs from 'fs';
 import path from 'path';
-import { useBinding } from '../../store';
 import { getDefined } from '../../../util/properties-type-guards';
 
 export function GeneralSettings() {
@@ -116,9 +115,10 @@ function ExtraSettings() {
   const protectedMode = StreamSettingsService.state.protectedModeEnabled;
   const disableHAFilePath = path.join(AppService.appDataDirectory, 'HADisable');
   const [disableHA, setDisableHA] = useState(() => fs.existsSync(disableHAFilePath));
-  const { isRecordingOrStreaming, recordingMode } = useVuex(() => ({
+  const { isRecordingOrStreaming, recordingMode, updateStreamInfoOnLive } = useVuex(() => ({
     isRecordingOrStreaming: StreamingService.isStreaming || StreamingService.isRecording,
     recordingMode: RecordingModeService.views.isRecordingModeEnabled,
+    updateStreamInfoOnLive: CustomizationService.state.updateStreamInfoOnLive,
   }));
   const canRunOptimizer = isTwitch && !isRecordingOrStreaming && protectedMode;
 
@@ -159,15 +159,6 @@ function ExtraSettings() {
       console.error('Error setting hardware acceleration', e);
     }
   }
-
-  const bind = useBinding({
-    get streamInfoUpdate() {
-      return CustomizationService.state.updateStreamInfoOnLive;
-    },
-    set streamInfoUpdate(value) {
-      CustomizationService.setUpdateStreamInfoOnLive(value);
-    },
-  });
 
   return (
     <>

@@ -14,7 +14,11 @@ import {
   SideNav,
   FlexLoginForm,
   FlexTvSideNav,
+  PlatformMerge,
   AlertboxLibrary,
+  PlatformAppStore,
+  BrowseOverlays,
+  PlatformAppMainPage,
 } from 'components/shared/ReactComponentList';
 import { ScenesService } from 'services/scenes';
 import { PlatformAppsService } from 'services/platform-apps';
@@ -27,8 +31,6 @@ Vue.use(VueResize);
 
 // Pages
 import Studio from '../pages/Studio';
-import PlatformAppStore from '../pages/PlatformAppStore.vue';
-import BrowseOverlays from 'components/pages/BrowseOverlays.vue';
 import { Inject } from '../../services/core/injector';
 import { CustomizationService } from 'services/customization';
 import { NavigationService } from 'services/navigation';
@@ -36,9 +38,7 @@ import { AppService } from 'services/app';
 import { UserService } from 'services/user';
 import { IModalOptions, WindowsService } from 'services/windows';
 import LiveDock from '../LiveDock.vue';
-import PlatformAppMainPage from '../pages/PlatformAppMainPage.vue';
 import ResizeBar from 'components/shared/ResizeBar.vue';
-import PlatformMerge from 'components/pages/PlatformMerge';
 import { getPlatformService } from 'services/platforms';
 import ModalWrapper from '../shared/modals/ModalWrapper';
 import antdThemes from 'styles/antd/index';

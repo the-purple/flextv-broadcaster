@@ -4,7 +4,7 @@ import useBaseElement from './hooks';
 
 export default function SceneSelectorElement() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { renderElement } = useBaseElement(<SceneSelector />);
+  const { renderElement } = useBaseElement(<SceneSelector />, { x: 0, y: 0 }, containerRef.current);
 
   return (
     <div

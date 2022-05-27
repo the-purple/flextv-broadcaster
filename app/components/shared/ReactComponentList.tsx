@@ -35,6 +35,14 @@ export class AlertboxLibrary extends ReactComponent {}
 
 @Component({
   props: {
+    name: { default: 'BrowseOverlays' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class BrowseOverlays extends ReactComponent {}
+
+@Component({
+  props: {
     name: { default: 'BrowserView' },
     componentProps: { default: () => ({ src: '' }) },
     wrapperStyles: { default: () => ({ height: '100%' }) },
@@ -185,9 +193,13 @@ export class News extends ReactComponent {}
 })
 export class FlexTvNavTools extends ReactComponent {}
 
-@Component({ props: { name: { default: 'NewsBanner' } } })
-export class NewsBanner extends ReactComponent {}
-
+@Component({
+  props: {
+    name: { default: 'Notifications' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class Notifications extends ReactComponent {}
 
 @Component({ props: { name: { default: 'NotificationsArea' } } })
 export class NotificationsArea extends ReactComponent {}
@@ -218,6 +230,23 @@ export class PatchNotes extends ReactComponent {}
 })
 export class PerformanceMetrics extends ReactComponent<{ mode: 'full' | 'limited' }> {}
 
+@Component({ props: { name: { default: 'PlatformAppPageView' } } })
+export class PlatformAppPageView extends ReactComponent {}
+
+@Component({ props: { name: { default: 'PlatformAppMainPage' } } })
+export class PlatformAppMainPage extends ReactComponent {}
+
+@Component({
+  props: {
+    name: { default: 'PlatformAppPopOut' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class PlatformAppPopOut extends ReactComponent {}
+
+@Component({ props: { name: { default: 'PlatformAppStore' } } })
+export class PlatformAppStore extends ReactComponent {}
+
 @Component({ props: { name: { default: 'PlatformLogo' } } })
 export class PlatformLogo extends ReactComponent<{
   platform: string;
@@ -227,6 +256,14 @@ export class PlatformLogo extends ReactComponent<{
 }> {}
 
 @Component({
+  props: {
+    name: { default: 'PlatformMerge' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class PlatformMerge extends ReactComponent {}
+
+@Component({
   props: { name: { default: 'Projector' }, wrapperStyles: { default: () => ({ height: '100%' }) } },
 })
 export class Projector extends ReactComponent {}
@@ -234,13 +271,20 @@ export class Projector extends ReactComponent {}
 @Component({
   props: {
     name: { default: 'RecentEvents' },
-    wrapperStyles: {
-      default: () => ({ height: '100%' }),
-    },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
     componentProps: { default: () => ({ isOverlay: false }) },
   },
 })
 export class RecentEvents extends ReactComponent<{ isOverlay?: boolean }> {}
+
+@Component({
+  props: {
+    name: { default: 'RecordingPreview' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+    mins: { default: () => ({ x: 0, y: 0 }) },
+  },
+})
+export class RecordingPreview extends ReactComponent {}
 
 @Component({
   props: {
@@ -257,6 +301,15 @@ export class RenameSource extends ReactComponent {}
   },
 })
 export class SafeMode extends ReactComponent {}
+
+@Component({
+  props: {
+    name: { default: 'StreamPreview' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+    mins: { default: () => ({ x: 0, y: 0 }) },
+  },
+})
+export class StreamPreview extends ReactComponent {}
 
 @Component({
   props: {

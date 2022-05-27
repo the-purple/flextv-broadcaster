@@ -176,6 +176,8 @@ import { IncrementalRolloutService } from './services/incremental-rollout';
 import { RecordingModeService } from 'services/recording-mode';
 import { JsonrpcService } from 'services/api/jsonrpc';
 import { OverlaysPersistenceService } from 'services/scene-collections/overlays';
+import { PlatformAppStoreService } from 'services/platform-app-store';
+import { GameOverlayService } from 'services/game-overlay';
 
 export const AppServices = {
   AppService,
@@ -238,4 +240,6 @@ export const AppServices = {
   RecordingModeService,
   JsonrpcService,
   OverlaysPersistenceService,
+  PlatformAppStoreService,
+  GameOverlayService,
 };

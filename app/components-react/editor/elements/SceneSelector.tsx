@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Fuse from 'fuse.js';
 import cx from 'classnames';
 import { Tooltip, List } from 'antd';
-import * as remote from '@electron/remote';
 import { Menu } from 'util/menus/Menu';
 import { getOS } from 'util/operating-systems';
 import { Services } from 'components-react/service-provider';
@@ -15,8 +14,9 @@ import { alertAsync, confirmAsync } from 'components-react/modals';
 import { $t } from 'services/i18n';
 import { EDismissable } from 'services/dismissables';
 import styles from './SceneSelector.m.less';
+import useBaseElement from './hooks';
 
-export default function SceneSelector() {
+function SceneSelector() {
   const {
     ScenesService,
     SceneCollectionsService,
@@ -231,5 +231,24 @@ export default function SceneSelector() {
         </div>
       </HelpTip>
     </>
+  );
+}
+
+export default function SceneSelectorElement() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { renderElement } = useBaseElement(
+    <SceneSelector />,
+    { x: 200, y: 120 },
+    containerRef.current,
+  );
+
+  return (
+    <div
+      ref={containerRef}
+      data-name="SceneSelector"
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
+      {renderElement()}
+    </div>
   );
 }
