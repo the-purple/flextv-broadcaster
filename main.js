@@ -778,7 +778,7 @@ function measure(msg, time) {
 autoUpdater.on('update-downloaded', async (_event, releaseNotes, releaseName) => {
   const options = {
     type: 'info',
-    buttons: ['재시작', '종료'],
+    buttons: ['재시작', '다음에 업데이트'],
     title: '업데이트 중입니다.',
     message: process.platform === 'win32' ? releaseNotes : releaseName,
     detail:
@@ -788,8 +788,5 @@ autoUpdater.on('update-downloaded', async (_event, releaseNotes, releaseName) =>
 
   if (response.response === 0) {
     autoUpdater.quitAndInstall();
-  } else {
-    app.quit();
-    app.exit();
   }
 });

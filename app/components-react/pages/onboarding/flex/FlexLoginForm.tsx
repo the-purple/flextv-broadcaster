@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import { Services } from 'components-react/service-provider';
 import { TextInput } from 'components-react/shared/inputs/TextInput';
@@ -17,13 +17,16 @@ interface FlexAuthResult {
 }
 
 export default function FlexLoginForm() {
+  const [loginId, setLoginId] = useState('');
+  const [password, setPassword] = useState('');
+
   const next = async () => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const request = new Request(`${Services.FlexTvService.apiBase}/api/auth/signin`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ loginId: 'newbj2', password: '1234' }),
+      body: JSON.stringify({ loginId, password }),
     });
     try {
       const data: FlexAuthResult = await jfetch(request);
@@ -34,7 +37,9 @@ export default function FlexLoginForm() {
         data.token,
       );
 
-      return Services.UserService.startFlexAuth(auth);
+      return Services.UserService.startFlexAuth(auth).then(() => {
+        return Services.NavigationService.navigate('Studio');
+      });
     } catch (e: unknown) {
       return remote.dialog.showMessageBox({
         title: '계정정보 불일치',
@@ -79,15 +84,24 @@ export default function FlexLoginForm() {
     return remote.shell.openExternal(`${Services.FlexTvService.baseUrl}/member/find/findId`);
   };
 
+  function handleBack() {
+    return Services.NavigationService.navigate('Studio');
+  }
+
   return (
-    <div>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div className={styles.container} style={{ height: '300px' }}>
         <p>
           <PlatformLogo platform={'flextv'} />
         </p>
         <div className="section">
-          <TextInput />
-          <TextInput />
+          <TextInput placeholder={'아이디'} value={loginId} onChange={setLoginId} />
+          <TextInput
+            placeholder={'비밀번호'}
+            value={password}
+            onChange={setPassword}
+            isPassword={true}
+          />
         </div>
         <div className="section">
           <button
@@ -106,7 +120,7 @@ export default function FlexLoginForm() {
             회원가입
           </a>
           <span className={styles.divider} />
-          <a className={styles['link-button']} onClick={() => {}}>
+          <a className={styles['link-button']} onClick={handleBack}>
             {$t('Back')}
           </a>
         </p>

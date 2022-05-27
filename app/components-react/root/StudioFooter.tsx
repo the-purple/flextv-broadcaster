@@ -7,19 +7,20 @@ import { $t } from '../../services/i18n';
 import { useVuex } from '../hooks';
 import styles from './StudioFooter.m.less';
 import PerformanceMetrics from '../shared/PerformanceMetrics';
-import TestWidgets from './TestWidgets';
 import StartStreamingButton from './StartStreamingButton';
-import NotificationsArea from './NotificationsArea';
 import { Tooltip } from 'antd';
 import { confirmAsync } from 'components-react/modals';
 import { useModule } from 'components-react/hooks/useModule';
+import * as remote from '@electron/remote';
 
 export default function StudioFooterComponent() {
   const {
     StreamingService,
     WindowsService,
     YoutubeService,
+    UserService,
     UsageStatisticsService,
+    FlexTvService,
     NavigationService,
     RecordingModeService,
   } = Services;
@@ -83,6 +84,26 @@ export default function StudioFooterComponent() {
     UsageStatisticsService.actions.recordFeatureUsage('PerformanceStatistics');
   }
 
+  function openLoginWindow() {
+    return UserService.showLogin();
+  }
+
+  function openFlexTvHelperWindow() {
+    return FlexTvService.fetchHelperToken()
+      .then(token => {
+        const url = `${FlexTvService.helperUrl}${encodeURIComponent(token)}`;
+        return remote.shell.openExternal(url);
+      })
+      .catch((e: unknown) => {
+        return remote.dialog.showMessageBox({
+          title: '위젯 설정 열기 실패',
+          type: 'warning',
+          message:
+            '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
+        });
+      });
+  }
+
   function toggleReplayBuffer() {
     if (StreamingService.state.replayBufferStatus === EReplayBufferState.Offline) {
       StreamingService.actions.startReplayBuffer();
@@ -143,11 +164,9 @@ export default function StudioFooterComponent() {
           />
         </Tooltip>
         <PerformanceMetrics mode="limited" className="performance-metrics" />
-        <NotificationsArea />
       </div>
 
       <div className={styles.navRight}>
-        <div className={styles.navItem}>{isLoggedIn && <TestWidgets />}</div>
         {recordingModeEnabled && (
           <button className="button button--trans" onClick={showRecordingModeDisableModal}>
             {$t('Looking to stream?')}
@@ -163,31 +182,6 @@ export default function StudioFooterComponent() {
             </Tooltip>
           </div>
         )}
-        {!replayBufferOffline && (
-          <div className={cx(styles.navItem, styles.replayButtonGroup)}>
-            <Tooltip placement="left" title={$t('Stop')}>
-              <button
-                className={cx('circle-button', styles.leftReplay, 'button--soft-warning')}
-                onClick={toggleReplayBuffer}
-              >
-                {replayBufferStopping ? (
-                  <i className="fa fa-spinner fa-pulse" />
-                ) : (
-                  <i className="fa fa-stop" />
-                )}
-              </button>
-            </Tooltip>
-            <Tooltip placement="right" title={$t('Save Replay')}>
-              <button className={cx('circle-button', styles.rightReplay)} onClick={saveReplay}>
-                {replayBufferSaving ? (
-                  <i className="fa fa-spinner fa-pulse" />
-                ) : (
-                  <i className="icon-save" />
-                )}
-              </button>
-            </Tooltip>
-          </div>
-        )}
         {canSchedule && (
           <div className={styles.navItem}>
             <Tooltip placement="left" title={$t('Schedule Stream')}>
@@ -197,12 +191,29 @@ export default function StudioFooterComponent() {
             </Tooltip>
           </div>
         )}
-        {!recordingModeEnabled && (
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {isLoggedIn ? (
+          recordingModeEnabled ? (
+            <RecordingButton />
+          ) : (
+            <>
+              <div className={styles.navItem}>
+                <button className="button" onClick={openFlexTvHelperWindow}>
+                  위젯 설정
+                </button>
+              </div>
+              <div className={styles.navItem}>
+                <StartStreamingButton />
+              </div>
+            </>
+          )
+        ) : (
           <div className={styles.navItem}>
-            <StartStreamingButton />
+            <button className="button button--action" onClick={openLoginWindow}>
+              로그인
+            </button>
           </div>
         )}
-        {recordingModeEnabled && <RecordingButton />}
       </div>
     </div>
   );

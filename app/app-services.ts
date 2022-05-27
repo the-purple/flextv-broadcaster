@@ -50,6 +50,7 @@ export { EditorService } from 'services/editor';
 export { StreamSettingsService } from 'services/settings/streaming';
 export { TouchBarService } from 'services/touch-bar';
 export { ApplicationMenuService } from 'services/application-menu';
+export { AuthService } from 'services/auth';
 export { MacPermissionsService } from 'services/mac-permissions';
 export { VirtualWebcamService } from 'services/virtual-webcam';
 export { MetricsService } from 'services/metrics';
@@ -147,6 +148,7 @@ import { TransitionsService } from './services/transitions';
 import { TcpServerService } from './services/api/tcp-server';
 import { MagicLinkService } from './services/magic-link';
 import { UsageStatisticsService } from './services/usage-statistics';
+import { AuthService } from './services/auth'
 import { NotificationsService } from './services/notifications';
 import { MediaBackupService } from './services/media-backup';
 import { HotkeysService } from './services/hotkeys';
@@ -210,6 +212,7 @@ export const AppServices = {
   MagicLinkService,
   MediaGalleryService,
   UsageStatisticsService,
+  AuthService,
   NotificationsService,
   MediaBackupService,
   HotkeysService,

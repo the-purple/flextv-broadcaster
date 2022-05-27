@@ -12,9 +12,11 @@ export interface IFlextvStartStreamOptions {
   theme?: string;
   resolution?: string;
   minRatingLevel?: number;
+  userAgentType?: string;
   password?: string;
   isForAdult?: boolean;
   maxViewerCount?: number;
+  useAltThumbUrl?: number;
   useHigh?: number;
 }
 
@@ -201,6 +203,7 @@ export class FlexTvService
         theme,
         resolution,
         minRatingLevel,
+        userAgentType: 'PC_APP_V1',
         password,
         isForAdult,
       }),
@@ -237,23 +240,22 @@ export class FlexTvService
   }
 
   async initWidgets() {
+    if (this.widgets?.length > 0) return;
     this.widgets = await platformAuthorizedRequest<IFlexTvWidget[]>(
       'flextv',
       `${this.apiBase}/api/my/channel/hp/widget-urls`,
     );
   }
 
-  async fetchWidgetUrl(type: string) {
+  async fetchWidgets(type: string) {
     const widgets = await platformAuthorizedRequest<IFlexTvWidget[]>(
       'flextv',
       `${this.apiBase}/api/my/channel/hp/widget-urls`,
     );
-    const widget = widgets.find(w => w.type === type);
-    if (widget) return widget.url;
-    return '';
+    return widgets.filter(w => w.type === type);
   }
 
-  getWidgetUrl(type: string): IFlexTvWidget[] {
+  getWidgetUrls(type: string): IFlexTvWidget[] {
     return this.widgets.filter(w => w.type === type);
   }
 

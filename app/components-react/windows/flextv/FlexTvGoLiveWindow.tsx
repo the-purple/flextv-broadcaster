@@ -194,7 +194,12 @@ export default function FlexTvGoLiveWindow() {
             <CheckboxInput
               label={'비밀번호방'}
               value={isSecret}
-              onChange={setIsSecret}
+              onChange={checked => {
+                if (!checked) {
+                  setPassword('');
+                }
+                setIsSecret(checked);
+              }}
               style={{
                 display: 'inline-block',
                 width: 120,

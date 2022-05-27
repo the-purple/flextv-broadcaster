@@ -93,6 +93,14 @@ export class FlexTvGoLiveWindow extends ReactComponent {}
 
 @Component({
   props: {
+    name: { default: 'FlexLoginForm' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class FlexLoginForm extends ReactComponent {}
+
+@Component({
+  props: {
     name: { default: 'Grow' },
     wrapperStyles: { default: () => ({ gridRow: '1 / span 1' }) },
   },

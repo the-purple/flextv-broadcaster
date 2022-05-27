@@ -26,9 +26,8 @@ import { THttpMethod } from './settings/widget-settings';
 import { TPlatform } from '../platforms';
 import { getAlertsConfig, TAlertType } from './alerts-config';
 import { getWidgetsConfig } from './widgets-config';
-import { WidgetDisplayData } from '.';
+import { WidgetDisplayData } from './widgets-data';
 import * as remote from '@electron/remote';
-import { $t } from '../i18n';
 import Utils from '../utils';
 
 export interface IWidgetSourcesState {
@@ -108,10 +107,8 @@ export class WidgetsService
     return new WidgetsServiceViews(this.state);
   }
 
-  createWidget(type: WidgetType, name?: string): SceneItem {
+  async createWidget(type: WidgetType, name?: string): Promise<void> {
     if (!this.userService.isLoggedIn) return;
-
-    const widget = this.widgetsConfig[type] || WidgetDefinitions[type];
     const widgetTransform = this.widgetsConfig[type]?.defaultTransform || WidgetDefinitions[type];
 
     const suggestedName =
@@ -133,8 +130,29 @@ export class WidgetsService
       rect.y = widgetTransform.y * this.videoService.baseHeight;
     });
 
-    const url = this.flexTvService.fetchWidgetUrl(FlexTvWidgetTypeKey[type]);
-    const item = this.editorCommandsService.executeCommand(
+    let url = '';
+    const widgets = await this.flexTvService.fetchWidgets(FlexTvWidgetTypeKey[type]);
+    if (widgets.length > 1) {
+      const selected = await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: '두 개 이상의 프리셋이 있습니다.',
+        type: 'info',
+        message: '원하는 프리셋을 선택하세요.',
+        buttons: widgets.map(w => w.name),
+      });
+      url = widgets[selected.response].url;
+    } else if (widgets.length === 0) {
+      await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: `${WidgetDisplayData()[type]?.name} 위젯의 프리셋이 없습니다.`,
+        type: 'warning',
+        message: '하단의 위젯 설정에서 프리셋을 설정해 주세요.',
+      });
+      url = '';
+    } else {
+      url = widgets[0].url;
+    }
+    if (!url) return;
+
+    await this.editorCommandsService.actions.return.executeCommand(
       'CreateNewItemCommand',
       this.scenesService.views.activeSceneId,
       suggestedName,
@@ -159,8 +177,6 @@ export class WidgetsService
         },
       },
     );
-
-    return item;
   }
 
   getWidgetSources(): WidgetSource[] {
@@ -173,8 +189,16 @@ export class WidgetsService
 
   async getWidgetUrl(type: WidgetType): Promise<string> {
     if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return '';
-    const widgets = this.flexTvService.getWidgetUrl(FlexTvWidgetTypeKey[type]);
-    if (widgets.length === 0) return '';
+    await this.flexTvService.initWidgets();
+    const widgets = this.flexTvService.getWidgetUrls(FlexTvWidgetTypeKey[type]);
+    if (widgets.length === 0) {
+      await remote.dialog.showMessageBox(Utils.getMainWindow(), {
+        title: `${WidgetDisplayData()[type]?.name} 위젯의 프리셋이 없습니다.`,
+        type: 'warning',
+        message: '하단의 위젯 설정에서 프리셋을 설정해 주세요.',
+      });
+      return '';
+    }
     if (widgets.length > 1) {
       const selected = await remote.dialog.showMessageBox(Utils.getMainWindow(), {
         title: '두 개 이상의 프리셋이 있습니다.',

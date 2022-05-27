@@ -12,6 +12,7 @@ import {
   LayoutEditor,
   Onboarding,
   SideNav,
+  FlexLoginForm,
   FlexTvSideNav,
   AlertboxLibrary,
 } from 'components/shared/ReactComponentList';
@@ -53,6 +54,7 @@ const loadedTheme = () => {
   components: {
     TitleBar,
     SideNav,
+    FlexLoginForm,
     FlexTvSideNav,
     Studio,
     BrowseOverlays,

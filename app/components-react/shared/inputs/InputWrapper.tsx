@@ -18,7 +18,7 @@ type TInputWrapperProps = FormItemProps & {
 export default InputComponent(function InputWrapper(p: TInputWrapperProps) {
   const layoutPreset = useLayout(p);
   const formItemProps = omit(p, 'nowrap');
-  const label = p.label || ' ';
+  const label = p.label;
 
   return p.nowrap ? (
     <>{p.children}</>

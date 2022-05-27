@@ -18,6 +18,7 @@ import NavTools from './sidebar/NavTools';
 import FlexTvNavTools from './sidebar/FlexTvNavTools';
 import PlatformLogo from './shared/PlatformLogo';
 import Onboarding from './pages/onboarding/Onboarding';
+import FlexLoginForm from './pages/onboarding/flex/FlexLoginForm';
 import AdvancedStatistics from './windows/AdvancedStatistics';
 import StudioFooter from './root/StudioFooter';
 import StreamScheduler from './pages/stream-scheduler/StreamScheduler';
@@ -47,6 +48,7 @@ import Projector from './windows/Projector';
 import SceneSelector from './editor/elements/SceneSelectorElement';
 import AddSource from './windows/AddSource';
 import SideNav from './sidebar/SideNav';
+import FlexTvSideNav from './sidebar/FlexTvSideNav';
 import AlertboxLibrary from './pages/AlertboxLibrary';
 
 // list of React components to be used inside Vue components
@@ -73,6 +75,7 @@ export const components = {
   FlexTvNavTools,
   PlatformLogo,
   Onboarding: createRoot(Onboarding),
+  FlexLoginForm,
   Projector,
   StreamScheduler: createRoot(StreamScheduler),
   AdvancedStatistics,
@@ -99,5 +102,6 @@ export const components = {
   LayoutEditor: createRoot(LayoutEditor),
   SceneSelector: createRoot(SceneSelector),
   AddSource,
+  FlexTvSideNav,
   SideNav,
 };

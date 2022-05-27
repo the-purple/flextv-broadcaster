@@ -42,6 +42,13 @@ export const ONBOARDING_STEPS = () => ({
     hideButton: true,
     isPreboarding: true,
   },
+  [EOnboardingSteps.ConnectFlex]: {
+    component: 'ConnectFlex',
+    disableControls: false,
+    hideSkip: true,
+    hideButton: true,
+    isPreboarding: true,
+  },
   [EOnboardingSteps.Connect]: {
     component: 'Connect',
     disableControls: false,
