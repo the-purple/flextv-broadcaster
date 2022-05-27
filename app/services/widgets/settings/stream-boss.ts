@@ -5,6 +5,7 @@ import { metadata } from 'components/widgets/inputs/index';
 import { InheritMutations } from 'services/core/stateful-service';
 import { BaseGoalService } from './base-goal';
 import { formMetadata } from 'components/shared/inputs';
+import { TPlatform } from '../../platforms';
 
 export interface IStreamBossSettings extends IWidgetSettings {
   background_color: string;
@@ -166,7 +167,7 @@ export class StreamBossService extends BaseGoalService<IStreamBossData, IStreamB
   }
 
   multipliersByPlatform(): { key: string; title: string; isInteger: boolean }[] {
-    const platform = this.userService.platform.type;
+    const platform = this.userService.platform.type as Exclude<TPlatform, 'tiktok'>;
     return {
       twitch: [
         { key: 'bit_multiplier', title: $t('Damage Per Bit'), isInteger: true },
@@ -186,6 +187,7 @@ export class StreamBossService extends BaseGoalService<IStreamBossData, IStreamB
         { key: 'sub_multiplier', title: $t('Damage Per Subscriber'), isInteger: true },
         { key: 'follow_multiplier', title: $t('Damage Per Follower'), isInteger: true },
       ],
+      flextv: [],
     }[platform];
   }
 }

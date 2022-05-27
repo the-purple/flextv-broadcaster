@@ -12,7 +12,6 @@ import InstalledApps from 'components/InstalledApps.vue';
 import Hotkeys from 'components/windows/settings/Hotkeys.vue';
 import OverlaySettings from 'components/windows/settings/OverlaySettings';
 import NotificationsSettings from 'components/windows/settings/NotificationsSettings.vue';
-import GameOverlaySettings from 'components/windows/settings/GameOverlaySettings';
 import SearchablePages from 'components/shared/SearchablePages';
 import FormInput from 'components/shared/inputs/FormInput.vue';
 import VirtualWebcamSettings from 'components/windows/settings/VirtualWebcamSettings';
@@ -36,7 +35,6 @@ import * as remote from '@electron/remote';
     OverlaySettings,
     NotificationsSettings,
     InstalledApps,
-    GameOverlaySettings,
     FormInput,
     VirtualWebcamSettings,
     Scrollable,
