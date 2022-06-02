@@ -4,7 +4,7 @@ import {
   IStreamSettings,
   EStreamingState,
   ERecordingState,
-  EReplayBufferState,
+  EReplayBufferState, EPlatformState,
 } from './streaming-api';
 import { StreamSettingsService } from '../settings/streaming';
 import { UserService } from '../user';
@@ -378,6 +378,13 @@ export class StreamInfoView<T extends Object> extends ViewHandler<T> {
 
   get isStreaming() {
     return this.streamingState.streamingStatus !== EStreamingState.Offline;
+  }
+
+  get isPaused() {
+    return (
+      this.streamingState.streamingStatus === EStreamingState.Offline &&
+      this.streamingState.platformStatus === EPlatformState.Live
+    );
   }
 
   get isRecording() {

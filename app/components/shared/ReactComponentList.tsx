@@ -313,6 +313,15 @@ export class StreamPreview extends ReactComponent {}
 
 @Component({
   props: {
+    name: { default: 'FlexTvChat' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+    mins: { default: () => ({ x: 0, y: 0 }) },
+  },
+})
+export class FlexTvChat extends ReactComponent {}
+
+@Component({
+  props: {
     name: { default: 'SceneSelector' },
     wrapperStyles: { default: () => ({ height: '100%' }) },
     mins: { default: () => ({ x: 200, y: 120 }) },
