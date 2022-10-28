@@ -24,7 +24,7 @@ export enum ELayoutElement {
   Sources = 'Sources',
   // StreamPreview = 'StreamPreview',
   // RecordingPreview = 'RecordingPreview',
-  // Browser = 'Browser',
+  Browser = 'Browser',
   FlexTvChat = 'FlexTvChat',
 }
 
@@ -78,10 +78,10 @@ export const ELEMENT_DATA = (): IElementData => ({
   //   title: $t('Recording Preview'),
   //   component: Elements.RecordingPreview,
   // },
-  // [ELayoutElement.Browser]: {
-  //   title: $t('Website'),
-  //   component: Elements.Browser,
-  // },
+  [ELayoutElement.Browser]: {
+    title: $t('Website'),
+    component: Elements.Browser,
+  },
   [ELayoutElement.FlexTvChat]: {
     title: '채팅',
     component: Elements.FlexTvChat,

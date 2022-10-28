@@ -71,6 +71,8 @@ export class WidgetsService
   @Inject() editorCommandsService: EditorCommandsService;
   @Inject() flexTvService: FlexTvService;
 
+  widgetDisplayData = WidgetDisplayData(); // cache widget display data
+
   protected init() {
     // sync widgetSources with sources
 

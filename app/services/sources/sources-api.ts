@@ -19,6 +19,21 @@ export interface ISource {
   propertiesManagerType: TPropertiesManager;
   propertiesManagerSettings?: Dictionary<any>;
   channel?: number;
+  /**
+   * When set to true, all scene items referencing this source
+   * will automatically be hidden, regardless of whether they
+   * are set to visible in the UI.
+   *
+   * This is mainly meant to support Guest Cam
+   */
+  forceHidden: boolean;
+  /**
+   * When set to true, this source will not ouptut any audio,
+   * irrespective of what the user-set muted option displays.
+   *
+   * This is mainly meant to support Guest Cam
+   */
+  forceMuted: boolean;
 }
 
 /**
@@ -84,6 +99,7 @@ export interface ISourceAddOptions<TPropertiesManagerSettings = Dictionary<any>>
   propertiesManagerSettings?: TPropertiesManagerSettings;
   audioSettings?: Partial<IAudioSource>;
   isTemporary?: boolean;
+  guestCamStreamId?: string; // Automatically assign a guest to this source after creation
 }
 
 export type TSourceType =
@@ -114,7 +130,8 @@ export type TSourceType =
   | 'display_capture'
   | 'audio_line'
   | 'syphon-input'
-  | 'soundtrack_source';
+  | 'soundtrack_source'
+  | 'mediasoupconnector';
 
 // Register new properties managers here
 export type TPropertiesManager =

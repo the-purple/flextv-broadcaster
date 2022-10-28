@@ -24,7 +24,7 @@ export function Connect() {
     setExtraPlatform,
   } = useModule(LoginModule);
   const { next } = useModule(OnboardingModule);
-  const { UsageStatisticsService } = Services;
+  const { UsageStatisticsService, OnboardingService } = Services;
 
   if (selectedExtraPlatform) {
     return <ExtraPlatformConnect />;
@@ -37,7 +37,7 @@ export function Connect() {
 
   function onSelectExtraPlatform(val: TExtraPlatform | 'tiktok' | undefined) {
     if (val === 'tiktok') {
-      authPlatform('tiktok', next);
+      authPlatform('tiktok', afterLogin);
       return;
     }
 
@@ -45,7 +45,12 @@ export function Connect() {
     setExtraPlatform(val);
   }
 
-  const platforms = ['twitch', 'youtube', 'facebook', 'trovo'];
+  function afterLogin() {
+    OnboardingService.actions.setExistingCollections();
+    next();
+  }
+
+  const platforms = ['streamlabs', 'twitch', 'youtube', 'facebook', 'trovo'];
 
   return (
     <div className={styles.pageContainer}>
@@ -66,7 +71,7 @@ export function Connect() {
             <button
               className={cx(`button button--${platform}`, styles.loginButton)}
               disabled={loading || authInProgress}
-              onClick={() => authPlatform(platform, next)}
+              onClick={() => authPlatform(platform, afterLogin)}
               key={platform}
             >
               {loading && <i className="fas fa-spinner fa-spin" />}
@@ -147,11 +152,23 @@ export class LoginModule {
     return this.UserService.state.authProcessState === EAuthProcessState.InProgress;
   }
 
-  async authPlatform(platform: TPlatform, onSuccess: () => void) {
+  get isPartialSLAuth() {
+    return this.UserService.views.isPartialSLAuth;
+  }
+
+  async authPlatform(platform: TPlatform | 'streamlabs', onSuccess: () => void, merge = false) {
     this.UsageStatisticsService.recordAnalyticsEvent('PlatformLogin', platform);
+
+    if (platform === 'streamlabs') {
+      await this.UserService.startSLAuth();
+      onSuccess();
+      return;
+    }
+
     const result = await this.UserService.startAuth(
       platform,
-      platform === 'youtube' ? 'external' : 'internal',
+      ['youtube', 'twitch'].includes(platform) ? 'external' : 'internal',
+      merge,
     );
 
     if (result === EPlatformCallResult.TwitchTwoFactor) {
@@ -160,7 +177,7 @@ export class LoginModule {
           type: 'error',
           message: $t(
             'Twitch requires two factor authentication to be enabled on your account in order to stream to Twitch. ' +
-              'Please enable two factor authentication and try again.',
+            'Please enable two factor authentication and try again.',
           ),
           title: $t('Twitch Authentication Error'),
           buttons: [$t('Enable Two Factor Authentication'), $t('Dismiss')],
@@ -174,6 +191,10 @@ export class LoginModule {
       // Currently we do not have special handling for generic errors
       onSuccess();
     }
+  }
+
+  finishSLAuth(primaryPlatform?: TPlatform) {
+    return this.UserService.finishSLAuth(primaryPlatform);
   }
 
   @mutation()
