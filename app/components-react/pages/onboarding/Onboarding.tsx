@@ -51,9 +51,7 @@ export default function Onboarding() {
 }
 
 function TopBar() {
-  const { stepIndex, preboardingOffset, singletonStep, steps } = useModule(
-    OnboardingModule,
-  );
+  const { stepIndex, preboardingOffset, singletonStep, steps } = useModule(OnboardingModule);
 
   if (stepIndex < preboardingOffset || singletonStep) {
     return <div />;
@@ -113,8 +111,12 @@ export class OnboardingModule {
     return Services.OnboardingService;
   }
 
-  get ReocrdingModeService() {
+  get RecordingModeService() {
     return Services.RecordingModeService;
+  }
+
+  get UserService() {
+    return Services.UserService;
   }
 
   get steps() {
@@ -139,8 +141,8 @@ export class OnboardingModule {
   }
 
   setRecordingMode() {
-    this.ReocrdingModeService.setRecordingMode(true);
-    this.ReocrdingModeService.setUpRecordingFirstTimeSetup();
+    this.RecordingModeService.setRecordingMode(true);
+    this.RecordingModeService.setUpRecordingFirstTimeSetup();
   }
 
   setImportFromObs() {
@@ -155,13 +157,17 @@ export class OnboardingModule {
   next(isSkip = false) {
     if (this.state.processing) return;
 
+    if (this.OnboardingService.state.options.isLogin && this.UserService.views.isPartialSLAuth) {
+      return;
+    }
+
     if (
-      this.ReocrdingModeService.views.isRecordingModeEnabled &&
+      this.RecordingModeService.views.isRecordingModeEnabled &&
       this.currentStep.component === 'HardwareSetup' &&
       !this.OnboardingService.state.options.isHardware &&
       !isSkip
     ) {
-      this.ReocrdingModeService.actions.addRecordingWebcam();
+      this.RecordingModeService.actions.addRecordingWebcam();
     }
 
     if (this.state.stepIndex >= this.steps.length - 1 || this.singletonStep) {

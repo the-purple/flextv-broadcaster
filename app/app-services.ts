@@ -90,6 +90,7 @@ export { ChatService } from 'services/chat';
 export { RecentEventsService } from 'services/recent-events';
 export { MagicLinkService } from 'services/magic-link';
 export { GrowService } from 'services/grow/grow';
+export { GuestCamService } from 'services/guest-cam';
 
 // WIDGETS
 export { WidgetSource, WidgetsService } from './services/widgets';
@@ -124,6 +125,7 @@ import { EditorCommandsService } from './services/editor-commands';
 import { EditorService } from 'services/editor';
 import { PerformanceService } from './services/performance';
 import { SourcesService } from './services/sources';
+import { SelectionService } from './services/selection';
 import { StreamingService } from './services/streaming';
 import { StreamSettingsService } from './services/settings/streaming';
 import { RestreamService } from './services/restream';
@@ -169,7 +171,7 @@ import { SpinWheelService } from 'services/widgets/settings/spin-wheel';
 import { LayoutService } from './services/layout';
 import { ProjectorService } from './services/projector';
 import { ObsImporterService } from 'services/obs-importer';
-import { DefaultHardwareService } from 'services/hardware';
+import { DefaultHardwareService, HardwareService } from 'services/hardware';
 import { AutoConfigService } from 'services/auto-config';
 import { MacPermissionsService } from 'services/mac-permissions';
 import { IncrementalRolloutService } from './services/incremental-rollout';
@@ -178,6 +180,7 @@ import { JsonrpcService } from 'services/api/jsonrpc';
 import { OverlaysPersistenceService } from 'services/scene-collections/overlays';
 import { PlatformAppStoreService } from 'services/platform-app-store';
 import { GameOverlayService } from 'services/game-overlay';
+import { GuestCamService } from 'services/guest-cam';
 
 export const AppServices = {
   AppService,
@@ -192,6 +195,7 @@ export const AppServices = {
   EditorService,
   PerformanceService,
   SourcesService,
+  SelectionService,
   PatchNotesService,
   VideoService,
   ChatService,
@@ -242,4 +246,6 @@ export const AppServices = {
   OverlaysPersistenceService,
   PlatformAppStoreService,
   GameOverlayService,
+  GuestCamService,
+  HardwareService,
 };

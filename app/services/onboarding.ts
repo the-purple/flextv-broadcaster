@@ -11,6 +11,7 @@ import { OutputSettingsService } from './settings';
 import { ObsImporterService } from './obs-importer';
 import Utils from './utils';
 import { RecordingModeService } from './recording-mode';
+import * as remote from '@electron/remote';
 
 enum EOnboardingSteps {
   MacPermissions = 'MacPermissions',
@@ -18,6 +19,7 @@ enum EOnboardingSteps {
   ChooseYourAdventure = 'ChooseYourAdventure',
   SteamingOrRecording = 'StreamingOrRecording',
   Connect = 'Connect',
+  PrimaryPlatformSelect = 'PrimaryPlatformSelect',
   FreshOrImport = 'FreshOrImport',
   ObsImport = 'ObsImport',
   HardwareSetup = 'HardwareSetup',
@@ -51,6 +53,13 @@ export const ONBOARDING_STEPS = () => ({
   [EOnboardingSteps.Connect]: {
     component: 'Connect',
     disableControls: false,
+    hideSkip: true,
+    hideButton: true,
+    isPreboarding: true,
+  },
+  [EOnboardingSteps.PrimaryPlatformSelect]: {
+    component: 'PrimaryPlatformSelect',
+    disableControls: true,
     hideSkip: true,
     hideButton: true,
     isPreboarding: true,
@@ -141,7 +150,13 @@ export interface IThemeMetadata {
 
 class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
   get singletonStep(): IOnboardingStep {
-    if (this.state.options.isLogin) return ONBOARDING_STEPS()[EOnboardingSteps.ConnectFlex];
+    if (this.state.options.isLogin) {
+      if (this.getServiceViews(UserService).isPartialSLAuth) {
+        return ONBOARDING_STEPS()[EOnboardingSteps.PrimaryPlatformSelect];
+      }
+
+      return ONBOARDING_STEPS()[EOnboardingSteps.Connect];
+    }
     if (this.state.options.isOptimize) return ONBOARDING_STEPS()[EOnboardingSteps.Optimize];
     if (this.state.options.isHardware) return ONBOARDING_STEPS()[EOnboardingSteps.HardwareSetup];
     if (this.state.options.isImport) return ONBOARDING_STEPS()[EOnboardingSteps.ObsImport];
@@ -158,6 +173,28 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
     }
 
     steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ConnectFlex]);
+
+    if (isOBSinstalled && !recordingModeEnabled) {
+      steps.push(ONBOARDING_STEPS()[EOnboardingSteps.FreshOrImport]);
+    }
+
+    if (this.state.importedFromObs && isOBSinstalled) {
+      steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ObsImport]);
+    } else {
+      steps.push(ONBOARDING_STEPS()[EOnboardingSteps.HardwareSetup]);
+    }
+
+    if (
+      !this.state.existingSceneCollections &&
+      !this.state.importedFromObs &&
+      !recordingModeEnabled &&
+      ((userViews.isLoggedIn &&
+        getPlatformService(userViews.platform.type).hasCapability('themes')) ||
+        !userViews.isLoggedIn)
+    ) {
+      steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ThemeSelector]);
+    }
+
 
     return steps;
   }
@@ -194,7 +231,7 @@ export class OnboardingService extends StatefulService<IOnboardingServiceState> 
 
   @mutation()
   SET_EXISTING_COLLECTIONS(val: boolean) {
-    // this.state.existingSceneCollections = val;
+    this.state.existingSceneCollections = val;
   }
 
   async fetchThemeData(id: string) {
@@ -226,11 +263,15 @@ export class OnboardingService extends StatefulService<IOnboardingServiceState> 
   }
 
   init() {
-    this.SET_EXISTING_COLLECTIONS(this.existingSceneCollections);
+    this.setExistingCollections();
   }
 
   setObsImport(val: boolean) {
     this.SET_OBS_IMPORTED(val);
+  }
+
+  setExistingCollections() {
+    this.SET_EXISTING_COLLECTIONS(this.existingSceneCollections);
   }
 
   // A login attempt is an abbreviated version of the onboarding process,
@@ -251,6 +292,8 @@ export class OnboardingService extends StatefulService<IOnboardingServiceState> 
   // Ends the onboarding process
   finish() {
     localStorage.setItem(this.localStorageKey, 'true');
+    remote.session.defaultSession.flushStorageData();
+    console.log('Set onboarding key successful.');
 
     // setup a custom resolution if the platform requires that
     const platformService = getPlatformService(this.userService.views.platform?.type);

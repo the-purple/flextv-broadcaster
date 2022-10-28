@@ -4,6 +4,7 @@ import { Services } from 'components-react/service-provider';
 import { $t } from 'services/i18n';
 import { useLayoutEditor } from './hooks';
 import Form from 'components-react/shared/inputs/Form';
+import { TextInput, CardInput } from 'components-react/shared/inputs';
 
 const ICONS = [
   { value: 'icon-studio', label: 'icon-studio' },
@@ -58,10 +59,23 @@ export default function AddTabModal() {
   return (
     <ModalLayout footer={<Footer />} wrapperStyle={{ width: '410px', height: '130px' }}>
       <Form>
-        <span>탭 이름</span>
-        <div style={{ marginTop: 5 }}>
-          <input value={name} onChange={handleNameChange} style={{ marginTop: '8px' }} />
-        </div>
+        <CardInput
+          value={icon}
+          onInput={setIcon}
+          options={ICONS}
+          isIcons={true}
+          style={{ borderRadius: 4, margin: 4 }}
+          itemWidth={48}
+          itemHeight={48}
+          nowrap
+        />
+        <TextInput
+          label={$t('Name')}
+          value={name}
+          onChange={setName}
+          style={{ marginTop: '10px', marginLeft: '-80px', marginRight: '3px' }}
+          uncontrolled={false}
+        />
       </Form>
     </ModalLayout>
   );

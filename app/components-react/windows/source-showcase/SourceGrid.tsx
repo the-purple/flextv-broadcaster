@@ -5,10 +5,11 @@ import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
 import { WidgetType, FlexTvWidgetTypeNames } from 'services/widgets';
 import { byOS, OS } from 'util/operating-systems';
-import { $t } from 'services/i18n';
+import { $t, I18nService } from 'services/i18n';
 import SourceTag from './SourceTag';
-import FlexTVSourceTag from './FlexTVSourceTag';
 import { useSourceShowcaseSettings } from './useSourceShowcase';
+import { EAvailableFeatures } from 'services/incremental-rollout';
+import FlexTVSourceTag from './FlexTVSourceTag'
 
 const essentialSources = [
   'monitor_capture',
@@ -26,6 +27,7 @@ export default function SourceGrid(p: { activeTab: string }) {
     ScenesService,
     WindowsService,
     CustomizationService,
+    IncrementalRolloutService,
   } = Services;
 
   const { demoMode, designerMode, isLoggedIn, linkedPlatforms, primaryPlatform } = useVuex(() => ({
@@ -36,23 +38,40 @@ export default function SourceGrid(p: { activeTab: string }) {
     primaryPlatform: UserService.views.platform?.type,
   }));
 
+  /**
+   * English and languages with logographic writing systems
+   * generally have shorter strings so we prevent those cards from wrapping.
+   */
+
+  const i18nService = I18nService.instance as I18nService;
+  const locale = i18nService.state.locale;
+  const excludedLanguages = ['en', 'ko', 'zh']; // add i18n prefixes here to exclude languages from wrapping
+  const excludeWrap = excludedLanguages.includes(locale.split('-')[0]);
+
   const { availableAppSources } = useSourceShowcaseSettings();
 
   const iterableWidgetTypes = Object.keys(WidgetType).filter((type: string) => {
     return !Number.isInteger(Number(type)) && FlexTvWidgetTypeNames.includes(type);
   });
 
-  const availableSources = useMemo(
-    () =>
-      SourcesService.getAvailableSourcesTypesList().filter(type => {
-        // Freetype on windows is hidden
-        if (type.value === 'text_ft2_source' && byOS({ [OS.Windows]: true, [OS.Mac]: false })) {
-          return;
-        }
-        return !(type.value === 'scene' && ScenesService.views.scenes.length <= 1);
-      }),
-    [],
-  );
+  const availableSources = useMemo(() => {
+    const guestCamAvailable =
+      IncrementalRolloutService.views.featureIsEnabled(EAvailableFeatures.guestCamBeta) ||
+      IncrementalRolloutService.views.featureIsEnabled(EAvailableFeatures.guestCaProduction);
+
+    return SourcesService.getAvailableSourcesTypesList().filter(type => {
+      // Freetype on windows is hidden
+      if (type.value === 'text_ft2_source' && byOS({ [OS.Windows]: true, [OS.Mac]: false })) {
+        return;
+      }
+
+      if (type.value === 'mediasoupconnector' && !guestCamAvailable) {
+        return false;
+      }
+
+      return !(type.value === 'scene' && ScenesService.views.scenes.length <= 1);
+    });
+  }, []);
 
   function showContent(key: string) {
     const correctKey = ['all', key].includes(p.activeTab);

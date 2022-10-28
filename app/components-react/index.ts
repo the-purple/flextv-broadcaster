@@ -5,7 +5,8 @@ import FlexTvGoLiveWindow from './windows/flextv/FlexTvGoLiveWindow';
 import EditStreamWindow from './windows/go-live/EditStreamWindow';
 import IconLibraryProperties from './windows/IconLibraryProperties';
 import ScreenCaptureProperties from './windows/ScreenCaptureProperties';
-import News from './windows/News';
+import GuestCamProperties from './windows/GuestCamProperties';
+import News from './windows/notifications/News';
 import PerformanceMetrics from './shared/PerformanceMetrics';
 import PatchNotes from './pages/PatchNotes';
 import Display from './shared/Display';
@@ -31,6 +32,7 @@ import NotificationsArea from './root/NotificationsArea';
 import StudioEditor from './root/StudioEditor';
 import SharedComponentsLibrary from './windows/sharedComponentsLibrary/SharedComponentsLibrary';
 import { ObsSettings } from './windows/settings/ObsSettings';
+import ManageSceneCollections from './windows/ManageSceneCollections';
 import ThemeAudit from './pages/ThemeAudit';
 import { WidgetWindow } from './widgets/common/WidgetWindow';
 import SafeMode from './windows/SafeMode';
@@ -45,14 +47,19 @@ import StreamPreview from './editor/elements/StreamPreview';
 import FlexTvChat from './editor/elements/FlexTvChat';
 import BrowserView from './shared/BrowserView';
 import LegacyEvents from './editor/elements/LegacyEvents';
+import Browser from './editor/elements/Browser';
+import DisplayElement from './editor/elements/Display';
 import MediaGallery from './windows/MediaGallery';
 import LayoutEditor from './pages/layout-editor/LayoutEditor';
 import Projector from './windows/Projector';
 import SceneSelector from './editor/elements/SceneSelector';
 import AddSource from './windows/AddSource';
+import SourceSelector from './editor/elements/SourceSelector';
 import SideNav from './sidebar/SideNav';
 import FlexTvSideNav from './sidebar/FlexTvSideNav';
-import Notifications from './windows/Notifications';
+import WelcomeToPrime from './windows/WelcomeToPrime';
+import Notifications from './windows/notifications/Notifications';
+import NotificationsAndNews from './windows/notifications';
 import PlatformMerge from './pages/PlatformMerge';
 import AlertboxLibrary from './pages/AlertboxLibrary';
 import PlatformAppStore from './pages/PlatformAppStore';
@@ -60,6 +67,7 @@ import BrowseOverlays from './pages/BrowseOverlays';
 import PlatformAppMainPage from './pages/PlatformAppMainPage';
 import PlatformAppPageView from './shared/PlatformAppPageView';
 import PlatformAppPopOut from './windows/PlatformAppPopOut';
+import RecentEventsWindow from './windows/RecentEvents';
 
 // list of React components to be used inside Vue components
 export const components = {
@@ -73,8 +81,10 @@ export const components = {
   EditStreamWindow: createRoot(EditStreamWindow),
   IconLibraryProperties,
   ScreenCaptureProperties,
+  GuestCamProperties: createRoot(GuestCamProperties),
   News,
   PerformanceMetrics,
+  ManageSceneCollections,
   PatchNotes,
   Display,
   TitleBar,
@@ -109,16 +119,22 @@ export const components = {
   RecentEvents,
   MiniFeed: createRoot(MiniFeed),
   LegacyEvents: createRoot(LegacyEvents),
+  Browser: createRoot(Browser),
   RecordingPreview: createRoot(RecordingPreview),
   StreamPreview: createRoot(StreamPreview),
   FlexTvChat: createRoot(FlexTvChat),
+  DisplayElement: createRoot(DisplayElement),
   MediaGallery,
   LayoutEditor: createRoot(LayoutEditor),
   SceneSelector: createRoot(SceneSelector),
   AddSource,
   FlexTvSideNav,
+  SourceSelector: createRoot(SourceSelector),
+  RecentEventsWindow,
   SideNav,
+  WelcomeToPrime,
   Notifications,
+  NotificationsAndNews,
   PlatformMerge,
   PlatformAppStore,
   PlatformAppMainPage,

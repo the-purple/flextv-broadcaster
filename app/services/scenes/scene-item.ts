@@ -33,7 +33,7 @@ import { assertIsDefined } from '../../util/properties-type-guards';
  * all of the information about that source, and
  * how it fits in to the given scene
  */
-@ServiceHelper()
+@ServiceHelper('ScenesService')
 export class SceneItem extends SceneItemNode {
   sourceId: string;
   name: string;
@@ -182,7 +182,8 @@ export class SceneItem extends SceneItemNode {
     }
 
     if (changed.visible !== void 0) {
-      this.getObsSceneItem().visible = newSettings.visible;
+      // Do not adjust visibility in OBS while source is force hidden
+      if (!this.source.forceHidden) this.getObsSceneItem().visible = newSettings.visible;
     }
 
     if (changed.streamVisible !== void 0) {

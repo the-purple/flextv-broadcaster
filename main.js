@@ -29,6 +29,7 @@ const {
   crashReporter,
   dialog,
   webContents,
+  desktopCapturer,
 } = require('electron');
 const { autoUpdater } = require('electron-updater')
 const path = require('path');
@@ -410,7 +411,7 @@ async function startApp() {
 
   workerWindow.on('closed', () => {
     session.defaultSession.flushStorageData();
-    session.defaultSession.cookies.flushStore(() => app.quit());
+    session.defaultSession.cookies.flushStore().then(() => app.quit());
   });
 
   // Pre-initialize the child window
@@ -765,6 +766,8 @@ ipcMain.on('getAppStartTime', e => {
 ipcMain.on('measure-time', (e, msg, time) => {
   measure(msg, time);
 });
+
+ipcMain.handle('DESKTOP_CAPTURER_GET_SOURCES', (event, opts) => desktopCapturer.getSources(opts));
 
 // Measure time between events
 function measure(msg, time) {

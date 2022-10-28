@@ -30,7 +30,7 @@ export interface ISceneHierarchy extends ISceneItemNode {
   children: ISceneHierarchy[];
 }
 
-@ServiceHelper()
+@ServiceHelper('ScenesService')
 export class Scene {
   id: string;
   name: string;
@@ -164,6 +164,8 @@ export class Scene {
     const sceneItemId = options.id || uuid();
 
     const obsSceneItem: obs.ISceneItem = this.getObsScene().add(source.getObsInput());
+
+    if (source.forceHidden) obsSceneItem.visible = false;
 
     this.ADD_SOURCE_TO_SCENE(sceneItemId, source.sourceId, obsSceneItem.id);
     const sceneItem = this.getItem(sceneItemId)!;
