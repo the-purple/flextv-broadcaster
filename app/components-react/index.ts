@@ -68,6 +68,8 @@ import PlatformAppMainPage from './pages/PlatformAppMainPage';
 import PlatformAppPageView from './shared/PlatformAppPageView';
 import PlatformAppPopOut from './windows/PlatformAppPopOut';
 import RecentEventsWindow from './windows/RecentEvents';
+import RecordingHistory from './windows/RecordingHistory';
+import UltraIcon from './shared/UltraIcon';
 
 // list of React components to be used inside Vue components
 export const components = {
@@ -130,6 +132,7 @@ export const components = {
   AddSource,
   FlexTvSideNav,
   SourceSelector: createRoot(SourceSelector),
+  RecordingHistory: createRoot(RecordingHistory),
   RecentEventsWindow,
   SideNav,
   WelcomeToPrime,
@@ -140,4 +143,5 @@ export const components = {
   PlatformAppMainPage,
   PlatformAppPageView,
   PlatformAppPopOut,
+  UltraIcon,
 };

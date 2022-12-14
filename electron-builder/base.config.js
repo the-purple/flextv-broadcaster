@@ -39,12 +39,9 @@ const base = {
   win: {
     executableName: 'FlexTV Broadcaster',
     extraFiles: ['LICENSE', 'AGREEMENT', 'shared-resources/**/*', '!shared-resources/README'],
-    extraResources: [
-      'node_modules/ffmpeg-ffprobe-static/ffmpeg.exe',
-      'node_modules/ffmpeg-ffprobe-static/ffprobe.exe',
-    ],
     rfc3161TimeStampServer: 'http://timestamp.digicert.com',
     timeStampServer: 'http://timestamp.digicert.com',
+    signDlls: true,
     async sign(config) {
       if (config.path.includes('Flex')) {
         execSync(
@@ -68,10 +65,6 @@ const base = {
       //   "to": "Resources/app.asar.unpacked/node_modules/",
       //   "filter": ["**/*"]
       // }
-    ],
-    extraResources: [
-      'node_modules/ffmpeg-ffprobe-static/ffmpeg',
-      'node_modules/ffmpeg-ffprobe-static/ffprobe',
     ],
     icon: 'media/images/icon-mac.icns',
     hardenedRuntime: true,

@@ -41,8 +41,10 @@ import { SourceFiltersService } from 'services/source-filters';
 import { VideoService } from 'services/video';
 import { CustomizationService } from '../customization';
 import { EAvailableFeatures, IncrementalRolloutService } from '../incremental-rollout';
-import { EMonitoringType } from '../../../obs-api';
+import { EMonitoringType, EDeinterlaceMode, EDeinterlaceFieldOrder } from '../../../obs-api';
 import { GuestCamService } from 'services/guest-cam';
+
+export { EDeinterlaceMode, EDeinterlaceFieldOrder } from '../../../obs-api';
 
 const AudioFlag = obs.ESourceOutputFlags.Audio;
 const VideoFlag = obs.ESourceOutputFlags.Video;
@@ -91,6 +93,7 @@ export const windowsSources: TSourceType[] = [
   'vlc_source',
   'soundtrack_source',
   'mediasoupconnector',
+  'wasapi_process_output_capture',
 ];
 
 /**
@@ -229,6 +232,8 @@ export class SourcesService extends StatefulService<ISourcesState> {
     channel?: number;
     isTemporary?: boolean;
     propertiesManagerType?: TPropertiesManager;
+    deinterlaceMode?: EDeinterlaceMode;
+    deinterlaceFieldOrder?: EDeinterlaceFieldOrder;
   }) {
     const id = addOptions.id;
     const sourceModel: ISource = {
@@ -255,6 +260,9 @@ export class SourcesService extends StatefulService<ISourcesState> {
 
       forceHidden: false,
       forceMuted: false,
+
+      deinterlaceMode: addOptions.deinterlaceMode,
+      deinterlaceFieldOrder: addOptions.deinterlaceFieldOrder,
     };
 
     if (addOptions.isTemporary) {
@@ -342,6 +350,8 @@ export class SourcesService extends StatefulService<ISourcesState> {
       channel: options.channel,
       isTemporary: options.isTemporary,
       propertiesManagerType: managerType,
+      deinterlaceMode: options.deinterlaceMode || EDeinterlaceMode.Disable,
+      deinterlaceFieldOrder: options.deinterlaceFieldOrder || EDeinterlaceFieldOrder.Top,
     });
     const source = this.views.getSource(id)!;
     const muted = obsInput.muted;
@@ -579,6 +589,7 @@ export class SourcesService extends StatefulService<ISourcesState> {
       { description: 'Display Capture', value: 'display_capture' },
       { description: 'Soundtrack source', value: 'soundtrack_source' },
       { description: 'Collab Cam', value: 'mediasoupconnector' },
+      { description: 'Application Audio Capture (BETA)', value: 'wasapi_process_output_capture' },
     ];
 
     const availableAllowlistedTypes = allowlistedTypes.filter(type =>

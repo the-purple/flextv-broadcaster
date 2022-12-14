@@ -303,6 +303,8 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
 
   getCategories(): string[] {
     let categories: string[] = obs.NodeObs.OBS_settings_getListCategories();
+    // insert 'Multistreaming' after 'General'
+    categories.splice(1, 0, 'Multistreaming');
     categories = categories.concat([
       'Scene Collections',
       'Notifications',
@@ -455,6 +457,7 @@ export class SettingsService extends StatefulService<ISettingsServiceState> {
 
   setSettings(categoryName: string, settingsData: ISettingsSubCategory[]) {
     if (categoryName === 'Audio') this.setAudioSettings([settingsData.pop()]);
+    if (categoryName === 'Video') return;
 
     const dataToSave = [];
 
