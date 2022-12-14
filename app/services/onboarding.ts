@@ -104,7 +104,7 @@ export const ONBOARDING_STEPS = () => ({
     disableControls: false,
     hideSkip: false,
     hideButton: true,
-    label: $t('Prime'),
+    label: $t('Ultra'),
   },
 });
 
@@ -194,7 +194,6 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
     ) {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ThemeSelector]);
     }
-
 
     return steps;
   }

@@ -115,6 +115,12 @@ interface ILinkedPlatformsResponse {
   streamlabs_account?: ILinkedPlatform;
   user_id: number;
   created_at: string;
+
+  /**
+   * When the server sends this back as true, we must force
+   * the user to reauthenticate.
+   */
+  force_login_required: boolean;
 }
 
 export type LoginLifecycleOptions = {
@@ -404,6 +410,17 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     if (this.views.isPartialSLAuth) {
       this.LOGOUT();
     }
+
+    this.websocketService.socketEvent.subscribe(async event => {
+      if (event.type === 'slid.force_logout') {
+        await this.clearForceLoginStatus();
+        await this.reauthenticate(false, {
+          message: $t(
+            "You've merged a Streamlabs ID to your account, please log back in to ensure you have the right credentials.",
+          ),
+        });
+      }
+    });
   }
 
   get views() {
@@ -440,7 +457,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
       if (!allPlatforms.includes(this.state.auth.primaryPlatform)) return;
 
       const service = getPlatformService(this.state.auth.primaryPlatform);
-      return this.login(service, this.state.auth);
+      return this.login(service, this.state.auth, true);
     }
   }
 
@@ -529,6 +546,10 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     });
   }
 
+  /**
+   * Updates linked platforms and returns true if we need to force log out the user
+   * @returns `true` if the user should be force logged out
+   */
   async updateLinkedPlatforms() {
     const linkedPlatforms = await this.fetchLinkedPlatforms();
 
@@ -603,6 +624,8 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     } else {
       this.UNLINK_SLID();
     }
+
+    if (linkedPlatforms.force_login_required) return true;
   }
 
   fetchLinkedPlatforms() {
@@ -624,7 +647,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
   async setPrimeStatus() {
     const host = this.hostsService.streamlabs;
-    const url = `https://${host}/api/v5/slobs/prime`;
+    const url = `https://${host}/api/v5/slobs/prime`; // TODO: will this url change?
     const headers = authorizedHeaders(this.apiToken);
     const request = new Request(url, { headers });
     return jfetch<{
@@ -660,7 +683,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
       type: ENotificationType.WARNING,
       lifeTime: -1,
       action: this.jsonrpcService.createRequest(Service.getResourceId(this), 'openCreditCardLink'),
-      message: $t('Your credit card expires soon. Click here to retain your Prime benefits'),
+      message: $t('Your credit card expires soon. Click here to retain your Ultra benefits'),
     });
   }
 
@@ -803,8 +826,39 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     this.navigationService.navigate('FlexLoginForm');
   }
 
+  /**
+   * Lets the user know we have forced them to relogin, and will
+   */
+  clearForceLoginStatus() {
+    if (!this.state.auth || !this.state.auth.apiToken) return;
+
+    const host = this.hostsService.streamlabs;
+    const headers = authorizedHeaders(this.apiToken);
+    const url = `https://${host}/api/v5/slobs/clear-force-login-status`;
+    const request = new Request(url, { headers, method: 'POST' });
+
+    return jfetch<unknown>(request);
+  }
+
+  async reauthenticate(onStartup?: boolean, msgConfig?: Partial<Electron.MessageBoxOptions>) {
+    this.SET_IS_RELOG(true);
+    if (onStartup) {
+      this.LOGOUT();
+    } else {
+      await this.logOut();
+    }
+    await remote.dialog.showMessageBox({
+      title: 'Streamlabs Desktop',
+      message: $t(
+        'Your login has expired. Please reauthenticate to continue using Streamlabs Desktop.',
+      ),
+      ...msgConfig,
+    });
+    this.showLogin();
+  }
+
   @RunInLoadingMode()
-  private async login(service: IPlatformService, auth?: IUserAuth) {
+  private async login(service: IPlatformService, auth?: IUserAuth, isOnStartup = false) {
     if (service && service.platform === 'flextv') {
       return this.loginFlexTV(service, auth);
     }
@@ -814,24 +868,30 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     this.setSentryContext();
     this.userLogin.next(auth);
 
-    const [validateLoginResult, validatePlatformResult] = await Promise.all([
-      this.validateLogin(),
+    const forceRelogin = await this.updateLinkedPlatforms();
+
+    if (forceRelogin) {
+      try {
+        await this.clearForceLoginStatus();
+
+        if (isOnStartup) {
+          await this.reauthenticate(true);
+          return;
+        }
+      } catch (e: unknown) {
+        console.error('Error forcing relog');
+        // Intentional that if something goes wrong here, we continue as normal,
+        // since otherwise the user might get stuck in a relog loop.
+      }
+    }
+
+    const [validatePlatformResult] = await Promise.all([
       service.validatePlatform(),
-      this.updateLinkedPlatforms(),
       this.refreshUserInfo(),
       this.sceneCollectionsService.setupNewUser(),
       this.setPrimeStatus(),
     ]);
     this.subscribeToSocketConnection();
-
-    if (!validateLoginResult) {
-      this.logOut();
-      remote.dialog.showMessageBox({
-        title: 'Streamlabs Desktop',
-        message: $t('You have been logged out'),
-      });
-      return;
-    }
 
     // Currently we treat generic errors as success
     if (validatePlatformResult === EPlatformCallResult.TwitchTwoFactor) {
@@ -840,10 +900,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     }
 
     if (validatePlatformResult === EPlatformCallResult.TwitchScopeMissing) {
-      await this.logOut();
-      this.showLogin();
-
-      remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+      this.reauthenticate(true, {
         type: 'warning',
         title: 'Twitch Error',
         message: $t(
@@ -958,6 +1015,9 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
       throw new Error('Account merging can only be performed while logged in');
     }
 
+    // Ensure scene collections are updated before the migration begins
+    await this.sceneCollectionsService.save();
+
     this.SET_AUTH_STATE(EAuthProcessState.Loading);
     const onWindowShow = () => this.SET_AUTH_STATE(EAuthProcessState.Idle);
 
@@ -995,14 +1055,14 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
     const auth =
       mode === 'internal'
-        /* eslint-disable */
-        ? await this.authModule.startInternalAuth(
-          authUrl,
-          service.authWindowOptions,
-          onWindowShow,
-          onWindowClose,
-          merge,
-        )
+        ? /* eslint-disable */
+          await this.authModule.startInternalAuth(
+            authUrl,
+            service.authWindowOptions,
+            onWindowShow,
+            onWindowClose,
+            merge,
+          )
         : await this.authModule.startExternalAuth(authUrl, onWindowShow, merge);
     /* eslint-enable */
 

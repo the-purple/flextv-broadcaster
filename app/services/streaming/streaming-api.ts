@@ -27,6 +27,7 @@ export enum ERecordingState {
   Starting = 'starting',
   Recording = 'recording',
   Stopping = 'stopping',
+  Wrote = 'wrote',
 }
 
 export enum EReplayBufferState {
