@@ -8,7 +8,6 @@ import GenericFormGroups from 'components/obs/inputs/GenericFormGroups.vue';
 import { WindowsService } from 'services/windows';
 import { ISettingsSubCategory, SettingsService } from 'services/settings';
 import DeveloperSettings from 'components/windows/settings/DeveloperSettings';
-import InstalledApps from 'components/InstalledApps.vue';
 import Hotkeys from 'components/windows/settings/Hotkeys.vue';
 import OverlaySettings from 'components/windows/settings/OverlaySettings';
 import NotificationsSettings from 'components/windows/settings/NotificationsSettings.vue';
@@ -34,7 +33,6 @@ import * as remote from '@electron/remote';
     DeveloperSettings,
     OverlaySettings,
     NotificationsSettings,
-    InstalledApps,
     FormInput,
     VirtualWebcamSettings,
     Scrollable,

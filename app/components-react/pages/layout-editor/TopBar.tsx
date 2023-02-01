@@ -11,7 +11,7 @@ import { useLayoutEditor } from './hooks';
 import Form from '../../shared/inputs/Form';
 
 export default function TopBar() {
-  const { LayoutService, NavigationService } = Services;
+  const { LayoutService, NavigationService, SideNavService } = Services;
   const {
     slottedElements,
     browserUrl,
@@ -39,6 +39,7 @@ export default function TopBar() {
       await LayoutService.actions.return.changeLayout(currentLayout);
     }
     await LayoutService.actions.return.setSlots(slottedElements);
+    SideNavService.actions.setCurrentMenuItem(LayoutService.state.currentTab);
     NavigationService.actions.navigate('Studio');
   }
 

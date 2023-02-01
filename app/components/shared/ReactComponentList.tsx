@@ -33,6 +33,9 @@ export class AdvancedStatistics extends ReactComponent {}
 })
 export class AlertboxLibrary extends ReactComponent {}
 
+@Component({ props: { name: { default: 'Blank' } } })
+export class Blank extends ReactComponent {}
+
 @Component({
   props: {
     name: { default: 'BrowseOverlays' },
@@ -158,6 +161,14 @@ export class Loader extends ReactComponent {}
   },
 })
 export class IconLibraryProperties extends ReactComponent {}
+
+@Component({
+  props: {
+    name: { default: 'InstalledApps' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class InstalledApps extends ReactComponent {}
 
 @Component({
   props: {
@@ -499,6 +510,8 @@ export class WidgetWindow extends ReactComponent {}
 })
 export class CustomCodeWindow extends ReactComponent {}
 
+@Component({ props: { name: { default: 'NewBadge' } } })
+export class NewBadge extends ReactComponent {}
 @Component({ props: { name: { default: 'UltraIcon' } } })
 export class UltraIcon extends ReactComponent<{
   type?: string;
