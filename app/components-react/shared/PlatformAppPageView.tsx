@@ -42,7 +42,7 @@ export default function PlatformAppPageView(p: {
       unmountContainer();
       clearInterval(interval);
     };
-  }, []);
+  }, [hideStyleBlockers]);
 
   async function mountContainer() {
     containerId = await PlatformAppsService.actions.return.mountContainer(
@@ -102,7 +102,12 @@ export default function PlatformAppPageView(p: {
         </div>
       )}
       <div
-        style={{ display: 'flex', flexDirection: 'column', width: '100%', ...p.style }}
+        style={{
+          display: !hideStyleBlockers ? 'flex' : 'none',
+          flexDirection: 'column',
+          width: '100%',
+          ...p.style,
+        }}
         ref={appContainer}
       />
     </>

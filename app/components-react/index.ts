@@ -60,6 +60,7 @@ import FlexTvSideNav from './sidebar/FlexTvSideNav';
 import WelcomeToPrime from './windows/WelcomeToPrime';
 import Notifications from './windows/notifications/Notifications';
 import NotificationsAndNews from './windows/notifications';
+import Blank from './windows/Blank';
 import PlatformMerge from './pages/PlatformMerge';
 import AlertboxLibrary from './pages/AlertboxLibrary';
 import PlatformAppStore from './pages/PlatformAppStore';
@@ -68,8 +69,10 @@ import PlatformAppMainPage from './pages/PlatformAppMainPage';
 import PlatformAppPageView from './shared/PlatformAppPageView';
 import PlatformAppPopOut from './windows/PlatformAppPopOut';
 import RecentEventsWindow from './windows/RecentEvents';
+import NewBadge from './shared/NewBadge';
 import RecordingHistory from './windows/RecordingHistory';
 import UltraIcon from './shared/UltraIcon';
+import InstalledApps from './windows/settings/InstalledApps';
 
 // list of React components to be used inside Vue components
 export const components = {
@@ -143,5 +146,8 @@ export const components = {
   PlatformAppMainPage,
   PlatformAppPageView,
   PlatformAppPopOut,
+  NewBadge,
   UltraIcon,
+  InstalledApps,
+  Blank,
 };

@@ -17,6 +17,7 @@ import { PlatformContainerManager, getPageUrl, getAssetUrl } from './container-m
 import { NavigationService } from 'services/navigation';
 import { InitAfter } from '../core';
 import * as remote from '@electron/remote';
+import { SideNavService } from 'app-services';
 
 const DEV_PORT = 8081;
 
@@ -157,6 +158,10 @@ class PlatformAppsViews extends ViewHandler<IPlatformAppServiceState> {
     return this.state.loadedApps.filter(app => app.enabled);
   }
 
+  get productionApps() {
+    return this.state.loadedApps.filter(app => !app.unpacked);
+  }
+
   getDelisted(appId: string) {
     return this.getApp(appId).delisted;
   }
@@ -169,6 +174,7 @@ export class PlatformAppsService extends StatefulService<IPlatformAppServiceStat
   @Inject() hostsService: HostsService;
   @Inject() userService: UserService;
   @Inject() navigationService: NavigationService;
+  @Inject() sideNavService: SideNavService;
 
   get views() {
     return new PlatformAppsViews(this.state);
@@ -182,6 +188,7 @@ export class PlatformAppsService extends StatefulService<IPlatformAppServiceStat
 
   appLoad = new Subject<ILoadedApp>();
   appUnload = new Subject<string>();
+  allAppsLoaded = new Subject<ILoadedApp[]>();
 
   /**
    * Signals all listening app sources that the provided
@@ -209,6 +216,8 @@ export class PlatformAppsService extends StatefulService<IPlatformAppServiceStat
           this.loadUnpackedApp(data.appPath, data.appToken);
         }
       }
+
+      this.allAppsLoaded.next();
     });
 
     this.userService.userLogout.subscribe(() => {
@@ -226,6 +235,20 @@ export class PlatformAppsService extends StatefulService<IPlatformAppServiceStat
    * Load production apps
    */
   async loadProductionApps() {
+  }
+
+  /**
+   * Refresh production apps list
+   */
+
+  async refreshProductionApps() {
+    //   const toUnload = this.state.loadedApps;
+    //   this.state.loadedApps = {...this.state.loadedApps};
+    //   toUnload.forEach(app => this.unloadApp(app));
+    //   this.state.loadedApps = {};
+    this.unloadAllApps();
+    this.loadProductionApps();
+    this.sideNavService.actions.updateAllApps();
   }
 
   /**

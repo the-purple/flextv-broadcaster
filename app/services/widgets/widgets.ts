@@ -11,7 +11,7 @@ import fs from 'fs';
 import { ServicesManager } from 'services-manager';
 import { authorizedHeaders, handleResponse } from 'util/requests';
 import { ISerializableWidget, IWidgetSource, IWidgetsServiceApi } from './widgets-api';
-import { WidgetType, WidgetDefinitions, WidgetTesters } from './widgets-data';
+import { WidgetType, WidgetDefinitions, WidgetTesters, WidgetDisplayData } from './widgets-data';
 import { FlexTvWidgetTypeKey } from './flextv-widgets-data';
 import { mutation, StatefulService, ViewHandler } from '../core/stateful-service';
 import { WidgetSource } from './widget-source';
@@ -26,7 +26,6 @@ import { THttpMethod } from './settings/widget-settings';
 import { TPlatform } from '../platforms';
 import { getAlertsConfig, TAlertType } from './alerts-config';
 import { getWidgetsConfig } from './widgets-config';
-import { WidgetDisplayData } from './widgets-data';
 import * as remote from '@electron/remote';
 import Utils from '../utils';
 
@@ -39,6 +38,15 @@ class WidgetsServiceViews extends ViewHandler<IWidgetSourcesState> {
     return this.getServiceViews(UserService);
   }
 
+  get widgetSources(): WidgetSource[] {
+    return Object.keys(this.state.widgetSources)
+      .map(id => this.getWidgetSource(id));
+  }
+
+  getWidgetSource(sourceId: string): WidgetSource {
+    return this.state.widgetSources[sourceId] ? new WidgetSource(sourceId) : null;
+  }
+
   // hack since in the current iteration HostsService cannot have views be fetched
   @Inject() hostsService: HostsService;
 
@@ -46,12 +54,13 @@ class WidgetsServiceViews extends ViewHandler<IWidgetSourcesState> {
     if (!this.userService.isLoggedIn) return;
     return WidgetTesters.filter(tester => {
       return tester.platforms.includes(this.userService.platform.type);
-    }).map(tester => {
-      return {
-        name: tester.name,
-        url: tester.url(this.hostsService.streamlabs, this.userService.platform.type),
-      };
-    });
+    })
+      .map(tester => {
+        return {
+          name: tester.name,
+          url: tester.url(this.hostsService.streamlabs, this.userService.platform.type),
+        };
+      });
   }
 }
 
@@ -109,7 +118,12 @@ export class WidgetsService
     return new WidgetsServiceViews(this.state);
   }
 
-  async createWidget(type: WidgetType, name?: string): Promise<void> {
+  getWidgetSource(sourceId: string): WidgetSource {
+    return this.state.widgetSources[sourceId] ? new WidgetSource(sourceId) : null;
+  }
+
+  async createWidget(type: WidgetType, name?: string): Promise<SceneItem> {
+    // async createWidget(type: WidgetType, name?: string): Promise<void> {
     if (!this.userService.isLoggedIn) return;
     const widgetTransform = this.widgetsConfig[type]?.defaultTransform || WidgetDefinitions[type];
 
@@ -181,16 +195,11 @@ export class WidgetsService
     );
   }
 
-  getWidgetSources(): WidgetSource[] {
-    return Object.keys(this.state.widgetSources).map(id => this.getWidgetSource(id));
-  }
-
-  getWidgetSource(sourceId: string): WidgetSource {
-    return this.state.widgetSources[sourceId] ? new WidgetSource(sourceId) : null;
-  }
-
   async getWidgetUrl(type: WidgetType): Promise<string> {
-    if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) return '';
+    if (!this.userService.isLoggedIn || !WidgetDefinitions[type]) {
+      return WidgetDefinitions[type].url(this.hostsService.streamlabs, this.userService.widgetToken);
+    }
+
     await this.flexTvService.initWidgets();
     const widgets = this.flexTvService.getWidgetUrls(FlexTvWidgetTypeKey[type]);
     if (widgets.length === 0) {
@@ -253,13 +262,14 @@ export class WidgetsService
     this.previewSourceWatchers[previewSourceId] = this.sourcesService.sourceUpdated.subscribe(
       sourceModel => {
         if (sourceModel.sourceId !== sourceId) return;
-        const widget = this.getWidgetSource(sourceId);
+        const widget = this.views.getWidgetSource(sourceId);
         const source = widget.getSource();
         const newPreviewSettings = cloneDeep(source.getSettings());
         delete newPreviewSettings.shutdown;
         const config = this.widgetsConfig[widget.type];
         newPreviewSettings.url =
-          config?.previewUrl || widget.getSettingsService().getApiSettings().previewUrl;
+          config?.previewUrl || widget.getSettingsService()
+            .getApiSettings().previewUrl;
         const previewSource = widget.getPreviewSource();
         previewSource.updateSettings(newPreviewSettings);
         previewSource.refresh();
@@ -302,13 +312,14 @@ export class WidgetsService
     if (!this.userService.views.isLoggedIn) return -1;
 
     const type = Number(
-      Object.keys(WidgetDefinitions).find(WidgetType => {
-        let regExpStr = WidgetDefinitions[WidgetType].url(this.hostsService.streamlabs, '')
-          .split('?')[0]
-          .replace(/\//g, '\\/');
-        regExpStr = `${regExpStr}([A-z0-9]+)?(\\?token=[A-z0-9]+)?$`; // allow only 'token' get param
-        return new RegExp(regExpStr).test(url);
-      }),
+      Object.keys(WidgetDefinitions)
+        .find(WidgetType => {
+          let regExpStr = WidgetDefinitions[WidgetType].url(this.hostsService.streamlabs, '')
+            .split('?')[0]
+            .replace(/\//g, '\\/');
+          regExpStr = `${regExpStr}([A-z0-9]+)?(\\?token=[A-z0-9]+)?$`; // allow only 'token' get param
+          return new RegExp(regExpStr).test(url);
+        }),
     );
     return isNaN(type) ? -1 : type;
   }
@@ -327,7 +338,7 @@ export class WidgetsService
 
   private unregister(sourceId: string) {
     if (!this.state.widgetSources[sourceId]) return;
-    const widgetSource = this.getWidgetSource(sourceId);
+    const widgetSource = this.views.getWidgetSource(sourceId);
     if (widgetSource.previewSourceId) widgetSource.destroyPreviewSource();
     this.REMOVE_WIDGET_SOURCE(sourceId);
   }
@@ -388,11 +399,12 @@ export class WidgetsService
     let widgetItem: SceneItem;
 
     // First, look for an existing widget of the same type
-    widgetItem = scene.getItems().find(item => {
-      const source = item.getSource();
-      if (source.getPropertiesManagerType() !== 'widget') return false;
-      return source.getPropertiesManagerSettings().widgetType === widget.type;
-    });
+    widgetItem = scene.getItems()
+      .find(item => {
+        const source = item.getSource();
+        if (source.getPropertiesManagerType() !== 'widget') return false;
+        return source.getPropertiesManagerSettings().widgetType === widget.type;
+      });
 
     // Otherwise, create a new one
     if (!widgetItem) {
