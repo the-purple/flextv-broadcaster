@@ -401,7 +401,7 @@ export class SideNav extends ReactComponent {}
 @Component({
   props: {
     name: { default: 'FlexTvSideNav' },
-    wrapperStyles: { default: () => ({ height: '100%' }) },
+    wrapperStyles: { default: () => ({ height: '100%', flexGrow: 0 }) },
   },
 })
 export class FlexTvSideNav extends ReactComponent {}

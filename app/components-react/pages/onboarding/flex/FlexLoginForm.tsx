@@ -14,7 +14,10 @@ interface FlexAuthResult {
   id: string;
   nickname: string;
   channelId: string;
-  token: string;
+  token: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }
 
 export default function FlexLoginForm() {
@@ -24,10 +27,10 @@ export default function FlexLoginForm() {
   const next = async () => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    const request = new Request(`${Services.FlexTvService.apiBase}/api/auth/signin`, {
+    const request = new Request(`${Services.FlexTvService.apiBase}/v2/api/auth/signin`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ loginId, password }),
+      body: JSON.stringify({ loginId, password, device: 'PCWEB' }),
     });
     try {
       const data: FlexAuthResult = await jfetch(request);
@@ -35,7 +38,7 @@ export default function FlexLoginForm() {
         String(data.id),
         data.nickname,
         String(data.channelId),
-        data.token,
+        data.token.accessToken,
       );
 
       return Services.UserService.startFlexAuth(auth).then(() => {
