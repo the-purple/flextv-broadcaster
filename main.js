@@ -528,7 +528,7 @@ async function startApp() {
 const haDisableFile = path.join(app.getPath('userData'), 'HADisable');
 if (fs.existsSync(haDisableFile)) app.disableHardwareAcceleration();
 
-app.setAsDefaultProtocolClient('slobs');
+app.setAsDefaultProtocolClient('flextvcaster');
 
 app.on('second-instance', (event, argv, cwd) => {
   // Check for protocol links in the argv of the other process
