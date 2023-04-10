@@ -39,8 +39,13 @@ export default function FlexTvSideNav() {
     () => ({
       isLoggedIn: UserService.views.isLoggedIn,
       isPrime: UserService.views.isPrime,
-      menuItems: SideNavService.views.state[ENavName.BottomNav].menuItems.filter((menu) => {
-        return [EMenuItemKey.Settings, EMenuItemKey.Login, EMenuItemKey.GetHelp].includes(menu.key as EMenuItemKey);
+      menuItems: SideNavService.views.state[ENavName.BottomNav].menuItems.filter(menu => {
+        return [
+          EMenuItemKey.DevTools,
+          EMenuItemKey.Settings,
+          EMenuItemKey.Login,
+          EMenuItemKey.GetHelp,
+        ].includes(menu.key as EMenuItemKey);
       }),
       isOpen: SideNavService.views.isOpen,
       openMenuItems: SideNavService.views.getExpandedMenuItems(ENavName.BottomNav),

@@ -1,67 +1,38 @@
-import React, { useState } from 'react';
-import cx from 'classnames';
+import React from 'react';
+import BrowserView from 'components-react/shared/BrowserView';
 import { Services } from 'components-react/service-provider';
-import { TextInput } from 'components-react/shared/inputs/TextInput';
 import { TPlatform } from 'services/platforms';
 import { IUserAuth } from 'services/user';
-import { $t } from 'services/i18n';
-import styles from '../Connect.m.less';
 import { jfetch } from 'util/requests';
-import * as remote from '@electron/remote';
-import PlatformLogo from '../../../shared/PlatformLogo';
 
-interface FlexAuthResult {
-  id: string;
-  nickname: string;
-  channelId: string;
-  token: {
-    accessToken: string;
-    refreshToken: string;
+const OAUTH_ACCESS_KEY = 'flx_oauth_access';
+const OAUTH_REFRESH_KEY = 'flx_oauth_refresh';
+
+const isProd = process.env.NODE_ENV === 'production';
+
+const BASE_URL = isProd ? 'https://www.flextv.co.kr' : 'https://www.hotaetv.com';
+
+interface FlexProfileResult {
+  profile: {
+    id: number;
+    loginId: string;
+    nickname: string;
+    channelId: number;
   };
 }
 
 export default function FlexLoginForm() {
-  const [loginId, setLoginId] = useState('');
-  const [password, setPassword] = useState('');
-
-  const next = async () => {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    const request = new Request(`${Services.FlexTvService.apiBase}/v2/api/auth/signin`, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify({ loginId, password, device: 'PCWEB' }),
-    });
-    try {
-      const data: FlexAuthResult = await jfetch(request);
-      const auth = parseAuthFromToken(
-        String(data.id),
-        data.nickname,
-        String(data.channelId),
-        data.token.accessToken,
-      );
-
-      return Services.UserService.startFlexAuth(auth).then(() => {
-        return Services.NavigationService.navigate('Studio');
-      });
-    } catch (e: unknown) {
-      return remote.dialog.showMessageBox({
-        title: '계정정보 불일치',
-        type: 'warning',
-        message: '계정정보가 일치하지 않습니다.',
-      });
-    }
-  };
-
   const parseAuthFromToken = (
     id: string,
     nickname: string,
     channelId: string,
     token: string,
+    refreshToken: string,
   ): IUserAuth => {
     return {
       widgetToken: token,
       apiToken: token,
+      refreshToken,
       primaryPlatform: 'flextv' as TPlatform,
       platforms: {
         flextv: {
@@ -76,59 +47,58 @@ export default function FlexLoginForm() {
     };
   };
 
-  const openHelp = () => {
-    return remote.shell.openExternal(`${Services.FlexTvService.baseUrl}/cs/guide`);
-  };
+  async function login(accessToken, refreshToken) {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    const request = new Request(`${Services.FlexTvService.apiBase}/api/my/profile`, {
+      headers,
+      method: 'GET',
+    });
+    const data: FlexProfileResult = await jfetch(request);
 
-  const openSignup = () => {
-    return remote.shell.openExternal(`${Services.FlexTvService.baseUrl}/signup`);
-  };
+    const auth = parseAuthFromToken(
+      String(data.profile.id),
+      data.profile.nickname,
+      String(data.profile.channelId),
+      accessToken,
+      refreshToken,
+    );
 
-  const openFindMember = () => {
-    return remote.shell.openExternal(`${Services.FlexTvService.baseUrl}/member/find/findId`);
-  };
+    return Services.UserService.startFlexAuth(auth).then(() => {
+      return Services.NavigationService.navigate('Studio');
+    });
+  }
 
   function handleBack() {
     return Services.NavigationService.navigate('Studio');
   }
 
+  function onBrowserViewReady(view: Electron.BrowserView) {
+    view.webContents.on('did-navigate-in-page', (e, url) => {
+      view.webContents.session.cookies.get({}).then(cookies => {
+        if (!cookies) return;
+        const cookie = cookies.find(c => c.name === OAUTH_ACCESS_KEY);
+        if (cookie) {
+          const refreshCookie = cookies.find(c => c.name === OAUTH_REFRESH_KEY);
+          const accessToken = cookie.value;
+          return login(accessToken, refreshCookie?.value);
+        }
+      });
+    });
+  }
+
   return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div className={styles.container} style={{ height: '300px' }}>
-        <p>
-          <PlatformLogo platform={'flextv'} />
-        </p>
-        <div className="section">
-          <TextInput placeholder={'아이디'} value={loginId} onChange={setLoginId} />
-          <TextInput
-            placeholder={'비밀번호'}
-            value={password}
-            onChange={setPassword}
-            isPassword={true}
-          />
-        </div>
-        <div className="section">
-          <button
-            className={cx('button button--action', styles.flexLoginButton)}
-            onClick={() => next()}
-          >
-            {$t('Log In')}
-          </button>
-        </div>
-        <p>
-          <a className={styles['link-button']} onClick={() => openFindMember()}>
-            아이디 찾기 & 비밀번호 찾기
-          </a>
-          <span className={styles.divider} />
-          <a className={styles['link-button']} onClick={() => openSignup()}>
-            회원가입
-          </a>
-          <span className={styles.divider} />
-          <a className={styles['link-button']} onClick={handleBack}>
-            {$t('Back')}
-          </a>
-        </p>
+    <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}>
+      <div className="studio-controls-top" style={{ padding: '10px 20px' }}>
+        <div />
+        <i className="icon-close icon-button" onClick={handleBack} />
       </div>
+      <BrowserView
+        style={{ width: '100%', height: '100%' }}
+        src={`${BASE_URL}/signin`}
+        onReady={onBrowserViewReady}
+      />
     </div>
   );
 }
