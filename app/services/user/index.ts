@@ -495,6 +495,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
       userInfo.username,
       userInfo.channelId,
       userInfo.token,
+      this.state.auth.apiToken,
     );
     this.LOGIN(newAuth);
   }
@@ -1215,11 +1216,13 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
         this.logOut();
         return EPlatformCallResult.Error;
       }
+
       const newAuth = this.parseAuthFromToken(
         userInfo.id,
         userInfo.username,
         userInfo.channelId,
         userInfo.token,
+        auth.apiToken,
       );
       this.LOGIN(newAuth);
 
@@ -1244,10 +1247,11 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     nickname: string,
     channelId: string,
     token: string,
+    refreshToken: string,
   ): IUserAuth {
     return {
       widgetToken: token,
-      apiToken: token,
+      apiToken: refreshToken,
       primaryPlatform: 'flextv' as TPlatform,
       platforms: {
         flextv: {

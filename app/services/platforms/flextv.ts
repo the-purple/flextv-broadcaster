@@ -218,19 +218,21 @@ export class FlexTvService
     });
   }
 
-  async fetchNewToken(): Promise<void> {
+  private async fetchNewAccessToken(): Promise<string> {
     const url = `${BASE_URL}/api/oauth/refresh`;
     const request = new Request(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken: this.userService.apiToken }),
     });
-    console.log('fetch new token..!!!');
-
     return jfetch<{ access_token: string }>(request).then(response => {
-      console.log('fetch access success: ' + response.access_token);
-      return this.userService.updatePlatformToken('flextv', response.access_token)
+      return response.access_token;
     });
+  }
+
+  async fetchNewToken(): Promise<void> {
+    const accessToken = await this.fetchNewAccessToken();
+    return this.userService.updatePlatformToken('flextv', accessToken);
   }
 
   fetchStreamPair(): Promise<{ url: string; streamKey: string }> {
@@ -312,17 +314,13 @@ export class FlexTvService
       };
     }>('flextv', `${this.apiBase}/api/my/profile`).catch(() => null);
     if (!userInfo) return null;
-
-    const token = await platformAuthorizedRequest<{
-      token: string;
-    }>('flextv', `${this.apiBase}/api/my/token`).catch(() => null);
+    const token = await this.fetchNewAccessToken();
     if (!token) return null;
-
     return {
       id: String(userInfo.profile.id),
       username: userInfo.profile.nickname,
       channelId: String(userInfo.profile.channelId),
-      token: token.token,
+      token,
     };
   }
 
