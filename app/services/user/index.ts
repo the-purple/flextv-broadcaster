@@ -850,7 +850,14 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
   async showLogin() {
     if (this.isLoggedIn) await this.logOut();
-    this.navigationService.navigate('FlexLoginForm');
+    this.windowsService.showWindow({
+      componentName: 'FlexLoginForm', // FlexLoginForm
+      title: $t('Log In'),
+      size: {
+        width: 1080,
+        height: 720,
+      },
+    });
   }
 
   /**

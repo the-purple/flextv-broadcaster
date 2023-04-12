@@ -44,7 +44,6 @@ export default function FlexLoginForm() {
         },
       },
       hasRelogged: true,
-      expireAt,
     };
   };
 
@@ -77,6 +76,7 @@ export default function FlexLoginForm() {
   }
 
   function onBrowserViewReady(view: Electron.BrowserView) {
+    // view.webContents.openDevTools();
     view.webContents.on('did-navigate-in-page', (e, url) => {
       view.webContents.session.cookies.get({}).then(cookies => {
         if (!cookies) return;
@@ -94,16 +94,14 @@ export default function FlexLoginForm() {
   }
 
   return (
-    <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}>
-      <div className="studio-controls-top" style={{ padding: '10px 20px' }}>
-        <div />
-        <i className="icon-close icon-button" onClick={handleBack} />
-      </div>
-      <BrowserView
-        style={{ width: '100%', height: '100%' }}
-        src={`${BASE_URL}/signin`}
-        onReady={onBrowserViewReady}
-      />
-    </div>
+    <BrowserView
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#fff',
+      }}
+      src={`${BASE_URL}/signin`}
+      onReady={onBrowserViewReady}
+    />
   );
 }
