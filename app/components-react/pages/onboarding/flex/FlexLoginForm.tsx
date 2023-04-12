@@ -28,11 +28,11 @@ export default function FlexLoginForm() {
     channelId: string,
     token: string,
     refreshToken: string,
+    expireAt?: number,
   ): IUserAuth => {
     return {
       widgetToken: token,
-      apiToken: token,
-      refreshToken,
+      apiToken: refreshToken,
       primaryPlatform: 'flextv' as TPlatform,
       platforms: {
         flextv: {
@@ -44,10 +44,11 @@ export default function FlexLoginForm() {
         },
       },
       hasRelogged: true,
+      expireAt,
     };
   };
 
-  async function login(accessToken, refreshToken) {
+  async function login({ accessToken = '', refreshToken = '', expireAt = 0 }) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', `Bearer ${accessToken}`);
@@ -63,6 +64,7 @@ export default function FlexLoginForm() {
       String(data.profile.channelId),
       accessToken,
       refreshToken,
+      expireAt,
     );
 
     return Services.UserService.startFlexAuth(auth).then(() => {
@@ -79,10 +81,13 @@ export default function FlexLoginForm() {
       view.webContents.session.cookies.get({}).then(cookies => {
         if (!cookies) return;
         const cookie = cookies.find(c => c.name === OAUTH_ACCESS_KEY);
-        if (cookie) {
-          const refreshCookie = cookies.find(c => c.name === OAUTH_REFRESH_KEY);
+        const refreshCookie = cookies.find(c => c.name === OAUTH_REFRESH_KEY);
+        if (cookie && refreshCookie) {
           const accessToken = cookie.value;
-          return login(accessToken, refreshCookie?.value);
+          return login({
+            accessToken,
+            refreshToken: refreshCookie?.value ?? '',
+          });
         }
       });
     });

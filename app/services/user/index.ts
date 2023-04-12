@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { PersistentStatefulService } from 'services/core/persistent-stateful-service';
-import { handleResponse, authorizedHeaders, jfetch } from 'util/requests';
+import { authorizedHeaders, jfetch } from 'util/requests';
 import { mutation } from 'services/core/stateful-service';
 import { Service, Inject, ViewHandler } from 'services/core';
 import electron from 'electron';
@@ -86,6 +86,8 @@ export interface IUserAuth {
    * will be present on the user auth.
    */
   slid?: IStreamlabsID;
+
+  expireAt?: number;
 }
 
 // Eventually we will support authing multiple platforms at once

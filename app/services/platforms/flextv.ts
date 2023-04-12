@@ -1,4 +1,5 @@
 import { EPlatformCallResult, IPlatformRequest, IPlatformService, IUserInfo } from '.';
+import { jfetch } from 'util/requests';
 import { InheritMutations, Inject } from '../core';
 import { BasePlatformService } from './base-platform';
 import { IPlatformState, TPlatformCapability } from './index';
@@ -218,6 +219,18 @@ export class FlexTvService
   }
 
   async fetchNewToken(): Promise<void> {
+    const url = `${BASE_URL}/api/oauth/refresh`;
+    const request = new Request(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken: this.userService.apiToken }),
+    });
+    console.log('fetch new token..!!!');
+
+    return jfetch<{ access_token: string }>(request).then(response => {
+      console.log('fetch access success: ' + response.access_token);
+      return this.userService.updatePlatformToken('flextv', response.access_token)
+    });
   }
 
   fetchStreamPair(): Promise<{ url: string; streamKey: string }> {
