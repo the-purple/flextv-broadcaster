@@ -1,3 +1,4 @@
+const fetch = require('node-fetch')
 const appStartTime = Date.now();
 let lastEventTime = 0;
 
@@ -26,12 +27,12 @@ const {
   BrowserWindow,
   ipcMain,
   session,
+  shell,
   crashReporter,
   dialog,
   webContents,
   desktopCapturer,
 } = require('electron');
-const { autoUpdater } = require('electron-updater')
 const path = require('path');
 const rimraf = require('rimraf');
 const remote = require('@electron/remote/main');
@@ -569,9 +570,25 @@ ipcMain.on('protocolLinkReady', () => {
 });
 
 app.on('ready', () => {
-  if (['production', 'test'].includes(process.env.NODE_ENV)) {
-    autoUpdater.checkForUpdates();
-  }
+  fetch('https://www.flextv.co.kr/api/versions/latest/pc-caster')
+    .then(res => res.json()).then(async (data) => {
+      if (!pjson.version) return;
+      const hasLatest = checkHasLatestVersion(pjson.version, data.version);
+      if (!hasLatest) return;
+
+      const options = {
+        type: 'info',
+        buttons: ['업데이트하러 가기', '다음에'],
+        title: '새로운 버전이 출시되었습니다.',
+        detail: '애플리케이션을 업데이트하여 새로운 버전을 만나보세요.',
+      };
+      const response = await dialog.showMessageBox(mainWindow, options);
+      if (response.response === 0) {
+        await shell.openExternal('https://www.flextv.co.kr/updates'); // ToDo: 링크 변경
+      }
+    }).catch(() => {
+      console.log('failed to fetch new version. do nothing.');
+    });
   startApp();
 });
 
@@ -778,18 +795,9 @@ function measure(msg, time) {
   console.log(msg, delta + 'ms');
 }
 
-autoUpdater.on('update-downloaded', async (_event, releaseNotes, releaseName) => {
-  const options = {
-    type: 'info',
-    buttons: ['재시작', '다음에 업데이트'],
-    title: '업데이트 중입니다.',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail:
-      '새로운 버전이 다운로드 되었습니다. 애플리케이션을 재시작하여 업데이트를 적용해 주세요.',
-  };
-  const response = await dialog.showMessageBox(mainWindow, options);
+function checkHasLatestVersion(appVersion, latestVersion) {
+  const [appMajor, appMinor, appPatch] = appVersion.split('.').map(s => Number(s));
+  const [major, minor, patch] = latestVersion.split('.').map(s => Number(s));
 
-  if (response.response === 0) {
-    autoUpdater.quitAndInstall();
-  }
-});
+  return appMajor < major || appMinor < minor || appPatch < patch;
+}
