@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { PersistentStatefulService } from 'services/core/persistent-stateful-service';
-import { handleResponse, authorizedHeaders, jfetch } from 'util/requests';
+import { authorizedHeaders, jfetch } from 'util/requests';
 import { mutation } from 'services/core/stateful-service';
 import { Service, Inject, ViewHandler } from 'services/core';
 import electron from 'electron';
@@ -86,6 +86,8 @@ export interface IUserAuth {
    * will be present on the user auth.
    */
   slid?: IStreamlabsID;
+
+  expireAt?: number;
 }
 
 // Eventually we will support authing multiple platforms at once
@@ -493,6 +495,7 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
       userInfo.username,
       userInfo.channelId,
       userInfo.token,
+      this.state.auth.apiToken,
     );
     this.LOGIN(newAuth);
   }
@@ -848,7 +851,14 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
   async showLogin() {
     if (this.isLoggedIn) await this.logOut();
-    this.navigationService.navigate('FlexLoginForm');
+    this.windowsService.showWindow({
+      componentName: 'FlexLoginForm', // FlexLoginForm
+      title: $t('Log In'),
+      size: {
+        width: 1080,
+        height: 720,
+      },
+    });
   }
 
   /**
@@ -1206,11 +1216,13 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
         this.logOut();
         return EPlatformCallResult.Error;
       }
+
       const newAuth = this.parseAuthFromToken(
         userInfo.id,
         userInfo.username,
         userInfo.channelId,
         userInfo.token,
+        auth.apiToken,
       );
       this.LOGIN(newAuth);
 
@@ -1235,10 +1247,11 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     nickname: string,
     channelId: string,
     token: string,
+    refreshToken: string,
   ): IUserAuth {
     return {
       widgetToken: token,
-      apiToken: token,
+      apiToken: refreshToken,
       primaryPlatform: 'flextv' as TPlatform,
       platforms: {
         flextv: {

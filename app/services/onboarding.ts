@@ -15,7 +15,6 @@ import * as remote from '@electron/remote';
 
 enum EOnboardingSteps {
   MacPermissions = 'MacPermissions',
-  ConnectFlex = 'ConnectFlex',
   ChooseYourAdventure = 'ChooseYourAdventure',
   SteamingOrRecording = 'StreamingOrRecording',
   Connect = 'Connect',
@@ -39,13 +38,6 @@ export const ONBOARDING_STEPS = () => ({
   [EOnboardingSteps.SteamingOrRecording]: {
     component: 'StreamingOrRecording',
     disableControls: true,
-    hideSkip: true,
-    hideButton: true,
-    isPreboarding: true,
-  },
-  [EOnboardingSteps.ConnectFlex]: {
-    component: 'ConnectFlex',
-    disableControls: false,
     hideSkip: true,
     hideButton: true,
     isPreboarding: true,
@@ -171,8 +163,6 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
     if (process.platform === OS.Mac) {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.MacPermissions]);
     }
-
-    steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ConnectFlex]);
 
     if (isOBSinstalled && !recordingModeEnabled) {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.FreshOrImport]);

@@ -62,13 +62,13 @@ export class GlobalSelection extends Selection {
 
     remote.dialog
       .showMessageBox(Utils.getMainWindow(), {
-        title: 'Streamlabs Desktop',
+        title: $t('Confirm'),
         message,
         type: 'warning',
-        buttons: [$t('Cancel'), $t('OK')],
+        buttons: [$t('OK'), $t('Cancel')],
       })
       .then(({ response }) => {
-        if (!response) return;
+        if (response) return;
         this.editorCommandsService.executeCommand('RemoveNodesCommand', this.clone());
       });
   }

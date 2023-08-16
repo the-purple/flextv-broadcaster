@@ -96,23 +96,7 @@ export default function FeaturesNav() {
   }));
 
   const menuItems = useMemo(() => {
-    if (!loggedIn) {
-      return menu.menuItems.filter(menuItem => menuItem.key === EMenuItemKey.Editor);
-    }
-    return !compactView
-      ? menu.menuItems
-      : menu.menuItems.filter((menuItem: IMenuItem) => {
-          if (
-            [
-              EMenuItemKey.Editor,
-              EMenuItemKey.Themes,
-              EMenuItemKey.AppStore,
-              EMenuItemKey.Highlighter,
-            ].includes(menuItem.key as EMenuItemKey)
-          ) {
-            return menuItem;
-          }
-        });
+    return menu.menuItems.filter(menuItem => menuItem.key === EMenuItemKey.Editor);
   }, [compactView, menu, loggedIn]);
 
   const layoutEditorItem = useMemo(() => {

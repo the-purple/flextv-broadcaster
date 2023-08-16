@@ -13,8 +13,9 @@
         'main-contents--left': renderDock && !leftDock && hasLiveDock,
         'main-contents--onboarding': page === 'Onboarding',
       }"
+      style="display: flex"
     >
-      <side-nav
+      <flex-tv-side-nav
         v-if="page !== 'Onboarding' && !showLoadingSpinner"
         :locked="applicationLoading"
         class="sidenav"
@@ -61,10 +62,6 @@
         />
         <live-dock class="live-dock" />
       </div>
-      <flex-tv-side-nav
-        v-if="page !== 'Onboarding' && !showLoadingSpinner"
-        :locked="applicationLoading"
-      />
     </div>
     <ModalWrapper :renderFn="modalOptions.renderFn" />
     <transition name="loader">
@@ -134,7 +131,7 @@
 }
 
 .main-middle {
-  flex-grow: 1;
+  flex: 1;
   display: grid;
   grid-template-rows: minmax(0, 1fr) 48px;
   position: relative;

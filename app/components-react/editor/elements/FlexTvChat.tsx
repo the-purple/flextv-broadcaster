@@ -10,7 +10,7 @@ import * as remote from '@electron/remote';
 export default function StreamPreview() {
   const viewRef = useRef<Electron.BrowserView>(null);
   const [windowOpened, setWindowOpened] = useState(false);
-  const { StreamingService, UserService } = Services;
+  const { StreamingService, UserService, FlexTvService } = Services;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -49,6 +49,12 @@ export default function StreamPreview() {
     setWindowOpened(true);
   }
 
+  async function handleReload() {
+    await FlexTvService.actions.fetchNewToken();
+
+    return viewRef.current?.webContents.loadURL(chatUrl);
+  }
+
   function FlexTvChatElement() {
     const isInLive = isPaused || isStreaming;
     return (
@@ -65,10 +71,7 @@ export default function StreamPreview() {
               ) : null}
               <i
                 className="icon-repeat icon-button"
-                onClick={() => {
-                  if (!viewRef.current) return;
-                  viewRef.current.webContents.reload();
-                }}
+                onClick={handleReload}
               />
             </div>
           ) : null}
