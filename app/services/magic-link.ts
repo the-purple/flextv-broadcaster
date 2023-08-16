@@ -12,6 +12,10 @@ interface ILoginTokenResponse {
   expires_at: number;
 }
 
+interface ILoginError {
+  status: number;
+}
+
 export class MagicLinkService extends Service {
   @Inject() userService: UserService;
   @Inject() hostsService: HostsService;
@@ -45,6 +49,11 @@ export class MagicLinkService extends Service {
    * @param refl a referral tag for analytics
    */
   async linkToPrime(refl: string) {
+    if (!this.userService.views.isLoggedIn) {
+      return remote.shell.openExternal(
+        `https://${this.hostsService.streamlabs}/ultra?refl=${refl}`,
+      );
+    }
     try {
       const link = await this.getDashboardMagicLink('prime', refl);
       remote.shell.openExternal(link);
@@ -79,6 +88,17 @@ export class MagicLinkService extends Service {
       this.usageStatisticsService.recordFeatureUsage('openAdvancedAlertTesting');
     } catch (e: unknown) {
       console.error('Error generating dashboard magic link', e);
+    }
+  }
+
+  async getMagicSessionUrl(targetUrl: string) {
+    try {
+      const loginToken = (await this.fetchNewToken()).login_token;
+      return `https://${
+        this.hostsService.streamlabs
+      }/slobs/magic/init-session?login_token=${loginToken}&r=${encodeURIComponent(targetUrl)}`;
+    } catch (e: unknown) {
+      console.error('Error generating session magic link', e);
     }
   }
 }

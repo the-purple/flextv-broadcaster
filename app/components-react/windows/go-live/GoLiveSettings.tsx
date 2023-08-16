@@ -9,12 +9,12 @@ import { Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Section } from './Section';
 import PlatformSettings from './PlatformSettings';
-import TwitterInput from './Twitter';
 import OptimizedProfileSwitcher from './OptimizedProfileSwitcher';
 import Spinner from '../../shared/Spinner';
 import ButtonHighlighted from '../../shared/ButtonHighlighted';
 import UltraIcon from '../../shared/UltraIcon';
 import GoLiveError from './GoLiveError';
+import TwitterInput from './Twitter';
 
 const PlusIcon = PlusOutlined as Function;
 
@@ -84,22 +84,7 @@ export default function GoLiveSettings() {
               <PlusIcon style={{ paddingLeft: '17px', fontSize: '24px' }} />
               {$t('Add Destination')}
               {shouldShowPrimeLabel && (
-                <ButtonHighlighted
-                  filled
-                  text={$t('Ultra')}
-                  icon={
-                    <UltraIcon
-                      type="simple"
-                      style={{
-                        fill: '#09161D',
-                        display: 'inline-block',
-                        height: '12px',
-                        width: '12px',
-                        marginRight: '5px',
-                      }}
-                    />
-                  }
-                />
+                <ButtonHighlighted filled text={$t('Ultra')} icon={<UltraIcon type="simple" />} />
               )}
             </a>
           )}

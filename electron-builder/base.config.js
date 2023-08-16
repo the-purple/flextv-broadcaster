@@ -30,6 +30,7 @@ const base = {
     allowToChangeInstallationDirectory: true,
     include: 'installer.nsh',
   },
+  asarUnpack : ["**/node-libuiohook/**", "**/node-fontinfo/**", "**/font-manager/**", "**/game_overlay/**","**/color-picker/**"],
   publish: {
     provider: 's3',
     region: 'ap-northeast-2',

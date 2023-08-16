@@ -1,6 +1,15 @@
 import { TAppPage } from 'services/navigation';
 import { $t } from 'services/i18n';
 
+/**
+ * Update Menu Items
+ * 1. EMenuItemKey: Add/update/remove enum in EMenuItemKey.
+ * 2. Add string title to menuTitles.
+ * 3. Add an entry to SideNavMenuItems. Use the subMenuItems property to add submenu items from SideBarSubMenuItems to the menu item.
+ * 4. To show the menu item, add it to either SideBarTopNavData or SideBarBottomNavData.
+ * 5. To show a menu item in the top nav to a logged out user, add it to loggedOutMenuItems.
+ * 6. To show a menu item in the top nav compact menu, add it to compactMenuItemKeys.
+ */
 export enum EMenuItemKey {
   Editor = 'editor',
   LayoutEditor = 'layout-editor',
@@ -8,6 +17,7 @@ export enum EMenuItemKey {
   Themes = 'themes',
   AppStore = 'app-store',
   Highlighter = 'highlighter',
+  RecordingHistory = 'recording-history',
   ThemeAudit = 'theme-audit',
   DevTools = 'dev-tools',
   GetPrime = 'get-prime',
@@ -17,6 +27,13 @@ export enum EMenuItemKey {
   Login = 'login',
 }
 
+/**
+ * Update SubMenu Items
+ * 1. ESubMenuItemKey: Add/update/remove enum.
+ * 2. Add string title to menuTitles.
+ * 3. Add entry to SideBarSubMenuItems.
+ * 4. To show the submenu item, add it to a menu item entry in SideNavMenuItems by using the subMenuItems property.
+ */
 export enum ESubMenuItemKey {
   Scene = 'browse-overlays',
   AlertBoxLibrary = 'alertbox-library',
@@ -32,6 +49,13 @@ export enum ESubMenuItemKey {
   Multistream = 'dashboard-multistream',
 }
 
+export const ESideNavKey = { ...EMenuItemKey, ...ESubMenuItemKey };
+
+/**
+ * Update External Links
+ * 1. Confirm external link parameter for url.
+ * 2. Add/update/remove type in TExternalLinkType. The type is the url parameter.
+ */
 export type TExternalLinkType =
   | 'overlay'
   | 'widget-theme'
@@ -42,8 +66,18 @@ export type TExternalLinkType =
   | 'tipping/methods'
   | 'multistream';
 
-type TSideNavItem = TAppPage | TExternalLinkType | 'NavTools' | 'WidgetWindow' | string;
+/**
+ * Update Protocal Link Map
+ * 1. Confirm protocol link parameter for url.
+ * 2. Add/update/remove entry in ProtocolLinkKeyMap. The ket is the url parameter.
+ */
+export const ProtocolLinkKeyMap = {
+  ['overlay']: ESubMenuItemKey.Scene,
+  ['widget-theme']: ESubMenuItemKey.Widget,
+  ['site-theme']: ESubMenuItemKey.Sites,
+};
 
+type TSideNavItem = TAppPage | TExternalLinkType | 'NavTools' | 'WidgetWindow' | string;
 export interface IAppMenuItem {
   id: string;
   name?: string;
@@ -55,9 +89,11 @@ export interface IMenu {
   menuItems: (IMenuItem | IParentMenuItem)[];
 }
 
-export interface IMenuItem {
+interface ISideNavItem {
   key: TSideNavItem;
   target?: TSideNavItem; // optional because menu item could be a toggle
+}
+export interface IMenuItem extends ISideNavItem {
   type?: TExternalLinkType | string;
   trackingTarget?: string;
   icon?: string;
@@ -75,6 +111,27 @@ export enum ENavName {
   BottomNav = 'bottom-nav',
 }
 
+export const loggedOutMenuItems: ISideNavItem[] = [
+  {
+    key: EMenuItemKey.Editor,
+    target: 'Studio',
+  },
+  { key: EMenuItemKey.RecordingHistory, target: 'RecordingHistory' },
+];
+
+export const compactMenuItemKeys: EMenuItemKey[] = [
+  EMenuItemKey.Editor,
+  EMenuItemKey.Themes,
+  EMenuItemKey.AppStore,
+  EMenuItemKey.Highlighter,
+  EMenuItemKey.RecordingHistory,
+];
+
+/**
+ * The string titles for the menu items and submenu items
+ * @param item - key for the menu item
+ * @returns string title
+ */
 export const menuTitles = (item: EMenuItemKey | ESubMenuItemKey | string) => {
   return {
     [EMenuItemKey.Editor]: $t('Editor'),
@@ -83,6 +140,7 @@ export const menuTitles = (item: EMenuItemKey | ESubMenuItemKey | string) => {
     [EMenuItemKey.Themes]: $t('Themes'),
     [EMenuItemKey.AppStore]: $t('App Store'),
     [EMenuItemKey.Highlighter]: $t('Highlighter'),
+    [EMenuItemKey.RecordingHistory]: $t('Recordings'),
     [EMenuItemKey.ThemeAudit]: $t('Theme Audit'),
     [EMenuItemKey.DevTools]: 'Dev Tools',
     [EMenuItemKey.GetPrime]: $t('Get Ultra'),
@@ -105,6 +163,9 @@ export const menuTitles = (item: EMenuItemKey | ESubMenuItemKey | string) => {
   }[item];
 };
 
+/**
+ * Menu items in the top menu of the side nav
+ */
 export const SideBarTopNavData = (): IMenu => ({
   name: ENavName.TopNav,
   menuItems: [
@@ -114,10 +175,14 @@ export const SideBarTopNavData = (): IMenu => ({
     SideNavMenuItems()[EMenuItemKey.Themes],
     SideNavMenuItems()[EMenuItemKey.AppStore],
     SideNavMenuItems()[EMenuItemKey.Highlighter],
+    SideNavMenuItems()[EMenuItemKey.RecordingHistory],
     SideNavMenuItems()[EMenuItemKey.ThemeAudit],
   ],
 });
 
+/**
+ * Menu items in the bottom menu of the side nav
+ */
 export const SideBarBottomNavData = (): IMenu => ({
   name: ENavName.BottomNav,
   menuItems: [
@@ -134,6 +199,9 @@ export type TMenuItems = {
   [MenuItem in Partial<EMenuItemKey>]: IMenuItem | IParentMenuItem;
 };
 
+/**
+ * Data for menu items in the side nav
+ */
 export const SideNavMenuItems = (): TMenuItems => ({
   [EMenuItemKey.Editor]: {
     key: EMenuItemKey.Editor,
@@ -171,7 +239,6 @@ export const SideNavMenuItems = (): TMenuItems => ({
     isActive: true,
     isExpanded: false,
   },
-
   [EMenuItemKey.AppStore]: {
     key: EMenuItemKey.AppStore,
     target: 'PlatformAppStore',
@@ -189,6 +256,14 @@ export const SideNavMenuItems = (): TMenuItems => ({
     target: 'Highlighter',
     icon: 'icon-highlighter',
     trackingTarget: 'highlighter',
+    isActive: true,
+    isExpanded: false,
+  },
+  [EMenuItemKey.RecordingHistory]: {
+    key: EMenuItemKey.RecordingHistory,
+    target: 'RecordingHistory',
+    icon: 'icon-play-round',
+    trackingTarget: 'recording-history',
     isActive: true,
     isExpanded: false,
   },
@@ -250,6 +325,9 @@ type TSubMenuItems = {
   [MenuItem in ESubMenuItemKey]: IMenuItem | IParentMenuItem;
 };
 
+/**
+ * Data for sub menu items in the side nav
+ */
 export const SideBarSubMenuItems = (): TSubMenuItems => ({
   [ESubMenuItemKey.Scene]: {
     key: ESubMenuItemKey.Scene,

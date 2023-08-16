@@ -102,6 +102,14 @@ export class EditStreamWindow extends ReactComponent {}
 
 @Component({
   props: {
+    name: { default: 'EditTransform' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class EditTransform extends ReactComponent {}
+
+@Component({
+  props: {
     name: { default: 'GoLiveWindow' },
     wrapperStyles: { default: () => ({ height: '100%' }) },
   },
@@ -517,3 +525,29 @@ export class UltraIcon extends ReactComponent<{
   type?: string;
   className?: string;
 }> {}
+
+@Component({
+  props: {
+    name: { default: 'Hotkeys' },
+    componentProps: {
+      default: () => ({
+        globalSearchStr: '',
+        highlightSearch: () => {},
+        scanning: false,
+      }),
+    },
+  },
+})
+export class Hotkeys extends ReactComponent<{
+  globalSearchStr: string;
+  highlightSearch: (searchStr: string) => void;
+  scanning: boolean;
+}> {}
+
+@Component({
+  props: {
+    name: { default: 'GLVolmeters' },
+    wrapperStyles: { default: () => ({ position: 'absolute', left: '17px', right: '17px', height: '100%' }) },
+  },
+})
+export class GLVolmeters extends ReactComponent {}

@@ -18,7 +18,8 @@ export type TAppPage =
   | 'Highlighter'
   | 'FlexLoginForm'
   | 'Grow'
-  | 'ThemeAudit';
+  | 'ThemeAudit'
+  | 'RecordingHistory';
 
 interface INavigationState {
   currentPage: TAppPage;

@@ -3,5 +3,7 @@
   "files.exclude": {
     "node_modules": true,
     "test": true
-  }
+  },
+  "i18n-ally.localesPaths": ["app/i18n"],
+  "i18n-ally.keystyle": "nested"
 }

@@ -568,7 +568,7 @@ export const WidgetDisplayData = (platform?: string): { [x: number]: IWidgetDisp
     name: $t('Donation Goal'),
     description: $t('Set a goal for your viewers to help you reach.'),
     demoVideo: true,
-    demoFilename: 'source-donation-goal.mp4',
+    demoFilename: 'source-donation-goal.gif',
     supportList: [$t('Donations')],
     icon: 'fas fa-calendar',
   },
@@ -626,7 +626,7 @@ export const WidgetDisplayData = (platform?: string): { [x: number]: IWidgetDisp
     name: $t('Streamlabs Charity Goal'),
     description: $t('Set a goal for your viewers to help you reach.'),
     demoVideo: true,
-    demoFilename: 'source-donation-goal.mp4',
+    demoFilename: 'source-charity-goal.gif',
     supportList: [$t('Streamlabs Charity Donations')],
     icon: 'fas fa-calendar',
   },
@@ -724,11 +724,7 @@ export const WidgetDisplayData = (platform?: string): { [x: number]: IWidgetDisp
   },
   [WidgetType.MediaShare]: {
     name: $t('Media Share'),
-    description: $t(
-      'Please note that when advanced media share is enabled,' +
-        ' media will no longer play through your alert box widget.' +
-        ' Media will only play through this media share widget.',
-    ),
+    description: $t('Allow your viewers to donate to share media on your stream.'),
     demoVideo: false,
     demoFilename: 'media.png',
     supportList: [],
