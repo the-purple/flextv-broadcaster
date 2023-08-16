@@ -32,19 +32,21 @@ import {
 import { VideoEncodingOptimizationService } from 'services/video-encoding-optimizations';
 import { CustomizationService } from 'services/customization';
 import { StreamSettingsService } from '../settings/streaming';
-import { RestreamService } from 'services/restream';
+import { RestreamService, TOutputOrientation } from 'services/restream';
 import Utils from 'services/utils';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import { createStreamError, IStreamError, StreamError, TStreamErrorType } from './stream-error';
 import { authorizedHeaders } from 'util/requests';
 import { HostsService } from '../hosts';
-import { TwitterService } from '../integrations/twitter';
 import { assertIsDefined, getDefined } from 'util/properties-type-guards';
 import { StreamInfoView } from './streaming-view';
 import { GrowService } from 'services/grow/grow';
 import * as remote from '@electron/remote';
 import { RecordingModeService } from 'services/recording-mode';
+import { MarkersService } from 'services/markers';
+import { byOS, OS } from 'util/operating-systems';
+import { TDisplayType, VideoSettingsService } from 'services/settings-v2';
 
 enum EOBSOutputType {
   Streaming = 'streaming',
@@ -57,6 +59,7 @@ enum EOBSOutputSignal {
   Start = 'start',
   Stopping = 'stopping',
   Stop = 'stop',
+  Deactivate = 'deactivate',
   Reconnect = 'reconnect',
   ReconnectSuccess = 'reconnect_success',
   Wrote = 'wrote',
@@ -68,6 +71,7 @@ interface IOBSOutputSignalInfo {
   signal: EOBSOutputSignal;
   code: obs.EOutputCode;
   error: string;
+  service: string; // 'default' | 'green'
 }
 
 export class StreamingService
@@ -82,15 +86,17 @@ export class StreamingService
   @Inject() private videoEncodingOptimizationService: VideoEncodingOptimizationService;
   @Inject() private restreamService: RestreamService;
   @Inject() private hostsService: HostsService;
-  @Inject() private twitterService: TwitterService;
   @Inject() private growService: GrowService;
   @Inject() private recordingModeService: RecordingModeService;
+  @Inject() private markersService: MarkersService;
+  @Inject() private videoSettingsService: VideoSettingsService;
 
   streamingStatusChange = new Subject<EStreamingState>();
   recordingStatusChange = new Subject<ERecordingState>();
   replayBufferStatusChange = new Subject<EReplayBufferState>();
   replayBufferFileWrite = new Subject<string>();
   streamInfoChanged = new Subject<StreamInfoView<any>>();
+  signalInfoChanged = new Subject<IOBSOutputSignalInfo>();
 
   // Dummy subscription for stream deck
   streamingStateChange = new Subject<void>();
@@ -123,8 +129,8 @@ export class StreamingService
         flextv: 'not-started',
         trovo: 'not-started',
         setupMultistream: 'not-started',
+        setupGreen: 'not-started',
         startVideoTransmission: 'not-started',
-        postTweet: 'not-started',
       },
     },
   };
@@ -219,16 +225,6 @@ export class StreamingService
       }),
     );
 
-    // prepopulate Twitter
-    try {
-      if (this.twitterService.state.linked && this.twitterService.state.tweetWhenGoingLive) {
-        await this.twitterService.getTwitterStatus();
-      }
-    } catch (e: unknown) {
-      // do not block streaming if something is wrong on the Twitter side
-      console.error('Error fetching Twitter status', e);
-    }
-
     // successfully prepopulated
     this.UPDATE_STREAM_INFO({ lifecycle: 'waitForNewSettings' });
   }
@@ -273,20 +269,11 @@ export class StreamingService
       try {
         // don't update settings for twitch in unattendedMode
         const settingsForPlatform = platform === 'twitch' && unattendedMode ? undefined : settings;
-        await this.runCheck(platform, () => service.beforeGoLive(settingsForPlatform));
+
+        const context = this.views.getPlatformDisplay(platform);
+        await this.runCheck(platform, () => service.beforeGoLive(settingsForPlatform, context));
       } catch (e: unknown) {
-        console.error('Error running beforeGoLive for plarform', e);
-        // cast all PLATFORM_REQUEST_FAILED errors to SETTINGS_UPDATE_FAILED
-        if (e instanceof StreamError) {
-          e.type =
-            (e.type as TStreamErrorType) === 'PLATFORM_REQUEST_FAILED'
-              ? 'SETTINGS_UPDATE_FAILED'
-              : e.type || 'UNKNOWN_ERROR';
-          this.setError(e, platform);
-        } else {
-          this.setError('SETTINGS_UPDATE_FAILED', platform);
-        }
-        return;
+        this.handleSetupPlatformError(e, platform);
       }
     }
 
@@ -322,6 +309,45 @@ export class StreamingService
       }
     }
 
+    // setup green
+    if (this.views.isGreen) {
+      const displayPlatforms = this.views.activeDisplayPlatforms;
+
+      for (const display in displayPlatforms) {
+        if (displayPlatforms[display].length > 1) {
+          let ready = false;
+          try {
+            await this.runCheck(
+              'setupGreen',
+              async () => (ready = await this.restreamService.checkStatus()),
+            );
+          } catch (e: unknown) {
+            console.error('Error fetching restreaming service', e);
+          }
+          // Assume restream is down
+          if (!ready) {
+            this.setError('RESTREAM_DISABLED');
+            return;
+          }
+
+          // update restream settings
+          try {
+            await this.runCheck('setupGreen', async () => {
+              // enable restream on the backend side
+              if (!this.restreamService.state.enabled) await this.restreamService.setEnabled(true);
+
+              const mode: TOutputOrientation = display === 'horizontal' ? 'landscape' : 'portrait';
+              await this.restreamService.beforeGoLive(display as TDisplayType, mode);
+            });
+          } catch (e: unknown) {
+            console.error('Failed to setup restream', e);
+            this.setError('RESTREAM_SETUP_FAILED');
+            return;
+          }
+        }
+      }
+    }
+
     // apply optimized settings
     const optimizer = this.videoEncodingOptimizationService;
     if (optimizer.state.useOptimizedProfile && settings.optimizedProfile) {
@@ -345,31 +371,27 @@ export class StreamingService
       this.SET_WARNING('YT_AUTO_START_IS_DISABLED');
     }
 
-    // tweet
-    if (
-      settings.tweetText &&
-      this.twitterService.state.linked &&
-      this.twitterService.state.tweetWhenGoingLive
-    ) {
-      try {
-        await this.runCheck('postTweet', () => this.twitterService.postTweet(settings.tweetText!));
-      } catch (e: unknown) {
-        console.error('unable to post a tweet', e);
-        if (e instanceof StreamError) {
-          this.setError(e);
-        } else {
-          this.setError('TWEET_FAILED');
-        }
-        return;
-      }
-    }
-
     // all done
     if (this.state.streamingStatus === EStreamingState.Live) {
       this.UPDATE_STREAM_INFO({ lifecycle: 'live' });
       this.createGameAssociation(this.views.game);
       this.recordAfterStreamStartAnalytics(settings);
     }
+  }
+
+  private handleSetupPlatformError(e: unknown, platform: TPlatform) {
+    console.error('Error running beforeGoLive for platform', e);
+    // cast all PLATFORM_REQUEST_FAILED errors to SETTINGS_UPDATE_FAILED
+    if (e instanceof StreamError) {
+      e.type =
+        (e.type as TStreamErrorType) === 'PLATFORM_REQUEST_FAILED'
+          ? 'SETTINGS_UPDATE_FAILED'
+          : e.type || 'UNKNOWN_ERROR';
+      this.setError(e, platform);
+    } else {
+      this.setError('SETTINGS_UPDATE_FAILED', platform);
+    }
+    return;
   }
 
   private recordAfterStreamStartAnalytics(settings: IGoLiveSettings) {
@@ -628,7 +650,45 @@ export class StreamingService
 
     this.powerSaveId = remote.powerSaveBlocker.start('prevent-display-sleep');
 
-    obs.NodeObs.OBS_service_startStreaming();
+    if (this.views.contextsToStream.length > 1 && this.views.enabledPlatforms.length > 1) {
+      const horizontalContext = this.videoSettingsService.contexts.horizontal;
+      const greenContext = this.videoSettingsService.contexts.green;
+
+      obs.NodeObs.OBS_service_setVideoInfo(horizontalContext, 'horizontal');
+      obs.NodeObs.OBS_service_setVideoInfo(greenContext, 'green');
+
+      const signalChanged = this.signalInfoChanged.subscribe((signalInfo: IOBSOutputSignalInfo) => {
+        if (signalInfo.service === 'default') {
+          if (signalInfo.code !== 0) {
+            obs.NodeObs.OBS_service_stopStreaming(true, 'horizontal');
+            obs.NodeObs.OBS_service_stopStreaming(true, 'green');
+          }
+
+          if (signalInfo.signal === EOBSOutputSignal.Start) {
+            obs.NodeObs.OBS_service_startStreaming('green');
+            signalChanged.unsubscribe();
+          }
+        }
+      });
+
+      obs.NodeObs.OBS_service_startStreaming('horizontal');
+      // sleep for 1 second to allow the first stream to start
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } else {
+      if (this.views.activeDisplays.green && this.views.contextsToStream.includes('green')) {
+        obs.NodeObs.OBS_service_setVideoInfo(this.videoSettingsService.contexts.green, 'green');
+        obs.NodeObs.OBS_service_startStreaming('green');
+      } else if (this.views.activeDisplays.horizontal && this.views.hasGreenContext) {
+        // if the green context is active, explicitly set the horizontal context info
+        obs.NodeObs.OBS_service_setVideoInfo(
+          this.videoSettingsService.contexts.horizontal,
+          'horizontal',
+        );
+        obs.NodeObs.OBS_service_startStreaming('horizontal');
+      } else {
+        obs.NodeObs.OBS_service_startStreaming();
+      }
+    }
 
     const recordWhenStreaming = this.streamSettingsService.settings.recordWhenStreaming;
 
@@ -703,7 +763,29 @@ export class StreamingService
         remote.powerSaveBlocker.stop(this.powerSaveId);
       }
 
-      obs.NodeObs.OBS_service_stopStreaming(false);
+      if (this.views.contextsToStream.length > 1 && this.views.enabledPlatforms.length > 1) {
+        const signalChanged = this.signalInfoChanged.subscribe(
+          (signalInfo: IOBSOutputSignalInfo) => {
+            if (
+              signalInfo.service === 'default' &&
+              signalInfo.signal === EOBSOutputSignal.Deactivate
+            ) {
+              obs.NodeObs.OBS_service_stopStreaming(false, 'green');
+              signalChanged.unsubscribe();
+            }
+          },
+        );
+
+        obs.NodeObs.OBS_service_stopStreaming(false, 'horizontal');
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } else {
+        // if (this.views.activeDisplays.green && this.views.contextsToStream.includes('green')) {
+        //   obs.NodeObs.OBS_service_stopStreaming(false, 'green');
+        // } else {
+        obs.NodeObs.OBS_service_stopStreaming(false, 'horizontal');
+        // }
+      }
 
       this.stopPlatformStreaming();
 
@@ -742,15 +824,6 @@ export class StreamingService
   }
 
   async replayStreaming() {
-    obs.NodeObs.OBS_service_startStreaming();
-
-    const recordWhenStreaming = this.streamSettingsService.settings.recordWhenStreaming;
-
-    if (recordWhenStreaming && this.state.recordingStatus === ERecordingState.Offline) {
-      this.toggleRecording();
-    }
-
-    this.UPDATE_STREAM_INFO({ lifecycle: 'live' });
     return Promise.resolve();
   }
 
@@ -796,6 +869,7 @@ export class StreamingService
 
   startReplayBuffer() {
     if (this.state.replayBufferStatus !== EReplayBufferState.Offline) return;
+
     this.usageStatisticsService.recordFeatureUsage('ReplayBuffer');
     obs.NodeObs.OBS_service_startReplayBuffer();
   }
@@ -1031,7 +1105,12 @@ export class StreamingService
 
       if (info.signal === EOBSOutputSignal.Wrote) {
         const filename = obs.NodeObs.OBS_service_getLastRecording();
-        this.recordingModeService.addRecordingEntry(filename);
+        const parsedFilename = byOS({
+          [OS.Mac]: filename,
+          [OS.Windows]: filename.replace(/\//, '\\'),
+        });
+        this.recordingModeService.actions.addRecordingEntry(parsedFilename);
+        this.markersService.actions.exportCsv(parsedFilename);
         // Wrote signals come after Offline, so we return early here
         // to not falsely set our state out of Offline
         return;

@@ -28,14 +28,13 @@ const {
   ipcMain,
   session,
   shell,
-  crashReporter,
   dialog,
   webContents,
   desktopCapturer,
 } = require('electron');
 const path = require('path');
-const rimraf = require('rimraf');
 const remote = require('@electron/remote/main');
+const fs = require('fs');
 
 // Game overlay is Windows only
 let overlay;
@@ -48,7 +47,16 @@ if (process.env.SLOBS_CACHE_DIR) {
 app.setPath('userData', path.join(app.getPath('appData'), 'slobs-client'));
 
 if (process.argv.includes('--clearCacheDir')) {
-  rimraf.sync(app.getPath('userData'));
+  try {
+    // This could block for a while, but should ensure that the crash handler
+    // is no longer able to interfere with cache removal.
+    fs.rmSync(app.getPath('userData'), {
+      force: true,
+      recursive: true,
+      maxRetries: 5,
+      retryDelay: 500,
+    });
+  } catch (e) {}
 }
 
 // This ensures that only one copy of our app can run at once.
@@ -59,7 +67,6 @@ if (!gotTheLock) {
   return;
 }
 
-const fs = require('fs');
 const bootstrap = require('./updater/build/bootstrap.js');
 const bundleUpdater = require('./updater/build/bundle-updater.js');
 const uuid = require('uuid/v4');
@@ -693,16 +700,6 @@ ipcMain.on('webContents-preventNavigation', (e, id) => {
   if (contents.isDestroyed()) return;
 
   contents.on('will-navigate', e => {
-    e.preventDefault();
-  });
-});
-
-ipcMain.on('webContents-preventPopup', (e, id) => {
-  const contents = webContents.fromId(id);
-
-  if (contents.isDestroyed()) return;
-
-  contents.on('new-window', e => {
     e.preventDefault();
   });
 });

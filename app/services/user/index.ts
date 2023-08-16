@@ -161,6 +161,15 @@ export function setSentryContext(ctx: ISentryContext) {
 class UserViews extends ViewHandler<IUserServiceState> {
   // Injecting HostsService since it's not stateful
   @Inject() hostsService: HostsService;
+  @Inject() magicLinkService: MagicLinkService;
+
+  get settingsServiceViews() {
+    return this.getServiceViews(SettingsService);
+  }
+
+  get streamSettingsServiceViews() {
+    return this.getServiceViews(StreamSettingsService);
+  }
 
   get customizationServiceViews() {
     return this.getServiceViews(CustomizationService);
@@ -180,6 +189,7 @@ class UserViews extends ViewHandler<IUserServiceState> {
   }
 
   get isPrime() {
+    if (!this.isLoggedIn) return false;
     return this.state.isPrime;
   }
 
@@ -207,8 +217,31 @@ class UserViews extends ViewHandler<IUserServiceState> {
     return this.isLoggedIn && this.platform.type === 'twitch';
   }
 
+  /*
+   * The method above doesn't take into account Advanced mode,
+   * resulting in platform-specific functionality (like VOD track on Twitch)
+   * to appear enabled when it shouldn't if the user has set a different Service
+   * in the advanced view.
+   *
+   * Does not modify the above method as we're not sure how many places this
+   * (perhaps more expensive) check is necessary, or whether it'd match the
+   * expected caller behavior.
+   *
+   * TODO: When going back to Recommended Settings, the Service setting here
+   * doesn't get reset.
+   */
+  get isTwitchAuthedAndActive() {
+    return this.streamSettingsServiceViews.state.protectedModeEnabled
+      ? this.isTwitchAuthed
+      : this.settingsServiceViews.streamPlatform === 'Twitch';
+  }
+
   get isFacebookAuthed() {
     return this.isLoggedIn && this.platform.type === 'facebook';
+  }
+
+  get isYoutubeAuthed() {
+    return this.isLoggedIn && this.platform.type === 'youtube';
   }
 
   get hasSLID() {
@@ -217,19 +250,6 @@ class UserViews extends ViewHandler<IUserServiceState> {
 
   get auth() {
     return this.state.auth;
-  }
-
-  alertboxLibraryUrl(id?: string) {
-    const uiTheme = this.customizationServiceViews.isDarkTheme ? 'night' : 'day';
-    let url = `https://${this.hostsService.streamlabs}/alert-box-themes?mode=${uiTheme}&slobs`;
-
-    if (this.isLoggedIn) {
-      url += `&oauth_token=${this.auth.apiToken}`;
-    }
-
-    if (id) url += `&id=${id}`;
-
-    return url;
   }
 
   appStoreUrl(params?: { appId?: string | undefined; type?: string | undefined }) {
@@ -246,28 +266,6 @@ class UserViews extends ViewHandler<IUserServiceState> {
     }
 
     return `${url}?token=${token}&mode=${nightMode}`;
-  }
-
-  overlaysUrl(type?: 'overlay' | 'widget-themes' | 'site-themes', id?: string) {
-    const uiTheme = this.customizationServiceViews.isDarkTheme ? 'night' : 'day';
-
-    let url = `https://${this.hostsService.streamlabs}/library`;
-
-    if (type && !id) {
-      url += `/${type}`;
-    }
-
-    url += `?mode=${uiTheme}&slobs`;
-
-    if (this.isLoggedIn) {
-      url += `&oauth_token=${this.auth.apiToken}`;
-    }
-
-    if (type && id) {
-      url += `#/?type=${type}&id=${id}`;
-    }
-
-    return url;
   }
 }
 
@@ -840,6 +838,33 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     return `https://${this.hostsService.streamlabs}/slobs/dashboard?oauth_token=${token}&mode=${nightMode}&r=${subPage}&l=${locale}&hidenav=${hideNav}`;
   }
 
+  async alertboxLibraryUrl(id?: string) {
+    const uiTheme = this.customizationService.views.isDarkTheme ? 'night' : 'day';
+    let url = `https://${this.hostsService.streamlabs}/alert-box-themes?mode=${uiTheme}&slobs`;
+
+    if (id) url += `&id=${id}`;
+
+    return await this.magicLinkService.actions.return.getMagicSessionUrl(url);
+  }
+
+  async overlaysUrl(type?: 'overlay' | 'widget-themes' | 'site-themes', id?: string) {
+    const uiTheme = this.customizationService.views.isDarkTheme ? 'night' : 'day';
+
+    let url = `https://${this.hostsService.streamlabs}/library`;
+
+    if (type && !id) {
+      url += `/${type}`;
+    }
+
+    url += `?mode=${uiTheme}&slobs`;
+
+    if (type && id) {
+      url += `#/?type=${type}&id=${id}`;
+    }
+
+    return await this.magicLinkService.actions.return.getMagicSessionUrl(url);
+  }
+
   getDonationSettings() {
     const host = this.hostsService.streamlabs;
     const url = `https://${host}/api/v5/slobs/donation/settings`;
@@ -935,16 +960,21 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     }
 
     if (validatePlatformResult === EPlatformCallResult.TwitchScopeMissing) {
-      this.reauthenticate(true, {
-        type: 'warning',
-        title: 'Twitch Error',
-        message: $t(
-          $t(
-            'Streamlabs requires additional permissions from your Twitch account. Please log in with Twitch to continue.',
+      // If this is an SLID login, then we'll handle the merge in the LoginModule
+      // Btw - have kind of mixed responsibilities here between the LoginModule and
+      // the user service login method.  Should clean up at some point.
+      if (!this.views.auth.slid) {
+        this.reauthenticate(true, {
+          type: 'warning',
+          title: 'Twitch Error',
+          message: $t(
+            $t(
+              'Streamlabs requires additional permissions from your Twitch account. Please log in with Twitch to continue.',
+            ),
           ),
-        ),
-        buttons: [$t('Refresh Login')],
-      });
+          buttons: [$t('Refresh Login')],
+        });
+      }
 
       return validatePlatformResult;
     }
@@ -1003,12 +1033,6 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
 
     // Find out if the user has any additional platforms linked
     await this.updateLinkedPlatforms();
-
-    // If user has exactly one streaming platform linked, we can proceed straight
-    // to a logged in state.
-    if (this.views.linkedPlatforms.length === 1) {
-      await this.finishSLAuth(this.views.linkedPlatforms[0]);
-    }
   }
 
   /**
@@ -1039,8 +1063,10 @@ export class UserService extends PersistentStatefulService<IUserServiceState> {
     const service = getPlatformService(primaryPlatform);
 
     this.SET_AUTH_STATE(EAuthProcessState.Loading);
-    await this.login(service);
+    const result = await this.login(service);
     this.SET_AUTH_STATE(EAuthProcessState.Idle);
+
+    return result;
   }
 
   async startSLMerge(): Promise<EPlatformCallResult> {
