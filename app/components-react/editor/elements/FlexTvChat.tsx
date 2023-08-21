@@ -93,8 +93,13 @@ export default function StreamPreview() {
             style={{
               height: '100%',
               backgroundColor: '#252525',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-          />
+          >
+            실시간 채팅은 라이브중에 노출됩니다.
+          </div>
         )}
       </div>
     );

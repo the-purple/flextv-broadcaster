@@ -161,14 +161,15 @@ function SceneSelector() {
           <i className="icon-add icon-button icon-button--lg" onClick={addScene} />
         </Tooltip>
         <Tooltip title={$t('Edit Scene Transitions.')} placement="bottomRight">
-          <i className="icon-transition icon-button icon-button--lg" onClick={showTransitions} />
+          <i className="icon-settings icon-button icon-button--lg" onClick={showTransitions} />
         </Tooltip>
         {/*
          <Tooltip title={$t('Remove Scene.')} placement="bottom">
           <i className="icon-subtract icon-button icon-button--lg" onClick={removeScene} />
         </Tooltip>
         */}
-        <Dropdown
+        {/*
+          <Dropdown
           overlay={DropdownMenu}
           trigger={['click']}
           getPopupContainer={() => document.getElementById('sceneSelector')!}
@@ -181,6 +182,7 @@ function SceneSelector() {
             <span className={styles.activeScene}>{activeCollection?.name}</span>
           </span>
         </Dropdown>
+        */}
       </div>
       <Scrollable style={{ height: '100%' }} className={styles.scenesContainer}>
         <List
