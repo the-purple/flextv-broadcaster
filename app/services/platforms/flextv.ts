@@ -8,6 +8,8 @@ import { platformAuthorizedRequest } from './utils';
 import { CustomizationService } from 'services/customization';
 import * as remote from '@electron/remote';
 
+// https://www.flextv.co.kr/api/versions/latest/pc-caster - 현재 caster 최신 버전
+
 export interface IFlextvStartStreamOptions {
   title: string;
   theme?: string;
@@ -343,24 +345,16 @@ export class FlexTvService
   async checkReadyToStream(): Promise<IFlexTvCommonResponse> {
     const resp = await platformAuthorizedRequest<any>(
       'flextv',
-      `${this.apiBase}/api/my/chennel-register`,
+      `${this.apiBase}/api/my/profile`,
     ).catch(error => {
       console.log('error', error);
       return null;
     });
-    if (!resp) {
+    if (!resp.profile || !resp.profile.PI) {
       return {
         success: false,
         error: {
           code: 'NO_AUTH',
-        },
-      };
-    }
-    if (resp !== 'ok') {
-      return {
-        success: false,
-        error: {
-          code: 'CREATING',
         },
       };
     }

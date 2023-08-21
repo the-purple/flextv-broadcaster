@@ -259,7 +259,7 @@ export class SideNavService extends PersistentStatefulService<ISideNavServiceSta
 
     this.state = {
       ...this.state,
-      isOpen: true,
+      isOpen: false,
       hasLegacyMenu: false,
       compactView: true,
       showCustomEditor: false,
