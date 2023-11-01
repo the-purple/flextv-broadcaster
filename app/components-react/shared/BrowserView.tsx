@@ -4,7 +4,6 @@ import path from 'path';
 import cloneDeep from 'lodash/cloneDeep';
 import { I18nService } from 'services/i18n';
 import Utils from 'services/utils';
-import Spinner from 'components-react/shared/Spinner';
 import { Services } from 'components-react/service-provider';
 import { useVuex } from 'components-react/hooks';
 import electron from 'electron';
@@ -172,9 +171,7 @@ export default function BrowserView(p: BrowserViewProps) {
           alignItems: 'center',
           justifyContent: 'center',
         }}
-      >
-        <Spinner visible pageLoader />
-      </div>
+      />
     );
   }
 

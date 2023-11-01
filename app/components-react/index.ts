@@ -2,6 +2,7 @@ import NameFolder from './windows/NameFolder';
 import NameScene from './windows/NameScene';
 import GoLiveWindow from './windows/go-live/GoLiveWindow';
 import FlexTvGoLiveWindow from './windows/flextv/FlexTvGoLiveWindow';
+import FlexTvWidgetSetting from './windows/flextv/FlexTvWidgetSetting';
 import EditStreamWindow from './windows/go-live/EditStreamWindow';
 import IconLibraryProperties from './windows/IconLibraryProperties';
 import ScreenCaptureProperties from './windows/ScreenCaptureProperties';
@@ -86,6 +87,7 @@ export const components = {
   BrowserView,
   GoLiveWindow: createRoot(GoLiveWindow),
   FlexTvGoLiveWindow: createRoot(FlexTvGoLiveWindow),
+  FlexTvWidgetSetting: createRoot(FlexTvWidgetSetting),
   EditStreamWindow: createRoot(EditStreamWindow),
   IconLibraryProperties,
   ScreenCaptureProperties,

@@ -71,10 +71,6 @@ export default function FlexLoginForm() {
     });
   }
 
-  function handleBack() {
-    return Services.NavigationService.navigate('Studio');
-  }
-
   function onBrowserViewReady(view: Electron.BrowserView) {
     // view.webContents.openDevTools();
     view.webContents.on('did-navigate-in-page', (e, url) => {
