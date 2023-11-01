@@ -91,7 +91,6 @@ export default function FlexTvSideNav() {
     if (isLoggedIn) {
       UserService.actions.logOut();
     } else {
-      WindowsService.actions.closeChildWindow();
       UserService.actions.showLogin();
     }
   };
