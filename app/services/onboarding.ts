@@ -173,7 +173,7 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
     } else {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.HardwareSetup]);
     }
-    
+
     return steps;
   }
 }
