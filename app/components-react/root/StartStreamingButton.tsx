@@ -134,9 +134,6 @@ export default function StartStreamingButton(p: { disabled?: boolean }) {
 
   return (
     <>
-      {streamingStatus === EStreamingState.Live || platformStatus === EPlatformState.Live ? (
-        <PauseButton streamingStatus={streamingStatus} onClick={handleTogglePause} />
-      ) : null}
       <button
         style={{ minWidth: '130px' }}
         className={cx('button button--action', { 'button--soft-warning': getIsRedButton })}

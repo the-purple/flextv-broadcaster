@@ -174,17 +174,6 @@ class OnboardingViews extends ViewHandler<IOnboardingServiceState> {
       steps.push(ONBOARDING_STEPS()[EOnboardingSteps.HardwareSetup]);
     }
 
-    if (
-      !this.state.existingSceneCollections &&
-      !this.state.importedFromObs &&
-      !recordingModeEnabled &&
-      ((userViews.isLoggedIn &&
-        getPlatformService(userViews.platform.type).hasCapability('themes')) ||
-        !userViews.isLoggedIn)
-    ) {
-      steps.push(ONBOARDING_STEPS()[EOnboardingSteps.ThemeSelector]);
-    }
-
     return steps;
   }
 }

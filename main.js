@@ -578,22 +578,13 @@ ipcMain.on('protocolLinkReady', () => {
 
 app.on('ready', () => {
   fetch('https://www.flextv.co.kr/api/versions/latest/pc-caster')
-    .then(res => res.json()).then(async (data) => {
+    .then(res => res.json())
+    .then(async data => {
       if (!pjson.version) return;
       const hasLatest = checkHasLatestVersion(pjson.version, data.version);
-      if (!hasLatest) return;
-
-      const options = {
-        type: 'info',
-        buttons: ['업데이트하러 가기', '다음에'],
-        title: '새로운 버전이 출시되었습니다.',
-        detail: '애플리케이션을 업데이트하여 새로운 버전을 만나보세요.',
-      };
-      const response = await dialog.showMessageBox(mainWindow, options);
-      if (response.response === 0) {
-        await shell.openExternal('https://www.flextv.co.kr/updates'); // ToDo: 링크 변경
-      }
-    }).catch(() => {
+      console.log('has new version: ' + hasLatest);
+    })
+    .catch(() => {
       console.log('failed to fetch new version. do nothing.');
     });
   startApp();

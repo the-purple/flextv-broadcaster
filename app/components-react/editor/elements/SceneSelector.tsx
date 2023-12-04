@@ -155,20 +155,21 @@ function SceneSelector() {
 
   return (
     <>
-      <div className={styles.topContainer} id="sceneSelector">
-        <h3 style={{ flexGrow: 1 }}>{$t('Scene')}</h3>
+      <div className={styles.topContainer} id="sceneSelector" style={{ paddingLeft: 5 }}>
+        <h3 style={{ flexGrow: 1, marginBottom: 0 }}>{$t('Scene')}</h3>
         <Tooltip title={$t('Add a new Scene.')} placement="bottom">
           <i className="icon-add icon-button icon-button--lg" onClick={addScene} />
         </Tooltip>
         <Tooltip title={$t('Edit Scene Transitions.')} placement="bottomRight">
-          <i className="icon-transition icon-button icon-button--lg" onClick={showTransitions} />
+          <i className="icon-settings icon-button icon-button--lg" onClick={showTransitions} />
         </Tooltip>
         {/*
          <Tooltip title={$t('Remove Scene.')} placement="bottom">
           <i className="icon-subtract icon-button icon-button--lg" onClick={removeScene} />
         </Tooltip>
         */}
-        <Dropdown
+        {/*
+          <Dropdown
           overlay={DropdownMenu}
           trigger={['click']}
           getPopupContainer={() => document.getElementById('sceneSelector')!}
@@ -181,6 +182,7 @@ function SceneSelector() {
             <span className={styles.activeScene}>{activeCollection?.name}</span>
           </span>
         </Dropdown>
+        */}
       </div>
       <Scrollable style={{ height: '100%' }} className={styles.scenesContainer}>
         <List
@@ -246,7 +248,7 @@ function TreeNode(p: { scene: IScene; removeScene: (scene: IScene) => void }) {
   const { ScenesService, EditorCommandsService } = Services;
 
   return (
-    <div className={styles.sourceTitleContainer} data-name={p.scene.name} data-role="scene">
+    <div className={styles.sourceTitleContainer} data-name={p.scene.name} data-role="scene" style={{ paddingLeft: 5 }}>
       <span className={styles.sourceTitle}>{p.scene.name}</span>
       <Tooltip title={$t('Remove Scene.')} placement="left">
         <i onClick={() => p.removeScene(p.scene)} className="icon-trash" />

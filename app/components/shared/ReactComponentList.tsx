@@ -126,6 +126,14 @@ export class FlexTvGoLiveWindow extends ReactComponent {}
 
 @Component({
   props: {
+    name: { default: 'FlexTvWidgetSetting' },
+    wrapperStyles: { default: () => ({ height: '100%' }) },
+  },
+})
+export class FlexTvWidgetSetting extends ReactComponent {}
+
+@Component({
+  props: {
     name: { default: 'FlexLoginForm' },
     wrapperStyles: { default: () => ({ height: '100%' }) },
   },

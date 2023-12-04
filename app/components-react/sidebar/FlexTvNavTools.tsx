@@ -3,7 +3,6 @@ import cx from 'classnames';
 import electron from 'electron';
 import Utils from 'services/utils';
 import { $t } from 'services/i18n';
-import throttle from 'lodash/throttle';
 import { Services } from '../service-provider';
 import { useVuex } from '../hooks';
 import styles from './NavTools.m.less';
@@ -11,9 +10,7 @@ import * as remote from '@electron/remote';
 import { Badge, Button, Form, Menu, Modal } from 'antd';
 import { EMenuItemKey, ENavName, IMenuItem, IParentMenuItem, menuTitles } from 'services/side-nav';
 import PlatformLogo from 'components-react/shared/PlatformLogo';
-import SubMenu from 'components-react/shared/SubMenu';
 import MenuItem from 'components-react/shared/MenuItem';
-import UltraIcon from 'components-react/shared/UltraIcon';
 
 export default function FlexTvSideNav() {
   const {
@@ -29,7 +26,6 @@ export default function FlexTvSideNav() {
 
   const {
     isLoggedIn,
-    isPrime,
     menuItems,
     isOpen,
     openMenuItems,
@@ -38,7 +34,6 @@ export default function FlexTvSideNav() {
   } = useVuex(
     () => ({
       isLoggedIn: UserService.views.isLoggedIn,
-      isPrime: UserService.views.isPrime,
       menuItems: SideNavService.views.state[ENavName.BottomNav].menuItems.filter(menu => {
         return [
           EMenuItemKey.DevTools,
@@ -47,17 +42,13 @@ export default function FlexTvSideNav() {
           EMenuItemKey.GetHelp,
         ].includes(menu.key as EMenuItemKey);
       }),
-      isOpen: SideNavService.views.isOpen,
+      isOpen: false,
       openMenuItems: SideNavService.views.getExpandedMenuItems(ENavName.BottomNav),
       expandMenuItem: SideNavService.actions.expandMenuItem,
       updateStyleBlockers: WindowsService.actions.updateStyleBlockers,
     }),
     false,
   );
-  console.log(SideNavService.views.state[ENavName.BottomNav].menuItems)
-  /*
-
-   */
 
   const [dashboardOpening, setDashboardOpening] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -86,8 +77,6 @@ export default function FlexTvSideNav() {
     setDashboardOpening(false);
   }
 
-  const throttledOpenDashboard = throttle(openDashboard, 2000, { trailing: false });
-
   function openHelp() {
     UsageStatisticsService.actions.recordClick('SideNav2', 'help');
     remote.shell.openExternal('https://blog.naver.com/techangel_official');
@@ -102,7 +91,6 @@ export default function FlexTvSideNav() {
     if (isLoggedIn) {
       UserService.actions.logOut();
     } else {
-      WindowsService.actions.closeChildWindow();
       UserService.actions.showLogin();
     }
   };
@@ -125,46 +113,6 @@ export default function FlexTvSideNav() {
         {menuItems.map((menuItem: IParentMenuItem) => {
           if (isDevMode && menuItem.key === EMenuItemKey.DevTools) {
             return <NavToolsItem key={menuItem.key} menuItem={menuItem} onClick={openDevTools} />;
-          } else if (isLoggedIn && !isPrime && menuItem.key === EMenuItemKey.GetPrime) {
-            return (
-              <NavToolsItem
-                key={menuItem.key}
-                menuItem={menuItem}
-                icon={
-                  <div>
-                    <Badge count={<i className={cx('icon-pop-out-3', styles.linkBadge)} />}>
-                      <UltraIcon />
-                    </Badge>
-                  </div>
-                }
-                onClick={upgradeToPrime}
-                className={styles.badgeScale}
-              />
-            );
-          } else if (isLoggedIn && menuItem.key === EMenuItemKey.Dashboard) {
-            return (
-              <SubMenu
-                key={menuItem.key}
-                title={menuTitles(menuItem.key)}
-                icon={
-                  <div>
-                    <Badge count={<i className={cx('icon-pop-out-3', styles.linkBadge)} />}>
-                      <i className={cx(menuItem.icon, 'small')} />
-                    </Badge>
-                  </div>
-                }
-                onTitleClick={() => {
-                  !isOpen && throttledOpenDashboard();
-                  expandMenuItem(ENavName.BottomNav, menuItem.key as EMenuItemKey);
-                }}
-              >
-                <DashboardSubMenu
-                  subMenuItems={menuItem?.subMenuItems}
-                  throttledOpenDashboard={throttledOpenDashboard}
-                  openSettingsWindow={openSettingsWindow}
-                />
-              </SubMenu>
-            );
           } else if (menuItem.key === EMenuItemKey.GetHelp) {
             return (
               <NavToolsItem
@@ -291,13 +239,13 @@ function LoginMenuItem(p: {
   handleShowModal: (status: boolean) => void;
 }) {
   const { menuItem, handleAuth, handleShowModal } = p;
-  const { UserService, SideNavService } = Services;
+  const { UserService } = Services;
 
   const { isLoggedIn, platform, isOpen } = useVuex(
     () => ({
       isLoggedIn: UserService.views.isLoggedIn,
       platform: UserService.views.auth?.platforms[UserService.views.auth?.primaryPlatform],
-      isOpen: SideNavService.views.isOpen,
+      isOpen: false,
     }),
     false,
   );

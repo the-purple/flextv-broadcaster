@@ -1,10 +1,10 @@
 {
-  "name": "slobs-client",
+  "name": "flextv-caster",
   "productName": "FlexTV Broadcaster",
   "description": "FlexTV streaming software",
   "author": "General Workings, Inc.",
   "license": "GPL-3.0",
-  "version": "0.1.24",
+  "version": "0.9.7",
   "main": "main.js",
   "scripts": {
     "compile": "yarn clear && yarn compile:updater && cross-env NODE_ENV=test yarn webpack-cli --progress --config ./webpack.dev.config.js",

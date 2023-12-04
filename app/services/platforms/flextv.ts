@@ -8,6 +8,8 @@ import { platformAuthorizedRequest } from './utils';
 import { CustomizationService } from 'services/customization';
 import * as remote from '@electron/remote';
 
+// https://www.flextv.co.kr/api/versions/latest/pc-caster - 현재 caster 최신 버전
+
 export interface IFlextvStartStreamOptions {
   title: string;
   theme?: string;
@@ -147,7 +149,18 @@ export class FlexTvService
     ) {
       this.setOptimizedOBSSettings();
 
-      const data = await this.fetchStreamPair();
+      let data = await this.fetchStreamPair();
+      if (!data || !data.streamKey) {
+        data = await this.registerNewStreamKey();
+      }
+      if (!data || !data.streamKey) {
+        await remote.dialog.showMessageBox({
+          type: 'error',
+          message: '일시적인 오류가 발생하였습니다. 오류가 지속될 경우 문의 부탁드립니다.',
+          title: '송출 오류',
+        });
+        return;
+      }
       this.SET_STREAM_KEY(data.streamKey);
       if (!this.streamingService.views.isMultiplatformMode) {
         this.streamSettingsService.setSettings({
@@ -239,7 +252,20 @@ export class FlexTvService
     return platformAuthorizedRequest<{ url: string; streamKey: string }>(
       'flextv',
       `${this.apiBase}/api/my/channel/stream-key`,
-    );
+    ).catch(() => ({ streamKey: null, url: null }));
+  }
+
+  registerNewStreamKey(): Promise<{ url: string; streamKey: string }> {
+    const isSuccess = await platformAuthorizedRequest<boolean>(
+      'flextv',
+      `${this.apiBase}/api/my/chennel-register`,
+    )
+      .then(() => true)
+      .catch(() => false);
+    if (isSuccess) {
+      return this.fetchStreamPair();
+    }
+    return { streamKey: null, url: null };
   }
 
   getHeaders(req: IPlatformRequest, useToken: boolean | string) {
@@ -343,24 +369,16 @@ export class FlexTvService
   async checkReadyToStream(): Promise<IFlexTvCommonResponse> {
     const resp = await platformAuthorizedRequest<any>(
       'flextv',
-      `${this.apiBase}/api/my/chennel-register`,
+      `${this.apiBase}/api/my/profile`,
     ).catch(error => {
       console.log('error', error);
       return null;
     });
-    if (!resp) {
+    if (!resp.profile || !resp.profile.PI) {
       return {
         success: false,
         error: {
           code: 'NO_AUTH',
-        },
-      };
-    }
-    if (resp !== 'ok') {
-      return {
-        success: false,
-        error: {
-          code: 'CREATING',
         },
       };
     }

@@ -71,25 +71,25 @@ export default function FlexLoginForm() {
     });
   }
 
-  function handleBack() {
-    return Services.NavigationService.navigate('Studio');
-  }
-
   function onBrowserViewReady(view: Electron.BrowserView) {
     // view.webContents.openDevTools();
     view.webContents.on('did-navigate-in-page', (e, url) => {
-      view.webContents.session.cookies.get({}).then(cookies => {
-        if (!cookies) return;
-        const cookie = cookies.find(c => c.name === OAUTH_ACCESS_KEY);
-        const refreshCookie = cookies.find(c => c.name === OAUTH_REFRESH_KEY);
-        if (cookie && refreshCookie) {
-          const accessToken = cookie.value;
-          return login({
-            accessToken,
-            refreshToken: refreshCookie?.value ?? '',
-          });
-        }
-      });
+      setTimeout(() => {
+        view.webContents.session.cookies.get({}).then(cookies => {
+          if (!cookies) {
+            return login({ });
+          }
+          const cookie = cookies.find(c => c.name === OAUTH_ACCESS_KEY);
+          const refreshCookie = cookies.find(c => c.name === OAUTH_REFRESH_KEY);
+          if (cookie && refreshCookie) {
+            const accessToken = cookie.value;
+            return login({
+              accessToken,
+              refreshToken: refreshCookie?.value ?? '',
+            });
+          }
+        });
+      }, 200)
     });
   }
 
@@ -100,7 +100,7 @@ export default function FlexLoginForm() {
         height: '100%',
         backgroundColor: '#fff',
       }}
-      src={`${BASE_URL}/signin`}
+      src={`${BASE_URL}/signin?callbackURL=${encodeURIComponent('/completed/signin')}`}
       onReady={onBrowserViewReady}
     />
   );

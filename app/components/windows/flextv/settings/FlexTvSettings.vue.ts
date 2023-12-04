@@ -227,7 +227,6 @@ export default class FlexTvSettings extends Vue {
           }
         });
     } else {
-      this.windowsService.closeChildWindow();
       this.userService.showLogin();
     }
   }

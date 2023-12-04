@@ -75,19 +75,14 @@ export default function StudioFooterComponent() {
   }
 
   function openFlexTvHelperWindow() {
-    return FlexTvService.fetchHelperToken()
-      .then(token => {
-        const url = `${FlexTvService.helperUrl}${encodeURIComponent(token)}`;
-        return remote.shell.openExternal(url);
-      })
-      .catch((e: unknown) => {
-        return remote.dialog.showMessageBox({
-          title: '위젯 설정 열기 실패',
-          type: 'warning',
-          message:
-            '일시적인 문제가 발생하였습니다. 문제가 지속적으로 발생한다면 고객센터에 문의 부탁드립니다.',
-        });
-      });
+    WindowsService.showWindow({
+      componentName: 'FlexTvWidgetSetting',
+      title: $t('Log In'),
+      size: {
+        width: 1320,
+        height: 1000,
+      },
+    });
   }
 
   function toggleReplayBuffer() {
