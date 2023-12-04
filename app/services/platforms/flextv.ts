@@ -149,7 +149,18 @@ export class FlexTvService
     ) {
       this.setOptimizedOBSSettings();
 
-      const data = await this.fetchStreamPair();
+      let data = await this.fetchStreamPair();
+      if (!data || !data.streamKey) {
+        data = await this.registerNewStreamKey();
+      }
+      if (!data || !data.streamKey) {
+        await remote.dialog.showMessageBox({
+          type: 'error',
+          message: '일시적인 오류가 발생하였습니다. 오류가 지속될 경우 문의 부탁드립니다.',
+          title: '송출 오류',
+        });
+        return;
+      }
       this.SET_STREAM_KEY(data.streamKey);
       if (!this.streamingService.views.isMultiplatformMode) {
         this.streamSettingsService.setSettings({
@@ -241,7 +252,20 @@ export class FlexTvService
     return platformAuthorizedRequest<{ url: string; streamKey: string }>(
       'flextv',
       `${this.apiBase}/api/my/channel/stream-key`,
-    );
+    ).catch(() => ({ streamKey: null, url: null }));
+  }
+
+  registerNewStreamKey(): Promise<{ url: string; streamKey: string }> {
+    const isSuccess = await platformAuthorizedRequest<boolean>(
+      'flextv',
+      `${this.apiBase}/api/my/chennel-register`,
+    )
+      .then(() => true)
+      .catch(() => false);
+    if (isSuccess) {
+      return this.fetchStreamPair();
+    }
+    return { streamKey: null, url: null };
   }
 
   getHeaders(req: IPlatformRequest, useToken: boolean | string) {
