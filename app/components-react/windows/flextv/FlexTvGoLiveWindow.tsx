@@ -217,38 +217,6 @@ export default function FlexTvGoLiveWindow() {
             ) : null}
           </div>
           <div className="section thin">
-            <RadioInput
-              label={'방송화질'}
-              options={[
-                {
-                  value: '720',
-                  label: '일반화질',
-                },
-                {
-                  value: '1080',
-                  label: '고화질(1080p)',
-                  disabled: !useHigh,
-                },
-              ]}
-              value={resolution}
-              onChange={useResolution}
-              direction={'horizontal'}
-            />
-            <Tooltip
-              title={'승인된 BJ만 1080p로 방송이 가능합니다. 고객센터로 연락 주시기 바랍니다.'}
-            >
-              <h5
-                className="strong"
-                style={{
-                  display: 'inline-block',
-                  cursor: 'pointer',
-                }}
-              >
-                * 고화질 스트리밍 사용 문의
-              </h5>
-            </Tooltip>
-          </div>
-          <div className="section thin">
             <div className="broadcast-agree">
               <h2>플렉스티비 방송 준수사항 동의</h2>
               <div

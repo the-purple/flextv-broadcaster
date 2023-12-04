@@ -255,7 +255,7 @@ export class FlexTvService
     ).catch(() => ({ streamKey: null, url: null }));
   }
 
-  registerNewStreamKey(): Promise<{ url: string; streamKey: string }> {
+  async registerNewStreamKey(): Promise<{ url: string; streamKey: string }> {
     const isSuccess = await platformAuthorizedRequest<boolean>(
       'flextv',
       `${this.apiBase}/api/my/chennel-register`,
