@@ -256,10 +256,10 @@ export class FlexTvService
   }
 
   async registerNewStreamKey(): Promise<{ url: string; streamKey: string }> {
-    const isSuccess = await platformAuthorizedRequest<boolean>(
-      'flextv',
-      `${this.apiBase}/api/my/chennel-register`,
-    )
+    const isSuccess = await platformAuthorizedRequest<boolean>('flextv', {
+      url: `${this.apiBase}/api/my/chennel-register`,
+      method: 'POST',
+    })
       .then(() => true)
       .catch(() => false);
     if (isSuccess) {
